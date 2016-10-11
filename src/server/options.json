@@ -1,0 +1,70 @@
+{
+    "general": {
+        "aspect_ratio": "16/10",
+        "width": 1200,
+        "height": 900,
+        "pdf_compress": true
+    },
+    "stackHeight": [
+        {
+            "value": "none",
+            "title": "Default"
+        },
+        {
+            "value": "sumOfAbsProbabilityDifferences",
+            "title": "Sum of absolute probability differences"
+        },
+        {
+            "value": "sumOfAbsICDifferences",
+            "title": "Sum of absolute information content differences"
+        },
+        {
+            "value": "lossOfAbsICDifferences",
+            "title": "The change of information content"
+        },
+        {
+            "value": "shannonDivergence",
+            "title": "Shannon divergence"
+        },
+        {
+            "value": "sumProbabilities",
+            "title": "Sum of probabilities"
+        },
+        {
+            "value": "informationContent",
+            "title": "Information content"
+        }
+    ],
+    "baseDistribution": [
+        {
+            "value": "none",
+            "title": "Default"
+        },
+        {
+            "value": "normalizedDifferenceOfProbabilities",
+            "title": "Normalized probability differences"
+        },
+        {
+            "value": "differenceOfICs",
+            "title": "Normalized information content differences"
+        },
+        {
+            "value": "probabilities",
+            "title": "Probabilities"
+        }
+    ],
+    "alphabet": [
+        {
+            "value": "DNA",
+            "title": "DNA"
+        },
+        {
+            "value": "RNA",
+            "title": "RNA"
+        },
+        {
+            "value": "ASN",
+            "title": "ASN"
+        }
+    ]
+}

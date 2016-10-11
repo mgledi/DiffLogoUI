@@ -1,0 +1,25 @@
+#!/usr/bin/env node
+
+var yargs = require('yargs');
+
+yargs
+    .usage('Usage: $0 [options]')
+    .example('$0 -p 8080 -s secret -r ../R', 'Starts the server at port 8080.')
+    .alias('p', 'port')
+    .nargs('p', 1)
+    .describe('p', 'sets the port for the server')
+    .alias('r', 'rsource')
+    .nargs('r', 1)
+    .describe('r', 'path to R libraries')
+    .alias('s', 'secret')
+    .nargs('s', 1)
+    .describe('s', 'secret for session tokens')
+    .alias('d', 'dev')
+    .boolean('d')
+    .describe('d', 'Starts the server in development mode')
+    .demand(['p', 's', 'r'])
+    .argv
+
+var options = yargs.argv;
+var server = require(options.dev ? './src/server' : './server');
+server(options);
