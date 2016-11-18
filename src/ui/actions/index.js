@@ -2,16 +2,10 @@ import fetch from 'isomorphic-fetch';
 
 // Files
 export const UPDATE_FILES = 'UPDATE_FILES';
-export const SELECT_FILES = 'SELECT_FILES';
 
 export const updateFiles = (files) => ({
     type: UPDATE_FILES,
     files
-});
-
-export const selectFiles = (selection) => ({
-    type: SELECT_FILES,
-    selection
 });
 
 export const getFiles = () => {
@@ -21,6 +15,13 @@ export const getFiles = () => {
         })
             .then((response) => response.json())
             .then((files) => dispatch(updateFiles(files)));
+    };
+};
+
+export const renameFile = (files, name, index) => {
+    return (dispatch) => {
+        files[index].name = name;
+        dispatch(updateFiles(files));
     };
 };
 
@@ -44,50 +45,27 @@ export const uploadFiles = (fileList) => {
     };
 };
 
-export const deleteFiles = (fileList) => {
+export const deleteFiles = () => {
     return (dispatch) => {
         fetch('/files', {
             credentials: 'same-origin',
-            method: 'DELETE',
-            body: JSON.stringify(fileList),
-            headers: new Headers({
-                'Content-Type': 'application/json'
-            })
+            method: 'DELETE'
         })
             .then((response) => response.json())
             .then((files) => dispatch(updateFiles(files)));
     };
 };
 
-export const ADD_ANALYSIS = 'ADD_ANALYSIS';
-export const DELETE_ANALYSIS = 'DELETE_ANALYSIS';
-export const SELECT_ANALYSIS = 'SELECT_ANALYSIS';
-export const EDIT_ANALYSIS = 'EDIT_ANALYSIS';
+export const PUBLISH_RESULT = 'PUBLISH_RESULT';
 
-export const addAnalysis = () => ({
-    type: ADD_ANALYSIS
+export const publishResult = (result) => ({
+    type: PUBLISH_RESULT,
+    result
 });
 
-export const deleteAnalysis = (index) => ({
-    type: DELETE_ANALYSIS,
-    index
-});
-
-export const selectAnalysis = (index) => ({
-    type: SELECT_ANALYSIS,
-    index
-});
-
-export const editAnalysis = (config, index) => ({
-    type: EDIT_ANALYSIS,
-    config,
-    index
-});
-
-export const startAnalysis = (config, index) => {
+export const startAnalysis = (config) => {
     return (dispatch) => {
 
-        dispatch(editAnalysis(config, index));
         fetch('/process', {
             credentials: 'same-origin',
             method: 'POST',
@@ -99,7 +77,7 @@ export const startAnalysis = (config, index) => {
             .then((response) => response.json())
             .then((result) => {
                 result.isProcessing = false;
-                dispatch(editAnalysis(result, index));
+                dispatch(publishResult(result));
             });
     };
 };
@@ -115,9 +93,6 @@ export const getOptions = () => {
     return (dispatch) => {
         fetch('/options')
             .then((response) => response.json())
-            .then((options) => {
-                dispatch(setOptions(options));
-                dispatch(addAnalysis());
-            });
+            .then((options) => dispatch(setOptions(options)));
     };
 };

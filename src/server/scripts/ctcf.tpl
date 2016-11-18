@@ -7,22 +7,28 @@ source("<%= rsource %>/utilities.R");
 source("<%= rsource %>/seqLogo.R");
 source("<%= rsource %>/diffSeqLogo.R");
 
-## import PWMs
 motif_folder = "<%= motifFolder %>"
-motifs = list()
+PWMs = list()
 
-m1 = as.matrix(read.delim(paste(motif_folder, "/", "<%- files[0] %>", sep=""), header=F))
-m2 = as.matrix(read.delim(paste(motif_folder, "/", "<%- files[1] %>", sep=""), header=F))
+<% files.forEach((file) => { %>
+    <% if (file.type === 'alignment') { %>
+        lines = readLines(file("<%= motifFolder %>/<%= file.originalname %>",open="r"));
+        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=ASN,pseudoCount=0);
+    <% } else if (file.type === 'pwm') { %>
+        PWMs[["<%= file.motifName %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
+    <% } %>
+<% }); %>
 
-pdf("<%= outputFolder %>/<%- name %>.pdf",width=4,height=6,compress=<%= pdfCompress %>); 
-    diffLogoFromPwm(
-        m1,
-        m2,
-        <% if (!_.isUndefined(stackHeight) && stackHeight !== 'none') { %>
-            stackHeight=<%= stackHeight %>,
-        <% } %>
-        <% if (!_.isUndefined(baseDistribution) && baseDistribution !== 'none') { %>
-           baseDistribution=<%= baseDistribution  %>
-       <% } %>
-   )
+motif_names = c(
+<% files.forEach((file, index) => { %>
+    "<%= file.motifName %>"<%= index < files.length -1 ? ',' : '' %>
+<% }); %>
+)
+
+pdf("<%= outputFolder %>/all.pdf",width=<%= files.length %>*16/10,height=<%= files.length %>); 
+    diffLogoTable(
+        PWMs,
+        motif_names,
+        ratio=16/10
+    );
 dev.off()

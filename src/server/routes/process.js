@@ -6,36 +6,39 @@ var spawn = require('child_process').spawn;
 var express = require('express');
 var helper = require('../helper');
 var template = require('lodash').template;
-var range = require('lodash').range;
 
 var CtcfTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/ctcf.tpl'));
 var processRoutes = express.Router();
 
-var defaultCtfcConfig = {
-    width: 1200,
-    height: 800,
-    aspectRatio: '16/10',
-    pdfCompress: 'T'
-};
-
 function writeConfig(config, sessionId, rsource) {
     var uploadFolder = helper.getUploadFolder(sessionId);
     var configFolder = helper.getConfigFolder(sessionId);
-    var motifFolder = path.relative(configFolder, uploadFolder);
-    var motifLength = config.files.length;
-    var motifNames = config.files.map((file) => '"' + path.basename(file, '.txt') + '"').join(',');
+    var motifFolder = path.relative(process.cwd(), uploadFolder);
+    var motifNames = config.files.map((file) => {
+        var name = file.name || file.originalname.replace(/\..+$/, '');
+        return name;
+    });
+    var files = config.files.reduce((iter, file) => {
+        iter[file.name || file.originalname.replace(/\..+$/, '')] = file.originalname;
+        return iter;
+    }, {});
+    var files = config.files.map((file) => {
+        var motifName = file.name || file.originalname.replace(/\..+$/, '');
+        
+        file.motifName = motifName;
+        return file;
+    });
     var finalConfig = Object.assign(
-        defaultCtfcConfig,
+        {},
         {
             motifFolder: motifFolder,
-            motifLength: motifLength,
             motifNames: motifNames,
+            files: files,
             outputFolder: path.join(process.cwd(), 'files', sessionId, 'output'),
-            motifOptimalOrder: range(motifLength).join(','),
             rsource: rsource
-        },
-        config
+        }
     );
+    console.log(finalConfig);
     var configString = template(CtcfTemplate)(finalConfig);
 
     return new Promise((resolve, reject) => {
@@ -67,11 +70,7 @@ function startProcess(obj) {
 
         R.on('close', (code) => {
             console.log(`child process exited with code ${code}`);
-            resolve(Object.assign(
-                {},
-                obj.config,
-                { fileList: fs.readdirSync(outputFolder) }
-            ));
+            resolve({ fileList: fs.readdirSync(outputFolder) });
         });
     });
 }

@@ -1,41 +1,35 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {Grid, Row, Col} from 'react-flexbox-grid';
-import isUndefined from 'lodash/isUndefined';
-import AnalysisList from '../components/analysis_list';
+import Header from '../components/header';
 import Files from '../components/files';
-import AnalysisConfiguration from '../components/analysis_configuration';
 
 import {
     getOptions,
     getFiles,
+    renameFile,
     uploadFiles,
     deleteFiles,
-    selectFiles,
-    addAnalysis,
-    deleteAnalysis,
-    selectAnalysis,
     editAnalysis,
     startAnalysis
 } from '../actions';
 
-function renderConfiguration(config, options, files, edit, start) {
-    if(isUndefined(config)) {
+function renderResult(result) {
+    if(!result.fileList || result.fileList.length === 0) {
         return null;
     }
 
-    return(<AnalysisConfiguration config={ config } options= {options } files={ files } editAnalysis={ edit } startAnalysis={ start } />);
+    return (
+        <a href={ '/files/result/' + result.fileList[0] } target="_blank" >{ result.fileList[0] }</a>
+    );
 }
 
 class App extends Component {
     constructor(props) {
         super(props);
+        this.renameFiles = this.renameFiles.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
-        this.selectFiles = this.selectFiles.bind(this);
-        this.addAnalysis = this.addAnalysis.bind(this);
-        this.deleteAnalysis = this.deleteAnalysis.bind(this);
-        this.selectAnalysis = this.selectAnalysis.bind(this);
         this.editAnalysis = this.editAnalysis.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
     }
@@ -47,6 +41,12 @@ class App extends Component {
         dispatch(getOptions());
     }
 
+    renameFiles(name, index) {
+        const { dispatch, filesList } = this.props;
+
+        dispatch(renameFile(filesList, index, name));
+    }
+
     uploadFiles(event) {
         const { files } = event.target;
         const { dispatch } = this.props;
@@ -54,80 +54,44 @@ class App extends Component {
     }
 
     deleteFiles() {
-        const { dispatch, filesList, selectedFiles } = this.props;
-        const list = selectedFiles.map((index) => filesList[index]);
-
-        dispatch(deleteFiles(list));
-    }
-
-    selectFiles(selection) {
         const { dispatch } = this.props;
 
-        dispatch(selectFiles(selection));
-    }
-
-    addAnalysis() {
-        const { dispatch, options } = this.props;
-
-        dispatch(addAnalysis(options));
-    }
-
-    deleteAnalysis(event, index) {
-        const { dispatch } = this.props;
-        event.stopPropagation();
-
-        dispatch(deleteAnalysis(index));
-    }
-
-    selectAnalysis(index) {
-        const { dispatch } = this.props;
-
-        dispatch(selectAnalysis(index));
+        dispatch(deleteFiles());
     }
 
     editAnalysis(config) {
-        const { dispatch, selectedAnalysis } = this.props;
+        const { dispatch } = this.props;
 
-        dispatch(editAnalysis(config, selectedAnalysis));
+        dispatch(editAnalysis(config));
     }
 
-    startAnalysis(config) {
-        const { dispatch, selectedAnalysis } = this.props;
+    startAnalysis(selected) {
+        const { dispatch, filesList } = this.props;
+        const files = filesList.filter((file, index) => selected.includes(index));
 
-        dispatch(startAnalysis(config, selectedAnalysis));
+        dispatch(startAnalysis({ files }));
     }
 
     render() {
-        const { filesList, selectedFiles, analysisList, selectedAnalysis, options } = this.props;
-        const currentAnalysis = analysisList[selectedAnalysis];
+        const { filesList, result } = this.props;
 
         return (
             <Grid>
+                <Header />
                 <Row>
                     <Col xs={ 12 } >
                         <Files
                             files={ filesList }
-                            selectedFiles = { selectedFiles }
+                            renameFiles = { this.renameFiles }
                             uploadFiles = { this.uploadFiles }
                             deleteFiles = { this.deleteFiles }
-                            selectFiles = { this.selectFiles }
+                            startAnalysis = { this.startAnalysis }
                         />
-                    </Col>
-                    <Col xs={ 12 } md={ 4 } >
-                        <AnalysisList
-                            analysis={ analysisList }
-                            selected={ selectedAnalysis }
-                            onSelect={ this.selectAnalysis }
-                            onDelete={ this.deleteAnalysis }
-                            addAnalysis={ this.addAnalysis }
-                        />
-
                     </Col>
                 </Row>
-                <br />
                 <Row>
-                    <Col xs={ 12 } >
-                        { renderConfiguration(currentAnalysis, options, filesList, this.editAnalysis, this.startAnalysis) }
+                    <Col xs={12}>
+                        { renderResult(result) }
                     </Col>
                 </Row>
             </Grid>
@@ -138,19 +102,15 @@ class App extends Component {
 App.propTypes = {
     dispatch: PropTypes.func.isRequired,
     filesList: PropTypes.array.isRequired,
-    selectedFiles: PropTypes.array.isRequired,
-    analysisList: PropTypes.array.isRequired,
-    selectedAnalysis: PropTypes.number.isRequired,
+    result: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-    const { files, analysis, options } = state;
+    const { files, result, options } = state;
     return {
         filesList: files.list,
-        selectedFiles: files.selection,
-        analysisList: analysis.list,
-        selectedAnalysis: analysis.selected,
+        result,
         options
     };
 }

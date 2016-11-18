@@ -1,25 +1,39 @@
-const path = require('path');
-const fs = require('fs-extra');
-const helper = require('../helper');
-const express = require('express');
-const multer = require('multer');
-const fileRoutes = express.Router();
+/* eslint-disable no-var */
+
+var path = require('path');
+var fs = require('fs-extra');
+var helper = require('../helper');
+var express = require('express');
+var multer = require('multer');
+var fileRoutes = express.Router();
 
 function getUploadFolderContent(sessionId) {
     return new Promise((resolve, reject) => {
-        const uploadFolder = helper.getUploadFolder(sessionId);
+        var uploadFolder = helper.getUploadFolder(sessionId);
 
         fs.readdir(uploadFolder, (err, files) => {
+            var fileList;
+
             if (err) {
                 console.error(err); // eslint-disable-line no-console
                 reject(err);
             } else {
-                const fileList = files.map((file) => {
-                    const filePath = path.join(uploadFolder, file);
+                fileList = files.map((file) => {
+                    var filePath = path.join(uploadFolder, file);
+                    var extension = path.extname(file);
+                    var fileType = 'unknown';
+
+                    if (extension === '.txt') {
+                        fileType = 'alignment';
+                    } else if (extension === '.pwm') {
+                        fileType = 'pwm';
+                    }
 
                     return {
                         path: filePath,
-                        name: file
+                        originalname: file,
+                        name: '',
+                        type: fileType
                     };
                 });
 
@@ -29,26 +43,24 @@ function getUploadFolderContent(sessionId) {
     });
 }
 
-function deleteFiles(list) {
-    const promises = list.map((file) => {
-        return new Promise((resolve, reject) => {
-            fs.remove(file.path, (err) => {
-                if (err) {
-                    return reject();
-                }
+function deleteFiles(sessionId) {
+    return new Promise((resolve, reject) => {
+        var uploadFolder = helper.getUploadFolder(sessionId);
 
-                return resolve();
-            });
+        fs.emptyDir(uploadFolder, (err) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve();
+            }
         });
     });
-
-    return Promise.all(promises);
 }
 
-const storage = multer.diskStorage({
+var storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        const sessionId = req.session.id;
-        const folderPath = helper.getUploadFolder(sessionId);
+        var sessionId = req.session.id;
+        var folderPath = helper.getUploadFolder(sessionId);
 
         fs.ensureDir(folderPath, (err) => {
             cb(err, folderPath);
@@ -56,7 +68,7 @@ const storage = multer.diskStorage({
     },
     filename: (req, file, cb) => cb(null, file.originalname)
 });
-const upload = multer({ storage: storage });
+var upload = multer({ storage: storage });
 
 fileRoutes.get('/list', (req, res) => {
     getUploadFolderContent(req.session.id)
@@ -70,17 +82,16 @@ fileRoutes.post('/', upload.array('files'), (req, res) => {
 });
 
 fileRoutes.delete('/', (req, res) => {
-    const filesToDelete = req.body;
 
-    deleteFiles(filesToDelete)
+    deleteFiles(req.session.id)
         .then(() => getUploadFolderContent(req.session.id))
         .then((files) => res.json(files));
 });
 
 fileRoutes.get('/result/:name', (req, res) => {
-    const sessionId = req.session.id;
-    const fileName = req.params.name;
-    const options = {
+    var sessionId = req.session.id;
+    var fileName = req.params.name;
+    var options = {
         root: path.join(process.cwd(), 'files', sessionId, 'output'),
         dotfiles: 'deny'
     };
