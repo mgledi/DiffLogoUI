@@ -155,7 +155,7 @@ class Files extends Component {
                     <FlatButton label="Add Files" labelPosition="before">
                         <input type="file" multiple onChange={ uploadFiles } style={styles.filesInput}/>
                     </FlatButton>
-                    <RaisedButton label="Start" primary={ true } disabled={ files.length === 0 } style={ styles.startButton } onClick={ this.startAnalysis } />
+                    <RaisedButton label="Start" primary={ true } disabled={ files.length < 2 } style={ styles.startButton } onClick={ this.startAnalysis } />
                 </CardActions>
             </Card>
         );
