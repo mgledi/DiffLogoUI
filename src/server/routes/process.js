@@ -7,7 +7,7 @@ var express = require('express');
 var helper = require('../helper');
 var template = require('lodash').template;
 
-var CtcfTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/ctcf.tpl'));
+var diffLogoTableTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/diffLogoTable.tpl'));
 var processRoutes = express.Router();
 
 function writeConfig(config, sessionId, rsource) {
@@ -39,7 +39,7 @@ function writeConfig(config, sessionId, rsource) {
         }
     );
     console.log(finalConfig);
-    var configString = template(CtcfTemplate)(finalConfig);
+    var configString = template(diffLogoTableTemplate)(finalConfig);
 
     return new Promise((resolve, reject) => {
         fs.outputFile(path.join(configFolder, config.name + '.R'), configString, (err) => {

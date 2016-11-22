@@ -9,7 +9,7 @@ class Header extends Component {
     render() {
         return (
             <AppBar
-                title="DIFFLogo"
+                title="DiffLogo"
                 showMenuIconButton={false}
             />
         );

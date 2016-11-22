@@ -23,7 +23,7 @@ function getUploadFolderContent(sessionId) {
                     var extension = path.extname(file);
                     var fileType = 'unknown';
 
-                    if (extension === '.txt') {
+                    if (extension === '.txt' || extension === '.text' || extension === '.al' || extension === '.alignment') {
                         fileType = 'alignment';
                     } else if (extension === '.pwm') {
                         fileType = 'pwm';
