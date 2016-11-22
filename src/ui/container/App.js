@@ -110,6 +110,7 @@ function mapStateToProps(state) {
     const { files, result, options } = state;
     return {
         filesList: files.list,
+        timestamp: files.timestamp,
         result,
         options
     };

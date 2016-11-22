@@ -16,13 +16,13 @@ const options = (state = {}, action) => {
     }
 };
 
-const files = (state = { list: [], selection: [] }, action) => {
+const files = (state = { list: [], selection: [], timestamp: 0 }, action) => {
     switch (action.type) {
         case ActionTypes.UPDATE_FILES: {
             return Object.assign(
                 {},
                 state,
-                { list: action.files, selection: [] }
+                { list: action.files, selection: [], timestamp: new Date().getTime() }
             );
         }
         default: {
