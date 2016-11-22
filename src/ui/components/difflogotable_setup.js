@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import fetch from 'isomorphic-fetch';
 
-export default class CTCFSetup extends Component {
+export default class coreSetup extends Component {
     constructor(props) {
         super(props);
         this.startProcess = this.startProcess.bind(this);

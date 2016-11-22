@@ -21,18 +21,21 @@ function getUploadFolderContent(sessionId) {
                 fileList = files.map((file) => {
                     var filePath = path.join(uploadFolder, file);
                     var extension = path.extname(file);
+                    var initialName = path.basename(file,extension);
                     var fileType = 'unknown';
 
-                    if (extension === '.txt') {
+                    if (extension === '.txt' || extension === '.text' || extension === '.al' || extension === '.alignment') {
                         fileType = 'alignment';
                     } else if (extension === '.pwm') {
                         fileType = 'pwm';
+                    } else if (extension === '.fa' || extension === '.fasta') {
+                        fileType = 'fasta';
                     }
 
                     return {
                         path: filePath,
                         originalname: file,
-                        name: '',
+                        name: initialName,
                         type: fileType
                     };
                 });

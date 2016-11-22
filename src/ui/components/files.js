@@ -42,16 +42,14 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
             <TableHeader adjustForCheckbox={ true } displaySelectAll= {false }>
                 <TableRow selectable= {false }>
+                    <TableHeaderColumn>Name in DiffLogo</TableHeaderColumn>
                     <TableHeaderColumn>Filename</TableHeaderColumn>
-                    <TableHeaderColumn>Name</TableHeaderColumn>
-                    <TableHeaderColumn>Type</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={ false } >
                 { files.map((file, index) => {
                     return (
                         <TableRow key={ index } selected={ selected.includes(index) } selectable={ file.type !== 'unknown' }>
-                            <TableRowColumn>{ file.originalname }</TableRowColumn>
                             <TableRowColumn>
                                 <IconButton
                                     iconClassName="material-icons"
@@ -61,9 +59,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                                 >edit</IconButton>
                                 { file.name }
                             </TableRowColumn>
-                            <TableRowColumn>
-                            { file.type }
-                            </TableRowColumn>
+                            <TableRowColumn>{ file.originalname }</TableRowColumn>
                         </TableRow>
                     );
                 })};
@@ -149,7 +145,7 @@ class Files extends Component {
 
         return (
             <Card>
-                <CardHeader title="Files" subtitle="Upload files to analyse" />
+                <CardHeader title="Files" subtitle="Upload at least 2 files to analyse" />
                 <CardText>
                     { renderTable(files, selected, this.handlePopoverOpen, this.setSelectedFiles) }
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose, this.handleNameChange) }
@@ -159,7 +155,7 @@ class Files extends Component {
                     <FlatButton label="Add Files" labelPosition="before">
                         <input type="file" multiple onChange={ uploadFiles } style={styles.filesInput}/>
                     </FlatButton>
-                    <RaisedButton label="Start" primary={ true } disabled={ files.length === 0 } style={ styles.startButton } onClick={ this.startAnalysis } />
+                    <RaisedButton label="Start" primary={ true } disabled={ files.length < 2 } style={ styles.startButton } onClick={ this.startAnalysis } />
                 </CardActions>
             </Card>
         );
