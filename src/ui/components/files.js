@@ -123,10 +123,10 @@ class Files extends Component {
     }
 
     handleNameChange(event, value) {
-        const { renameFiles } = this.props;
+        const { renameFile } = this.props;
         const { fileIndex } = this.state;
 
-        renameFiles(fileIndex, value);
+        renameFile(fileIndex, value);
     }
 
     setSelectedFiles(selected) {
@@ -170,7 +170,7 @@ Files.propTypes = {
     files: PropTypes.array.isRequired,
     uploadFiles: PropTypes.func.isRequired,
     deleteFiles: PropTypes.func.isRequired,
-    renameFiles: PropTypes.func.isRequired,
+    renameFile: PropTypes.func.isRequired,
     startAnalysis: PropTypes.func.isRequired
 };
 

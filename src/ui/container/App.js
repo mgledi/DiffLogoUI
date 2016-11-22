@@ -27,7 +27,7 @@ function renderResult(result) {
 class App extends Component {
     constructor(props) {
         super(props);
-        this.renameFiles = this.renameFiles.bind(this);
+        this.renameFile = this.renameFile.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
         this.editAnalysis = this.editAnalysis.bind(this);
@@ -41,7 +41,7 @@ class App extends Component {
         dispatch(getOptions());
     }
 
-    renameFiles(name, index) {
+    renameFile(name, index) {
         const { dispatch, filesList } = this.props;
 
         dispatch(renameFile(filesList, index, name));
@@ -82,7 +82,7 @@ class App extends Component {
                     <Col xs={ 12 } >
                         <Files
                             files={ filesList }
-                            renameFiles = { this.renameFiles }
+                            renameFile = { this.renameFile }
                             uploadFiles = { this.uploadFiles }
                             deleteFiles = { this.deleteFiles }
                             startAnalysis = { this.startAnalysis }
