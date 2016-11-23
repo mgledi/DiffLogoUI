@@ -6,6 +6,7 @@ var helper = require('../helper');
 var express = require('express');
 var multer = require('multer');
 var fileRoutes = express.Router();
+var fileValidator = require('../validation/validateFile')
 
 function getUploadFolderContent(sessionId) {
     return new Promise((resolve, reject) => {
@@ -36,7 +37,8 @@ function getUploadFolderContent(sessionId) {
                         path: filePath,
                         originalname: file,
                         name: initialName,
-                        type: fileType
+                        type: fileType,
+                        error : ''
                     };
                 });
 
@@ -44,6 +46,25 @@ function getUploadFolderContent(sessionId) {
             }
         });
     });
+}
+
+function validateFiles(fileList) {
+    return fileList.reduce((sequence, file) => {
+        return sequence.then(function() {
+            return new Promise(function(resolve) {
+                if (file.type === 'alignment') {
+                    fileValidator.validateAlignment(file.path)
+                        .then(function(error) {
+                            file.error = error;
+                            resolve(fileList);
+                        });
+                } else {
+                    file.error = 'Unknown Filetype';
+                    resolve(fileList);
+                }
+            });
+        });
+    }, Promise.resolve());
 }
 
 function deleteFiles(sessionId) {
@@ -75,12 +96,14 @@ var upload = multer({ storage: storage });
 
 fileRoutes.get('/list', (req, res) => {
     getUploadFolderContent(req.session.id)
+        .then(validateFiles)
         .then((files) => res.json(files))
         .catch(() => res.status(500).json([]));
 });
 
 fileRoutes.post('/', upload.array('files'), (req, res) => {
     getUploadFolderContent(req.session.id)
+        .then(validateFiles)
         .then((files) => res.json(files));
 });
 
