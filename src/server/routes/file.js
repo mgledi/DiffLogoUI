@@ -6,7 +6,9 @@ var helper = require('../helper');
 var express = require('express');
 var multer = require('multer');
 var fileRoutes = express.Router();
-var fileValidator = require('../validation/validateFile')
+var fileValidator = require('../validation/validateFile');
+
+var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
 
 function getUploadFolderContent(sessionId) {
     return new Promise((resolve, reject) => {
@@ -22,10 +24,10 @@ function getUploadFolderContent(sessionId) {
                 fileList = files.map((file) => {
                     var filePath = path.join(uploadFolder, file);
                     var extension = path.extname(file);
-                    var initialName = path.basename(file,extension);
+                    var initialName = path.basename(file, extension);
                     var fileType = 'unknown';
 
-                    if (extension === '.txt' || extension === '.text' || extension === '.al' || extension === '.alignment') {
+                    if (ALIGNMENT_EXT.indexOf(extension) >= -1) {
                         fileType = 'alignment';
                     } else if (extension === '.pwm') {
                         fileType = 'pwm';
@@ -50,11 +52,11 @@ function getUploadFolderContent(sessionId) {
 
 function validateFiles(fileList) {
     return fileList.reduce((sequence, file) => {
-        return sequence.then(function() {
-            return new Promise(function(resolve) {
+        return sequence.then(() => {
+            return new Promise((resolve) => {
                 if (file.type === 'alignment') {
                     fileValidator.validateAlignment(file.path)
-                        .then(function(error) {
+                        .then((error) => {
                             file.error = error;
                             resolve(fileList);
                         });
