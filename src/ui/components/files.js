@@ -99,6 +99,7 @@ class Files extends Component {
         this.handleNameChange = this.handleNameChange.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
+        this.deleteFiles = this.deleteFiles.bind(this);
     }
 
     handlePopoverOpen(event, index) {
@@ -138,6 +139,13 @@ class Files extends Component {
         startAnalysis(selected);
     }
 
+    deleteFiles() {
+        const { deleteFiles } = this.props;
+        const { selected } = this.state;
+
+        deleteFiles(selected);
+    }
+
     render() {
         const { files, uploadFiles, deleteFiles } = this.props;
         const { popoverOpen, anchorEl, fileIndex, selected } = this.state;
@@ -151,7 +159,7 @@ class Files extends Component {
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose, this.handleNameChange) }
                 </CardText>
                 <CardActions>
-                    <FlatButton label="Delete Files" labelPosition="before" onClick={ deleteFiles } disabled={ files.length === 0 }/>
+                    <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
                     <FlatButton label="Add Files" labelPosition="before">
                         <input type="file" multiple onChange={ uploadFiles } style={styles.filesInput}/>
                     </FlatButton>

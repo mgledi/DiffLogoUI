@@ -40,7 +40,7 @@ function getUploadFolderContent(sessionId) {
                         originalname: file,
                         name: initialName,
                         type: fileType,
-                        error : ''
+                        error: ''
                     };
                 });
 
@@ -69,18 +69,30 @@ function validateFiles(fileList) {
     }, Promise.resolve());
 }
 
-function deleteFiles(sessionId) {
-    return new Promise((resolve, reject) => {
-        var uploadFolder = helper.getUploadFolder(sessionId);
+function deleteFiles(sessionId, selection) {
+    var uploadFolder = helper.getUploadFolder(sessionId);
 
-        fs.emptyDir(uploadFolder, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve();
-            }
+    if (selection.files.length === 0) {
+        return new Promise((resolve, reject) => {
+            fs.emptyDir(uploadFolder, (err) => {
+                if (err) {
+                    reject(err);
+                } else {
+                    resolve();
+                }
+            });
         });
-    });
+    }
+
+    return selection.files.reduce((sequence, file) => {
+        return sequence.then(() => {
+            return new Promise((resolve) => {
+                fs.unlink(file.path, () => {
+                    resolve();
+                });
+            });
+        });
+    }, Promise.resolve());
 }
 
 var storage = multer.diskStorage({
@@ -110,8 +122,9 @@ fileRoutes.post('/', upload.array('files'), (req, res) => {
 });
 
 fileRoutes.delete('/', (req, res) => {
+    var selection = req.body;
 
-    deleteFiles(req.session.id)
+    deleteFiles(req.session.id, selection)
         .then(() => getUploadFolderContent(req.session.id))
         .then((files) => res.json(files));
 });

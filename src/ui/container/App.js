@@ -53,10 +53,11 @@ class App extends Component {
         dispatch(uploadFiles(files));
     }
 
-    deleteFiles() {
-        const { dispatch } = this.props;
+    deleteFiles(selected) {
+        const { dispatch, filesList } = this.props;
+        const files = filesList.filter((file, index) => selected.includes(index));
 
-        dispatch(deleteFiles());
+        dispatch(deleteFiles({ files }));
     }
 
     editAnalysis(config) {

@@ -45,11 +45,15 @@ export const uploadFiles = (fileList) => {
     };
 };
 
-export const deleteFiles = () => {
+export const deleteFiles = (selection) => {
     return (dispatch) => {
         fetch('/files', {
             credentials: 'same-origin',
-            method: 'DELETE'
+            method: 'DELETE',
+            body: JSON.stringify(selection),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
         })
             .then((response) => response.json())
             .then((files) => dispatch(updateFiles(files)));
