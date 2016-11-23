@@ -52,18 +52,13 @@ function getUploadFolderContent(sessionId) {
 
 function validateFiles(fileList) {
     return fileList.reduce((sequence, file) => {
-        return sequence.then(() => {
-            return new Promise((resolve) => {
-                if (file.type === 'alignment') {
-                    fileValidator.validateAlignment(file.path)
-                        .then((error) => {
-                            file.error = error;
-                            resolve(fileList);
-                        });
-                } else {
-                    file.error = 'Unknown Filetype';
-                    resolve(fileList);
-                }
+        return sequence.then(function() {
+            return new Promise(function(resolve) {
+                fileValidator.validate(file)
+                    .then(function(error) {
+                        file.error = error;
+                        resolve(fileList);
+                    });
             });
         });
     }, Promise.resolve());

@@ -3,7 +3,18 @@
  var LineByLineReader = require('line-by-line')
  var path = require('path');
 
+function validate(file) {
 
+	if (file.type === 'alignment') {
+		return validateAlignment(file.path);
+	} else {
+		return Promise.resolve('Unkown filetype');
+	}
+}
+
+/**
+ *
+ */ 
 function validateAlignment(filePath) {
 	console.log("Validating alignment: " + filePath);
 	return new Promise((resolve, reject) => {
@@ -13,13 +24,14 @@ function validateAlignment(filePath) {
 		var error = "";
 		var row = 0;
 		lr.on('line', function(line) {
-			console.log(line + " " + length);
 			row++;
+			var tfbs = line.split("\t")[0];
+			console.log(row + ": " + tfbs);
 			if(length == -1) {
-				length = line.length
-			} else if(line.length == 0) {
+				length = tfbs.length
+			} else if(tfbs.length == 0) {
 				// do nothing
-			} else if(length !== line.length) {
+			} else if(length !== tfbs.length) {
 				console.log("error occured");
 				error = "Error in line " + row + ". All lines in " + path.basename(filePath) + " must have the same length!";
 				lr.close();
@@ -43,6 +55,7 @@ function validatePWM(filePath) {
 }
 
 module.exports = {
+    validate: validate,
     validateAlignment: validateAlignment,
     validateFasta: validateFasta,
     validatePWM: validatePWM

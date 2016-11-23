@@ -34,7 +34,23 @@ const styles = {
     popover: {
         overflow: 'none',
         padding: '16px'
+    },
+    msgInfo: {
+        fontSize: '16px',
+        fontWeight: 'bold'
+    },
+    msgError: {
+        fontSize: '16px',
+        fontWeight: 'bold',
+        color: 'red'
+    },
+    rowError: {
+        border: '2px solid #D33'
+    },
+    rowValid: {
+        border: 'none'
     }
+
 };
 
 function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
@@ -49,7 +65,11 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
             <TableBody deselectOnClickaway={ false } >
                 { files.map((file, index) => {
                     return (
-                        <TableRow key={ index } selected={ selected.includes(index) } selectable={ file.type !== 'unknown' }>
+                        <TableRow 
+                            key={ index } 
+                            selected={ selected.includes(index) } 
+                            selectable={ file.type !== 'unknown' } 
+                            style={ file.error !=="" ? styles.rowError : styles.rowValid}>
                             <TableRowColumn>
                                 <IconButton
                                     iconClassName="material-icons"
@@ -79,7 +99,16 @@ function getPopover(open, anchorEl, inputValue, handlePopoverClose, handleInputC
             onRequestClose={handlePopoverClose}
             style={ styles.popover }
         >
-            <TextField id="rename-file" value={ inputValue } onChange={ handleInputChange } floatingLabelText="Name" />
+            <TextField 
+                id="rename-file" 
+                value={ inputValue } 
+                onChange={ handleInputChange } 
+                floatingLabelText="Name" 
+                onKeyPress={ function(event) { 
+                    if(event.key == 'Enter') {
+                        handlePopoverClose()
+                    }
+                }}/>
         </Popover>
     );
 }
@@ -146,6 +175,33 @@ class Files extends Component {
         deleteFiles(selected);
     }
 
+    getMessage() {
+        const { files } = this.props;
+        var text = [];
+            if(files.length < 2) {
+                text.push(
+                    <div key={"msg"+text.length} style={ styles.msgInfo }>Upload at least 2 files to start analysis.</div>
+                );
+            }  
+            if (this.filesContainErrors()) {
+                text.push( 
+                    <div key={"msg"+text.length} style={ styles.msgError }>Some files can not be parsed. Solve errors first.</div>
+                );
+            }         
+        return text;
+    }
+
+    filesContainErrors() {
+        const { files } = this.props;
+        var error = false;
+        for (var i = files.length - 1; i >= 0; i--) {
+            if(files[i].error !== "") {
+                error = true;
+            }
+        }
+        return error;
+    }
+
     render() {
         const { files, uploadFiles, deleteFiles } = this.props;
         const { popoverOpen, anchorEl, fileIndex, selected } = this.state;
@@ -153,8 +209,8 @@ class Files extends Component {
 
         return (
             <Card>
-                <CardHeader title="Files" subtitle="Upload at least 2 files to analyse" />
                 <CardText>
+                    { this.getMessage()}
                     { renderTable(files, selected, this.handlePopoverOpen, this.setSelectedFiles) }
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose, this.handleNameChange) }
                 </CardText>
@@ -163,7 +219,7 @@ class Files extends Component {
                     <FlatButton label="Add Files" labelPosition="before">
                         <input type="file" multiple onChange={ uploadFiles } style={styles.filesInput}/>
                     </FlatButton>
-                    <RaisedButton label="Start" primary={ true } disabled={ files.length < 2 } style={ styles.startButton } onClick={ this.startAnalysis } />
+                    <RaisedButton label="Start" primary={ true } disabled={ this.filesContainErrors() || files.length < 2 } style={ styles.startButton } onClick={ this.startAnalysis } />
                 </CardActions>
             </Card>
         );
