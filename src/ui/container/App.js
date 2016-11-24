@@ -82,7 +82,11 @@ class App extends Component {
 
     startAnalysis(selected) {
         const { dispatch, filesList } = this.props;
-        const files = filesList.filter((file, index) => selected.includes(index));
+        let files = filesList.filter((file, index) => selected.includes(index));
+
+        if (files.length === 0) {
+            files = filesList.filter((file) => file.error === '');
+        }
 
         dispatch(startAnalysis({ files }));
     }
