@@ -4,6 +4,7 @@ import {Grid, Row, Col} from 'react-flexbox-grid';
 import Header from '../components/header';
 import Files from '../components/files';
 import Progress from '../components/progress';
+import {Card, CardHeader, CardText, CardActions} from 'material-ui/Card';
 
 import {
     getOptions,
@@ -18,11 +19,23 @@ import {
 function renderResult(result) {
     if(!result.fileList || result.fileList.length === 0) {
         return null;
+    } else {
+        var resultHTML = [];
+        result.fileList.forEach(function(entry, fileHMTL) {
+            resultHTML.push(
+                <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
+            );
+        });
+        console.log(resultHTML);
+        return (
+            <Card>
+                <CardHeader title="Your results"/>
+                <CardText>
+                    {resultHTML}
+                </CardText>       
+            </Card>
+        );
     }
-
-    return (
-        <a href={ '/files/result/' + result.fileList[0] } target="_blank" >{ result.fileList[0] }</a>
-    );
 }
 
 class App extends Component {

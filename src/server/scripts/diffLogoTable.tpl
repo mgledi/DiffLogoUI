@@ -25,18 +25,19 @@ motif_names = c(
 <% }); %>
 )
 
+prefix = format(Sys.time(), "%Y%M%d_%H%m%S")
 if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
     
-    pdf("<%= outputFolder %>/differenceLogo.pdf",width=8,height=4); 
+    pdf(paste0("<%= outputFolder %>/",prefix,"_differenceLogo.pdf"),width=8,height=4); 
 
         diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=ASN)
         diffLogo(diffLogoObj)
     dev.off()
 
 } else {
-    pdf("<%= outputFolder %>/diffLogoTable.pdf",width=<%= files.length %>*16/10,height=<%= files.length %>); 
+    pdf(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.pdf"),width=<%= files.length %>*16/10,height=<%= files.length %>); 
     diffLogoTable(
         PWMs,
         motif_names,
