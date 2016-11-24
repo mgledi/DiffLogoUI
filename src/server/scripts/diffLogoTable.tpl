@@ -1,4 +1,4 @@
-library(cba)
+suppressMessages(library(cba))
 source("<%= rsource %>/alphabet.R");
 source("<%= rsource %>/preconditions.R");
 source("<%= rsource %>/stackHeights.R");
@@ -12,7 +12,9 @@ PWMs = list()
 
 <% files.forEach((file) => { %>
     <% if (file.type === 'alignment' || file.type === 'fasta') { %>
-        lines = readLines(file("<%= motifFolder %>/<%= file.originalname %>",open="r"));
+        con = file("<%= motifFolder %>/<%= file.originalname %>",open="r");
+        lines = readLines(con);
+        close(con);
         PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=ASN,pseudoCount=0.0001);
     <% } else if (file.type === 'pwm') { %>
         PWMs[["<%= file.motifName %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
