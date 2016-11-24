@@ -58,7 +58,7 @@ function renderMessages(messages) {
 
     return messages.map((message, index) => {
         return (
-            <div key={ index } style={ styles.msgError }>{ message }</div>
+            <div key={ `message_${index}` } style={ styles.msgError }>{ message }</div>
         );
     });
 }
