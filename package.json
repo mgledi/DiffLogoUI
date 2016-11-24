@@ -7,7 +7,7 @@
     "test": "mocha --require ./test/mocha_runner ./test/**/*.js",
     "test-watch": "npm test -- --watch --watch-extension js",
     "predev": "rimraf ./files ./sessions",
-    "dev": "NODE_ENV=development node server.js",
+    "dev": "NODE_ENV=development LOG_LEVEL=debug node server.js",
     "prebuild": "rimraf ./dist",
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "postbuild": "sh ./build.sh"
@@ -25,6 +25,7 @@
     "rimraf": "^2.5.4",
     "session-file-store": "^1.0.0",
     "uuid": "^3.0.0",
+    "winston": "^2.3.0",
     "yargs": "^6.0.0"
   },
   "devDependencies": {
