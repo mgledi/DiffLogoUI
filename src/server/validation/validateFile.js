@@ -10,7 +10,7 @@ function validate(file) {
 	} else if (file.type === 'fasta') {
 		return validateFasta(file.path);
 	} else if (file.type === 'pwm') {
-		return validateFasta(file.path);
+		return validatePWM(file.path);
 	} else {
 		return Promise.resolve('Unkown filetype. Please see help for supported file types.');
 	}
@@ -88,8 +88,36 @@ function validateFasta(filePath) {
 function validatePWM(filePath) {
 console.log("Validating PWM: " + filePath);
 	return new Promise((resolve, reject) => {
+		var data = [];
 		var lr = new LineByLineReader(filePath);
+		var motifLength = -1;
+		lr.on('line', function(line) {
+			data.push(line.trim().split("\t"));
+		});
 
+		lr.on("end",function (){
+			var error = "";
+			var alphabetSize = data.length;
+			var motifLength = data[0].length;
+			for(var m=0; m < motifLength; m++) {
+				var sum = 0;	
+				for(var a=0; a < alphabetSize; a++) {
+					var val = Number(data[a][m]);
+					if(isNaN(val)) {
+						error = "Element " + m + " in line " + a + " is not a valid number.";
+						resolve(error);
+					} else {
+						sum += val;
+					}
+				}	
+				if( Math.abs(1 - sum) > 0.000001 ) {
+					error = "Elements in row " + m + " sum not to 1.0.";
+					resolve(error);
+				}
+			}
+
+			resolve(error);
+		});
 	});	
 }
 
