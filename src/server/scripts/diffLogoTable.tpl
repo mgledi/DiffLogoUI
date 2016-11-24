@@ -36,14 +36,16 @@ if ( length(PWMs) < 2 ) {
 
         diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=ASN)
         diffLogo(diffLogoObj)
+
     dev.off()
 
 } else {
-    pdf(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.pdf"),width=<%= files.length %>*16/10,height=<%= files.length %>); 
+    pdf(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.pdf"),width=10 * 16/10,height = 10); 
+    configuration = list();
+    configuration[['ratio']] = 16/10;
     diffLogoTable(
         PWMs,
         motif_names,
-        ratio=16/10,
         alphabet=ASN
     );
     dev.off()     
