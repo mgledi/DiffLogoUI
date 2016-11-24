@@ -9,7 +9,9 @@ var fileRoutes = express.Router();
 var fileValidator = require('../validation/validateFile');
 
 var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
-var FASTA_EXT = ['.fa','.fasta']
+var FASTA_EXT = ['.fa','.fasta'];
+var PWM_EXT = ['.pwm'];
+
 function getUploadFolderContent(sessionId) {
     return new Promise((resolve, reject) => {
         var uploadFolder = helper.getUploadFolder(sessionId);
@@ -29,7 +31,7 @@ function getUploadFolderContent(sessionId) {
 
                     if (ALIGNMENT_EXT.indexOf(extension) > -1) {
                         fileType = 'alignment';
-                    } else if (extension === '.pwm') {
+                    } else if (PWM_EXT.indexOf(extension) > -1) {
                         fileType = 'pwm';
                     } else if (FASTA_EXT.indexOf(extension) > -1) {
                         fileType = 'fasta';

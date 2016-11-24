@@ -9,8 +9,10 @@ function validate(file) {
 		return validateAlignment(file.path);
 	} else if (file.type === 'fasta') {
 		return validateFasta(file.path);
+	} else if (file.type === 'pwm') {
+		return validateFasta(file.path);
 	} else {
-		return Promise.resolve('Unkown filetype');
+		return Promise.resolve('Unkown filetype. Please see help for supported file types.');
 	}
 }
 
@@ -35,7 +37,7 @@ function validateAlignment(filePath) {
 				// do nothing
 			} else if(length !== tfbs.length) {
 				error = "Error in line " + row + ". All lines in " + path.basename(filePath) + " must have the same length!";
-				lr.close();
+				console.log(error);
 			}
 		});
 		
@@ -65,8 +67,8 @@ function validateFasta(filePath) {
 					if(length == -1) {
 						length = tfbs.length;
 					}  else if(length !== tfbs.length) {
-						console.log("error occured");
 						error = "Error in line " + (row-1) + ". All lines in " + path.basename(filePath) + " must have the same length!";
+						console.log(error);
 					}
 				}
 				tfbs = "";
@@ -84,7 +86,11 @@ function validateFasta(filePath) {
 }
 
 function validatePWM(filePath) {
+console.log("Validating PWM: " + filePath);
+	return new Promise((resolve, reject) => {
+		var lr = new LineByLineReader(filePath);
 
+	});	
 }
 
 module.exports = {

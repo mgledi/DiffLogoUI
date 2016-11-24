@@ -25,10 +25,24 @@ motif_names = c(
 <% }); %>
 )
 
-pdf("<%= outputFolder %>/all.pdf",width=<%= files.length %>*16/10,height=<%= files.length %>); 
+if ( length(PWMs) < 2 ) {
+   # do nothing
+} else if ( length(PWMs) == 2 ) {
+    
+    pdf("<%= outputFolder %>/differenceLogo.pdf",width=8,height=4); 
+
+        diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]])
+        diffLogo(diffLogoObj)
+    dev.off()
+
+} else {
+    pdf("<%= outputFolder %>/diffLogoTable.pdf",width=<%= files.length %>*16/10,height=<%= files.length %>); 
     diffLogoTable(
         PWMs,
         motif_names,
         ratio=16/10
     );
-dev.off()
+    dev.off()     
+}
+
+

@@ -18,6 +18,7 @@ function writeConfig(config, sessionId, rsource) {
         var name = file.name || file.originalname.replace(/\..+$/, '');
         return name;
     });
+
     var files = config.files.reduce((iter, file) => {
         iter[file.name || file.originalname.replace(/\..+$/, '')] = file.originalname;
         return iter;
@@ -52,7 +53,7 @@ function writeConfig(config, sessionId, rsource) {
     });
 }
 
-function startProcess(obj) {
+function startProcess(obj) { 
     var outputFolder = path.join(process.cwd(), 'files', obj.sessionId, 'output');
     var script = path.relative(process.cwd(), path.join('files', obj.sessionId, 'config', obj.config.name + '.R'));
     var args = ['--no-save', '--slave', '-f ' + script];
