@@ -11,9 +11,9 @@ motif_folder = "<%= motifFolder %>"
 PWMs = list()
 
 <% files.forEach((file) => { %>
-    <% if (file.type === 'alignment') { %>
+    <% if (file.type === 'alignment' || file.type === 'fasta') { %>
         lines = readLines(file("<%= motifFolder %>/<%= file.originalname %>",open="r"));
-        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=ASN,pseudoCount=0);
+        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=ASN,pseudoCount=0.0001);
     <% } else if (file.type === 'pwm') { %>
         PWMs[["<%= file.motifName %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
     <% } %>
@@ -31,7 +31,7 @@ if ( length(PWMs) < 2 ) {
     
     pdf("<%= outputFolder %>/differenceLogo.pdf",width=8,height=4); 
 
-        diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]])
+        diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=ASN)
         diffLogo(diffLogoObj)
     dev.off()
 
@@ -40,7 +40,8 @@ if ( length(PWMs) < 2 ) {
     diffLogoTable(
         PWMs,
         motif_names,
-        ratio=16/10
+        ratio=16/10,
+        alphabet=ASN
     );
     dev.off()     
 }
