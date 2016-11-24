@@ -1,5 +1,13 @@
 import fetch from 'isomorphic-fetch';
 
+export const PROGRESS_UPLOAD = 'PROGRESS_UPLOAD';
+export const PROGRESS_PROCESS = 'PROGRESS_PROCESS';
+export const PROGRESS_STOPPED = 'PROGRESS_STOPPED';
+
+export const progressUpload = () => ({ type: PROGRESS_UPLOAD });
+export const progressProcess = () => ({ type: PROGRESS_PROCESS });
+export const progressStopped = () => ({ type: PROGRESS_STOPPED });
+
 // Files
 export const UPDATE_FILES = 'UPDATE_FILES';
 
@@ -30,6 +38,8 @@ export const uploadFiles = (fileList) => {
         const formData = new FormData();
         const length = fileList.length;
 
+        dispatch(progressUpload());
+
         for (let i = 0; i < length; i++) {
             const file = fileList[i];
             formData.append('files', file, file.name);
@@ -41,7 +51,10 @@ export const uploadFiles = (fileList) => {
             body: formData
         })
             .then((response) => response.json())
-            .then((files) => dispatch(updateFiles(files)));
+            .then((files) => {
+                dispatch(progressStopped());
+                dispatch(updateFiles(files));
+            });
     };
 };
 
@@ -70,6 +83,7 @@ export const publishResult = (result) => ({
 export const startAnalysis = (config) => {
     return (dispatch) => {
 
+        dispatch(progressProcess());
         fetch('/process', {
             credentials: 'same-origin',
             method: 'POST',
@@ -80,7 +94,7 @@ export const startAnalysis = (config) => {
         })
             .then((response) => response.json())
             .then((result) => {
-                result.isProcessing = false;
+                dispatch(progressStopped());
                 dispatch(publishResult(result));
             });
     };

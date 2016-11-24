@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import Header from '../components/header';
 import Files from '../components/files';
+import Progress from '../components/progress';
 
 import {
     getOptions,
@@ -74,28 +75,31 @@ class App extends Component {
     }
 
     render() {
-        const { filesList, result } = this.props;
+        const { filesList, result, progress } = this.props;
 
         return (
-            <Grid>
-                <Header />
-                <Row>
-                    <Col xs={ 12 } >
-                        <Files
-                            files={ filesList }
-                            renameFile = { this.renameFile }
-                            uploadFiles = { this.uploadFiles }
-                            deleteFiles = { this.deleteFiles }
-                            startAnalysis = { this.startAnalysis }
-                        />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12}>
-                        { renderResult(result) }
-                    </Col>
-                </Row>
-            </Grid>
+            <div>
+                <Grid>
+                    <Header />
+                    <Row>
+                        <Col xs={ 12 } >
+                            <Files
+                                files={ filesList }
+                                renameFile = { this.renameFile }
+                                uploadFiles = { this.uploadFiles }
+                                deleteFiles = { this.deleteFiles }
+                                startAnalysis = { this.startAnalysis }
+                            />
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12}>
+                            { renderResult(result) }
+                        </Col>
+                    </Row>
+                </Grid>
+                { progress.active ? <Progress message={ progress.message } /> : null }
+            </div>
         );
     }
 }
@@ -104,16 +108,18 @@ App.propTypes = {
     dispatch: PropTypes.func.isRequired,
     filesList: PropTypes.array.isRequired,
     result: PropTypes.array.isRequired,
-    options: PropTypes.object.isRequired
+    options: PropTypes.object.isRequired,
+    progress: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-    const { files, result, options } = state;
+    const { files, result, options, progress } = state;
     return {
         filesList: files.list,
         timestamp: files.timestamp,
         result,
-        options
+        options,
+        progress
     };
 }
 
