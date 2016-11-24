@@ -173,6 +173,7 @@ class Files extends Component {
         const { selected } = this.state;
 
         deleteFiles(selected);
+        this.setSelectedFiles([]);
     }
 
     getMessage() {
