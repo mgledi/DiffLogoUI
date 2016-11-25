@@ -17,12 +17,14 @@ alphabet = NULL;
         con = file("<%= motifFolder %>/<%= file.originalname %>",open="r");
         lines = as.vector(read.delim(con)[,1]);
         lines = lines[grep("^[^>]",lines)]
-        chars = unique(strsplit(gsub("-","",paste(lines,collapse="")), "")[[1]]);
-        if( length(DNA$chars) == length(chars) && all(sort(DNA$chars) == sort(chars)) ) {
+        chars = unique(strsplit(paste(lines,collapse=""), "")[[1]]);
+        DNAchars = sort(unique(strsplit(gsub("-","",paste(lines,collapse="")), "")[[1]]));
+        ASNchars = sort(unique(strsplit(gsub("[X-]","",paste(lines,collapse="")), "")[[1]]));
+        if( length(setdiff(DNAchars, DNA$chars))==0 ) {
             currentAlphabet = DNA;
-        } else if ( length(ASN$chars) == length(chars) && all(sort(ASN$chars) == sort(chars)) ) {
+        } else if ( length(setdiff(ASNchars, ASN$chars))==0 ) {
             currentAlphabet = ASN;     
-        } else if ( length(RNA$chars) == length(chars) && all(sort(RNA$chars) == sort(chars)) ) {
+        } else if ( length(setdiff(RNAchars, RNA$chars))==0 ) {
             currentAlphabet = RNA;
         } else {
             stop("Unsupported alphabet.")
