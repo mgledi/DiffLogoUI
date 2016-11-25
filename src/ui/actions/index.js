@@ -11,9 +11,9 @@ export const progressStopped = () => ({ type: PROGRESS_STOPPED });
 // Files
 export const UPDATE_FILES = 'UPDATE_FILES';
 
-export const updateFiles = (files) => ({
+export const updateFiles = (filesState) => ({
     type: UPDATE_FILES,
-    files
+    filesState
 });
 
 export const getFiles = () => {
@@ -22,14 +22,24 @@ export const getFiles = () => {
             credentials: 'same-origin'
         })
             .then((response) => response.json())
-            .then((files) => dispatch(updateFiles(files)));
+            .then((filesState) => dispatch(updateFiles(filesState)));
     };
 };
 
 export const renameFile = (files, name, index) => {
+    files[index].name = name;
+
     return (dispatch) => {
-        files[index].name = name;
-        dispatch(updateFiles(files));
+        fetch('/files', {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify(files),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+            .then((response) => response.json())
+            .then((state) => dispatch(updateFiles(state)));
     };
 };
 

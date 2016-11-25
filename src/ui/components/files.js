@@ -98,7 +98,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
     );
 }
 
-function getPopover(open, anchorEl, inputValue, handlePopoverClose, handleInputChange) {
+function getPopover(open, anchorEl, inputValue, handlePopoverClose) {
     return (
         <Popover
             animation={PopoverAnimationVertical}
@@ -111,8 +111,8 @@ function getPopover(open, anchorEl, inputValue, handlePopoverClose, handleInputC
         >
             <TextField
                 id="rename-file"
-                value={ inputValue }
-                onChange={ handleInputChange }
+                ref="rename"
+                defaultValue={ inputValue }
                 floatingLabelText="Name"
                 onKeyPress={ (event) => {
                     if(event.key === 'Enter') {
@@ -135,7 +135,6 @@ class Files extends Component {
         super(props);
         this.handlePopoverOpen = this.handlePopoverOpen.bind(this);
         this.handlePopoverClose = this.handlePopoverClose.bind(this);
-        this.handleNameChange = this.handleNameChange.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
@@ -151,18 +150,15 @@ class Files extends Component {
     }
 
     handlePopoverClose() {
+        const { renameFile } = this.props;
+        const { fileIndex } = this.state;
+
+        renameFile(fileIndex, this.refs.rename.input.value);
         this.setState({
             popoverOpen: false,
             anchorEl: null,
             fileIndex: -1
         });
-    }
-
-    handleNameChange(event, value) {
-        const { renameFile } = this.props;
-        const { fileIndex } = this.state;
-
-        renameFile(fileIndex, value);
     }
 
     setSelectedFiles(selected) {
@@ -217,7 +213,7 @@ class Files extends Component {
                 <CardText>
                     { renderMessages(this.getMessage()) }
                     { renderTable(files, selected, this.handlePopoverOpen, this.setSelectedFiles) }
-                    { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose, this.handleNameChange) }
+                    { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                 </CardText>
                 <CardActions>
                     <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>

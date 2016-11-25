@@ -6,97 +6,11 @@ var helper = require('../helper');
 var express = require('express');
 var multer = require('multer');
 var fileRoutes = express.Router();
-var fileValidator = require('../validation/validateFile');
-
-var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
-var FASTA_EXT = ['.fa','.fasta'];
-var PWM_EXT = ['.pwm'];
-
-function getUploadFolderContent(sessionId) {
-    return new Promise((resolve, reject) => {
-        var uploadFolder = helper.getUploadFolder(sessionId);
-
-        fs.readdir(uploadFolder, (err, files) => {
-            var fileList;
-
-            if (err) {
-                console.error(err); // eslint-disable-line no-console
-                reject(err);
-            } else {
-                fileList = files.map((file) => {
-                    var filePath = path.join(uploadFolder, file);
-                    var extension = path.extname(file);
-                    var initialName = path.basename(file, extension);
-                    var fileType = 'unknown';
-
-                    if (ALIGNMENT_EXT.indexOf(extension) > -1) {
-                        fileType = 'alignment';
-                    } else if (PWM_EXT.indexOf(extension) > -1) {
-                        fileType = 'pwm';
-                    } else if (FASTA_EXT.indexOf(extension) > -1) {
-                        fileType = 'fasta';
-                    }
-
-                    return {
-                        path: filePath,
-                        originalname: file,
-                        name: initialName,
-                        type: fileType,
-                        error: ''
-                    };
-                });
-
-                resolve(fileList);
-            }
-        });
-    });
-}
-
-function validateFiles(fileList) {
-    return fileList.reduce((sequence, file) => {
-        return sequence.then(function() {
-            return new Promise(function(resolve) {
-                fileValidator.validate(file)
-                    .then(function(error) {
-                        file.error = error;
-                        resolve(fileList);
-                    });
-            });
-        });
-    }, Promise.resolve());
-}
-
-function deleteFiles(sessionId, selection) {
-    var uploadFolder = helper.getUploadFolder(sessionId);
-
-    if (selection.files.length === 0) {
-        return new Promise((resolve, reject) => {
-            fs.emptyDir(uploadFolder, (err) => {
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve();
-                }
-            });
-        });
-    }
-
-    return selection.files.reduce((sequence, file) => {
-        return sequence.then(() => {
-            return new Promise((resolve) => {
-                fs.unlink(file.path, () => {
-                    resolve();
-                });
-            });
-        });
-    }, Promise.resolve());
-}
-
+var state = require('../state');
 var storage = multer.diskStorage({
     destination: (req, file, cb) => {
         var sessionId = req.session.id;
         var folderPath = helper.getUploadFolder(sessionId);
-
         fs.ensureDir(folderPath, (err) => {
             cb(err, folderPath);
         });
@@ -106,24 +20,28 @@ var storage = multer.diskStorage({
 var upload = multer({ storage: storage });
 
 fileRoutes.get('/list', (req, res) => {
-    getUploadFolderContent(req.session.id)
-        .then(validateFiles)
-        .then((files) => res.json(files))
+    state.get(req.session.id)
+        .then((newState) => res.json(newState))
         .catch(() => res.status(500).json([]));
 });
 
 fileRoutes.post('/', upload.array('files'), (req, res) => {
-    getUploadFolderContent(req.session.id)
-        .then(validateFiles)
-        .then((files) => res.json(files));
+    state.addFiles(req.session.id)
+        .then((newState) => res.json(newState));
 });
 
 fileRoutes.delete('/', (req, res) => {
-    var selection = req.body;
+    var files = req.body.files;
 
-    deleteFiles(req.session.id, selection)
-        .then(() => getUploadFolderContent(req.session.id))
-        .then((files) => res.json(files));
+    state.removeFiles(req.session.id, files)
+        .then((newState) => res.json(newState));
+});
+
+fileRoutes.put('/', (req, res) => {
+    var files = req.body;
+
+    state.updateFiles(req.session.id, files)
+        .then((newState) => res.json(newState));
 });
 
 fileRoutes.get('/result/:name', (req, res) => {

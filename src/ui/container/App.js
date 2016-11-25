@@ -4,7 +4,7 @@ import {Grid, Row, Col} from 'react-flexbox-grid';
 import Header from '../components/header';
 import Files from '../components/files';
 import Progress from '../components/progress';
-import {Card, CardHeader, CardText, CardActions} from 'material-ui/Card';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
 
 import {
     getOptions,
@@ -20,7 +20,7 @@ function renderResult(result) {
     if(!result.fileList || result.fileList.length === 0) {
         return null;
     } else {
-        var resultHTML = [];
+        let resultHTML = [];
         result.fileList.reverse().forEach(function(entry, fileHMTL) {
             resultHTML.push(
                 <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
@@ -36,6 +36,22 @@ function renderResult(result) {
             </Card>
         );
     }
+
+    const resultHTML = [];
+    result.fileList.forEach((entry) => {
+        resultHTML.push(
+            <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
+        );
+    });
+
+    return (
+        <Card>
+            <CardHeader title="Your results"/>
+            <CardText>
+                {resultHTML}
+            </CardText>
+        </Card>
+    );
 }
 
 class App extends Component {
@@ -56,9 +72,9 @@ class App extends Component {
     }
 
     renameFile(name, index) {
-        const { dispatch, filesList } = this.props;
+        const { dispatch, files } = this.props;
 
-        dispatch(renameFile(filesList, index, name));
+        dispatch(renameFile(files.list, index, name));
     }
 
     uploadFiles(event) {
@@ -68,10 +84,10 @@ class App extends Component {
     }
 
     deleteFiles(selected) {
-        const { dispatch, filesList } = this.props;
-        const files = filesList.filter((file, index) => selected.includes(index));
+        const { dispatch, files } = this.props;
+        const filtered = files.list.filter((file, index) => selected.includes(index));
 
-        dispatch(deleteFiles({ files }));
+        dispatch(deleteFiles({ files: filtered }));
     }
 
     editAnalysis(config) {
@@ -81,18 +97,18 @@ class App extends Component {
     }
 
     startAnalysis(selected) {
-        const { dispatch, filesList } = this.props;
-        let files = filesList.filter((file, index) => selected.includes(index));
+        const { dispatch, files } = this.props;
+        let filtered = files.list.filter((file, index) => selected.includes(index));
 
-        if (files.length === 0) {
-            files = filesList.filter((file) => file.error === '');
+        if (filtered.length === 0) {
+            filtered = files.list.filter((file) => file.error === '');
         }
 
-        dispatch(startAnalysis({ files }));
+        dispatch(startAnalysis({ files: filtered }));
     }
 
     render() {
-        const { filesList, result, progress } = this.props;
+        const { files, result, progress } = this.props;
 
         return (
             <div>
@@ -101,7 +117,7 @@ class App extends Component {
                     <Row>
                         <Col xs={ 12 } >
                             <Files
-                                files={ filesList }
+                                files={ files.list }
                                 renameFile = { this.renameFile }
                                 uploadFiles = { this.uploadFiles }
                                 deleteFiles = { this.deleteFiles }
@@ -123,7 +139,7 @@ class App extends Component {
 
 App.propTypes = {
     dispatch: PropTypes.func.isRequired,
-    filesList: PropTypes.array.isRequired,
+    files: PropTypes.object.isRequired,
     result: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired,
     progress: PropTypes.object.isRequired
@@ -132,7 +148,7 @@ App.propTypes = {
 function mapStateToProps(state) {
     const { files, result, options, progress } = state;
     return {
-        filesList: files.list,
+        files,
         timestamp: files.timestamp,
         result,
         options,
