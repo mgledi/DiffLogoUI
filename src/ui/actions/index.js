@@ -61,13 +61,22 @@ export const uploadFiles = (fileList) => {
             body: formData
         })
             .then((response) => response.json())
-            .then((files) => {
+            .then((state) => {
                 dispatch(progressStopped());
-                dispatch(updateFiles(files));
+                dispatch(updateFiles(state));
+                generateSequenceLogos(dispatch);
             });
     };
 };
 
+const generateSequenceLogos = (dispatch) => {
+    fetch('/seqLogo', {
+            credentials: 'same-origin',
+            method: 'GET'
+        })
+            .then((response) => response.json())
+            .then((state) => dispatch(updateFiles(state)));
+}
 export const deleteFiles = (selection) => {
     return (dispatch) => {
         fetch('/files', {
@@ -79,7 +88,7 @@ export const deleteFiles = (selection) => {
             })
         })
             .then((response) => response.json())
-            .then((files) => dispatch(updateFiles(files)));
+            .then((state) => dispatch(updateFiles(state)));
     };
 };
 
@@ -94,7 +103,7 @@ export const startAnalysis = (config) => {
     return (dispatch) => {
 
         dispatch(progressProcess());
-        fetch('/process', {
+        fetch('/diffLogo', {
             credentials: 'same-origin',
             method: 'POST',
             body: JSON.stringify(config),

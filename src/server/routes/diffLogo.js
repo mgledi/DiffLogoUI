@@ -8,7 +8,7 @@ var helper = require('../helper');
 var template = require('lodash').template;
 
 var diffLogoTableTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/diffLogoTable.tpl'));
-var processRoutes = express.Router();
+var diffLogoRoutes = express.Router();
 
 function writeConfig(config, sessionId, rsource) {
     var uploadFolder = helper.getUploadFolder(sessionId);
@@ -54,12 +54,14 @@ function writeConfig(config, sessionId, rsource) {
 }
 
 function startProcess(obj) { 
-    var outputFolder = path.join(process.cwd(), 'files', obj.sessionId, 'output');
-    var script = path.relative(process.cwd(), path.join('files', obj.sessionId, 'config', obj.config.name + '.R'));
+    var sessionId = obj.sessionId;
+    var config = obj.config;
+    var outputFolder = path.join(process.cwd(), 'files', sessionId, 'output');
+    var script = path.relative(process.cwd(), path.join('files', sessionId, 'config', config.name + '.R'));
     var args = ['--no-save', '--slave', '-f ' + script];
     var R = spawn('R', args, { cwd: process.cwd() });
 
-    fs.ensureDirSync(path.join(process.cwd(), 'files', obj.sessionId, 'output'));
+    fs.ensureDirSync(path.join(process.cwd(), 'files', sessionId, 'output'));
     return new Promise((resolve, reject) => {
         R.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
@@ -76,8 +78,8 @@ function startProcess(obj) {
     });
 }
 
-module.exports = function processRoute(rsource) {
-    processRoutes.post('/', (req, res) => {
+module.exports = function diffLogoRoute(rsource) {
+    diffLogoRoutes.post('/', (req, res) => {
         var sessionId = req.session.id;
         var config = req.body;
 
@@ -91,5 +93,5 @@ module.exports = function processRoute(rsource) {
         });
     });
 
-    return processRoutes;
+    return diffLogoRoutes;
 };

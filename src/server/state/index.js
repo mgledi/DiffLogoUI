@@ -7,6 +7,7 @@ var logger = require('winston');
 var helper = require('../helper');
 var initialState = require('./initialState.json');
 var fileValidator = require('../validation/validateFile');
+var seqLogoGenerator = require('../seqLogoGenerator');
 
 var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
 var FASTA_EXT = ['.fa', '.fasta'];
@@ -95,7 +96,8 @@ function getUploadFolderContent(sessionId) {
                         name: initialName,
                         type: fileType,
                         error: '',
-                        validated: false
+                        validated: false,
+                        seqLogoPath: ''
                     };
                 });
 
@@ -175,8 +177,16 @@ function updateStateWithoutFiles(sessionId, files) {
 function addFilesToState(sessionId) {
     return getUploadFolderContent(sessionId)
         .then((files) => filterNewFiles(sessionId, files))
-        .then(validateFiles)
+        .then((files) => validateFiles(files))
         .then((files) => updateStateWithFiles(files, sessionId))
+        .then((state) => writeState(state, sessionId));
+}
+
+
+function generateSequenceLogos(sessionId, rsource) {
+    logger.log('debug', 'State.generateSequenceLogos');
+    return getState(sessionId)
+        .then((state) => seqLogoGenerator(state, sessionId, rsource))
         .then((state) => writeState(state, sessionId));
 }
 
@@ -204,5 +214,6 @@ module.exports = {
     get: getState,
     addFiles: addFilesToState,
     removeFiles: removeFilesFormState,
-    updateFiles: updateFilesState
+    updateFiles: updateFilesState,
+    generateSequenceLogos: generateSequenceLogos
 };

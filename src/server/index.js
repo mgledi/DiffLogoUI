@@ -9,7 +9,8 @@ var FileStore = require('session-file-store')(session);
 
 var ui = require('./routes/static');
 var fileRoutes = require('./routes/file');
-var processRoutes = require('./routes/process');
+var diffLogoRoute = require('./routes/diffLogo');
+var seqLogoRoute = require('./routes/seqLogo');
 
 var app = express();
 
@@ -59,7 +60,8 @@ module.exports = function server(options) {
 
     app.use('/', ui(middleware, PRODUCTION));
     app.use('/files', fileRoutes);
-    app.use('/process', processRoutes(rsource));
+    app.use('/diffLogo', diffLogoRoute(rsource));
+    app.use('/seqLogo', seqLogoRoute(rsource));
 
     app.listen(options.port, () => console.log('App is listen to port ', options.port)); // eslint-disable-line no-console
 };

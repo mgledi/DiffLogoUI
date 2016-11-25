@@ -70,6 +70,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                 <TableRow selectable= {false }>
                     <TableHeaderColumn>Name in DiffLogo</TableHeaderColumn>
                     <TableHeaderColumn>Filename</TableHeaderColumn>
+                    <TableHeaderColumn>Sequence logo</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={ false } >
@@ -90,6 +91,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                                 { file.name }
                             </TableRowColumn>
                             <TableRowColumn>{ file.originalname }</TableRowColumn>
+                            <TableRowColumn></TableRowColumn>
                         </TableRow>
                     );
                 })};
