@@ -19,7 +19,7 @@ alphabet = NULL;
         lines = lines[grep("^[^>]",lines)]
         chars = unique(strsplit(paste(lines,collapse=""), "")[[1]]);
         DNAchars = sort(unique(strsplit(gsub("-","",paste(lines,collapse="")), "")[[1]]));
-        ASNchars = sort(unique(strsplit(gsub("[X-]","",paste(lines,collapse="")), "")[[1]]));
+        ASNchars = sort(unique(strsplit(gsub("[BZX-]","",paste(lines,collapse="")), "")[[1]]));
         if( length(setdiff(DNAchars, DNA$chars))==0 ) {
             currentAlphabet = DNA;
         } else if ( length(setdiff(ASNchars, ASN$chars))==0 ) {
@@ -30,7 +30,7 @@ alphabet = NULL;
             stop("Unsupported alphabet.")
         }
         close(con);
-        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=currentAlphabet,pseudoCount=0 );
+        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=currentAlphabet,pseudoCount=0);
     <% } else if (file.type === 'pwm') { %>
 
         PWMs[["<%= file.motifName %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))

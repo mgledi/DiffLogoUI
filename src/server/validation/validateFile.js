@@ -89,10 +89,9 @@ function validatePWM(filePath) {
 
             for(; m < motifLength; m++) {
                 sum = 0;
-
+                a = 0;
                 for(; a < alphabetSize; a++) {
                     val = Number(data[a][m]);
-
                     if(isNaN(val)) {
                         error = 'Element ' + m + ' in line ' + a + ' is not a valid number.';
                         logger.log('debug', error);
@@ -103,7 +102,7 @@ function validatePWM(filePath) {
                 }
 
                 if (Math.abs(1 - sum) > 0.000001) {
-                    error = 'Elements in row ' + m + ' sum not to 1.0.';
+                    error = 'Elements in column ' + m + ' sum not to 1.0. ('+sum+')';
                     logger.log('debug', error);
                     resolve(error);
                 }
