@@ -5,6 +5,7 @@ source("<%= rsource %>/stackHeights.R");
 source("<%= rsource %>/baseDistrs.R");
 source("<%= rsource %>/utilities.R");
 source("<%= rsource %>/seqLogo.R");
+source("<%= rsource %>/diffSeqLogoSupport.R");
 source("<%= rsource %>/diffSeqLogo.R");
 
 motif_folder = "<%= motifFolder %>"
@@ -13,9 +14,9 @@ PWMs = list()
 <% files.forEach((file) => { %>
     <% if (file.type === 'alignment' || file.type === 'fasta') { %>
         con = file("<%= motifFolder %>/<%= file.originalname %>",open="r");
-        lines = readLines(con);
+        lines = as.vector(read.delim(con)[,1]);
         close(con);
-        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=ASN,pseudoCount=0.0001);
+        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=ASN,pseudoCount=0 );
     <% } else if (file.type === 'pwm') { %>
         PWMs[["<%= file.motifName %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
     <% } %>
