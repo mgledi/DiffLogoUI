@@ -52,7 +52,6 @@ function validateFasta(filePath) {
             } else if (line.startsWith('>') || line.startsWith(';')) {
                 if(tfbs.length > 0) {
                     logger.log('debug', '%d: %s', row, tfbs);
-
                     if(length === -1) {
                         length = tfbs.length;
                     } else if(length !== tfbs.length) {
@@ -121,17 +120,14 @@ function validate(file) {
         case 'alignment':
             return validateAlignment(file.path);
         case 'fasta':
-            return validateAlignment(file.path);
+            return validateFasta(file.path);
         case 'pwm':
-            return validateAlignment(file.path);
+            return validatePWM(file.path);
         default:
             return Promise.resolve('Unknown filetype. Please see help for supported file types');
     }
 }
 
 module.exports = {
-    validate: validate,
-    validateAlignment: validateAlignment,
-    validateFasta: validateFasta,
-    validatePWM: validatePWM
+    validate: validate
 };

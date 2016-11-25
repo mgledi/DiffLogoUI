@@ -21,7 +21,7 @@ function renderResult(result) {
         return null;
     } else {
         var resultHTML = [];
-        result.fileList.forEach(function(entry, fileHMTL) {
+        result.fileList.reverse().forEach(function(entry, fileHMTL) {
             resultHTML.push(
                 <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
             );

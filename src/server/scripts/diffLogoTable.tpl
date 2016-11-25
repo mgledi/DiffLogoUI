@@ -28,7 +28,7 @@ motif_names = c(
 <% }); %>
 )
 
-prefix = format(Sys.time(), "%Y%M%d_%H%m%S")
+prefix = format(Sys.time(), "%Y%m%d_%H%M%S")
 if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
