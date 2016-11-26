@@ -28,7 +28,7 @@ function validateAlignment(filePath) {
                 // do nothing
             } else if(length !== tfbs.length) {
                 error = getLineLengthError(row, filePath);
-                logger.log('debug', error);
+                logger.log('debug', 'validateAlignment - line length error -%s', error);
                 resolve(error);
                 return false;
             }
@@ -62,7 +62,7 @@ function validateFasta(filePath) {
                             length = tfbs.length;
                         } else if(length !== tfbs.length) {
                             error = getLineLengthError(row - 1, filePath);
-                            logger.log('debug', error);
+                            logger.log('debug', 'validateFasta - line length error - %s', error);
                             resolve(error);
                             return false;
                         }
@@ -78,7 +78,7 @@ function validateFasta(filePath) {
             if (last) {
                 if(length !== tfbs.length) {
                     error = getLineLengthError(row - 1, filePath);
-                    logger.log('debug', error);
+                    logger.log('debug', 'validateFasta - line length error - %s', error);
                 }
                 resolve(error);
             }
@@ -91,7 +91,7 @@ function getSumForPwmColumn(alphabet, columnCount) {
 }
 
 function validatePWM(filePath) {
-    logger.log('debug', 'Validating PWM %s', filePath);
+    logger.log('debug', 'Validating PWM: %s', filePath);
 
     return new Promise((resolve) => {
         var error = '';
@@ -111,6 +111,7 @@ function validatePWM(filePath) {
 
             if (lineLength > -1 && lineLength !== lineSplit.length) {
                 error = getLineLengthError(lineCount, filePath);
+                logger.log('debug', 'validatePWM - line length error - %s', error);
                 resolve(error);
                 return false;
             }
@@ -123,6 +124,7 @@ function validatePWM(filePath) {
             }
 
             if (error !== '') {
+                logger.log('debug', 'validatePWM - NAN error - %s', error);
                 resolve(error);
                 return false;
             }
@@ -148,6 +150,7 @@ function validatePWM(filePath) {
 }
 
 module.exports = function validate(file) {
+    const error = 'Unknown filetype. Please see help for supported file types';
 
     switch(file.type) {
         case 'alignment':
@@ -157,6 +160,7 @@ module.exports = function validate(file) {
         case 'pwm':
             return validatePWM(file.path);
         default:
-            return Promise.resolve('Unknown filetype. Please see help for supported file types');
+            logger.log('debug', 'validate - unknow filetype - %s', error);
+            return Promise.resolve(error);
     }
 }
