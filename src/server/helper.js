@@ -14,8 +14,13 @@ function getConfigFolder(sessionId) {
     return path.join(getSessionFolder(sessionId), 'config');
 }
 
+function getSeqLogoFolder(sessionId) {
+    return path.join(getSessionFolder(sessionId), 'seqLogos');
+}
+
 module.exports = {
     getSessionFolder: getSessionFolder,
     getUploadFolder: getUploadFolder,
-    getConfigFolder: getConfigFolder
+    getConfigFolder: getConfigFolder,
+    getSeqLogoFolder: getSeqLogoFolder
 };
