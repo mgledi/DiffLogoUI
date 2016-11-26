@@ -34,7 +34,7 @@ function validateAlignment(filePath) {
             }
 
             if (last) {
-                resolve();
+                resolve(error);
             }
         });
     });
@@ -79,9 +79,8 @@ function validateFasta(filePath) {
                 if(length !== tfbs.length) {
                     error = getLineLengthError(row - 1, filePath);
                     logger.log('debug', error);
-                    resolve(error);
                 }
-                resolve();
+                resolve(error);
             }
         });
     });
