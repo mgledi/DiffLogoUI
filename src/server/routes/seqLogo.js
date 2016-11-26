@@ -10,7 +10,7 @@ module.exports = function seqLogoRoute(rsource) {
     console.log("Get was called.");
     var sessionId = req.session.id;
 
-    state.generateSequenceLogos(sessionId, rsource)
+    state.generateSeqLogos(sessionId, rsource)
         .then((state) => res.json(state));
     });
 

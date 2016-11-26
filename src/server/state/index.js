@@ -98,7 +98,6 @@ function getUploadFolderContent(sessionId) {
                         type: fileType,
                         error: '',
                         validated: false,
-                        seqLogoPath: '',
                         seqLogoFile: ''
                     };
                 });
@@ -184,8 +183,8 @@ function addFilesToState(sessionId) {
         .then((state) => writeState(state, sessionId));
 }
 
-function generateSequenceLogos(sessionId, rsource) {
-    logger.log('debug', 'State.generateSequenceLogos');
+function generateSeqLogos(sessionId, rsource) {
+    logger.log('debug', 'State.generateSeqLogos');
     return getState(sessionId)
         .then((state) => seqLogoGenerator(state, sessionId, rsource))
         .then((state) => writeState(state, sessionId));
@@ -224,6 +223,6 @@ module.exports = {
     addFiles: addFilesToState,
     removeFiles: removeFilesFormState,
     updateFiles: updateFilesState,
-    generateSequenceLogos: generateSequenceLogos,
-    generateDiffLogoTable: generateDiffLogoTable
+    generateDiffLogoTable: generateDiffLogoTable,
+    generateSeqLogos: generateSeqLogos
 };

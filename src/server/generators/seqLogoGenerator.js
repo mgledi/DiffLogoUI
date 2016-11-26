@@ -83,8 +83,9 @@ function updateState(obj) {
     var sessionId = obj.sessionId;
     var seqLogoFolder = helper.getSeqLogoFolder(sessionId);
     var updatedFiles = state.files.map((file) => {
-        file.seqLogoPath = path.join(seqLogoFolder, 'seqlogo_' + path.basename(file.path) + '.png');
-        file.seqLogoFile = 'seqlogo_' + path.basename(file.path) + '.png';
+        if( file.error === '') {
+            file.seqLogoFile = 'seqlogo_' + path.basename(file.path) + '.png';   
+        }
         return file;
     });
     var newState = Object.assign(

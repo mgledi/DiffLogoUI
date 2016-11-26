@@ -64,12 +64,12 @@ export const uploadFiles = (fileList) => {
             .then((state) => {
                 dispatch(progressStopped());
                 dispatch(updateFiles(state));
-                generateSequenceLogos(dispatch);
+                generateSeqLogos(dispatch);
             });
     };
 };
 
-const generateSequenceLogos = (dispatch) => {
+const generateSeqLogos = (dispatch) => {
     fetch('/seqLogo', {
         credentials: 'same-origin',
         method: 'GET'

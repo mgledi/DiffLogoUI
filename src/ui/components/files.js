@@ -40,10 +40,13 @@ const styles = {
     msgError: {
         fontSize: '16px',
         fontWeight: 'bold',
-        color: 'red'
+        color: '#D33'
     },
     rowError: {
         border: '2px solid #D33'
+    },
+    textError: {
+        color: '#D33'
     },
     rowValid: {
         border: 'none'
@@ -51,12 +54,21 @@ const styles = {
 
 };
 
-function renderSequenceLogoThumbnail(file, index) {
-    if (file.seqLogoPath !== "") {
+function renderSeqLogoThumbnailOrError(file, index) {
+    if (file.seqLogoFile !== '') {
         return (
             <img key={ `seqLogoThumbnail_${index}`} width='120' src={`files/seqLogo/${file.seqLogoFile}`}/>
         );
+    } else if ( file.error !== '') {
+        return (
+            <span style={styles.textError} >Can not parse file: {file.error}</span>
+        );      
+    } else {
+        return (
+            '...'
+        )
     }
+    
 }
 
 function renderMessages(messages) {
@@ -74,10 +86,10 @@ function renderMessages(messages) {
 function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
     return (
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
-            <TableHeader adjustForCheckbox={ true } displaySelectAll= {false }>
+            <TableHeader adjustForCheckbox={ true } displaySelectAll= { false }>
                 <TableRow selectable= {false }>
-                    <TableHeaderColumn>Name in DiffLogo</TableHeaderColumn>
-                    <TableHeaderColumn>Filename</TableHeaderColumn>
+                    <TableHeaderColumn width="150px">Name in DiffLogo</TableHeaderColumn>
+                    <TableHeaderColumn width="150px">Filename</TableHeaderColumn>
                     <TableHeaderColumn>Sequence logo</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
@@ -89,7 +101,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                             selected={ selected.includes(index) }
                             selectable={ file.type !== 'unknown' }
                             style={ file.error !== '' ? styles.rowError : styles.rowValid}>
-                            <TableRowColumn>
+                            <TableRowColumn width="150px">
                                 <IconButton
                                     iconClassName="material-icons"
                                     iconStyle={ styles.smallIcon }
@@ -98,8 +110,8 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                                 >edit</IconButton>
                                 { file.name }
                             </TableRowColumn>
-                            <TableRowColumn>{ file.originalname }</TableRowColumn>
-                            <TableRowColumn>{ renderSequenceLogoThumbnail(file, index) } </TableRowColumn>
+                            <TableRowColumn width="150px">{ file.originalname }</TableRowColumn>
+                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index) } </TableRowColumn>
                         </TableRow>
                     );
                 })};
