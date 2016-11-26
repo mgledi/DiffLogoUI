@@ -69,7 +69,8 @@ function updateState(obj) {
 
     var updatedFiles = state.files.map((file) => {
         file.seqLogoPath = path.join(process.cwd(), 'files', sessionId,'seqLogos','seqlogo_' + path.basename(file.path) + '.png');
-         return file;
+        file.seqLogoFile = 'seqlogo_' + path.basename(file.path) + '.png';
+        return file;
     });
     var newState = Object.assign(
             {},

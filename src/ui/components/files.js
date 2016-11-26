@@ -51,6 +51,14 @@ const styles = {
 
 };
 
+function renderSequenceLogoThumbnail(file, index) {
+    if (file.seqLogoPath !== "") {
+        return (
+            <img key={ `seqLogoThumbnail_${index}`} width='120' src={`files/seqLogo/${file.seqLogoFile}`}/>
+        );
+    }
+}
+
 function renderMessages(messages) {
     if (messages.length === 0) {
         return null;
@@ -91,7 +99,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                                 { file.name }
                             </TableRowColumn>
                             <TableRowColumn>{ file.originalname }</TableRowColumn>
-                            <TableRowColumn></TableRowColumn>
+                            <TableRowColumn>{ renderSequenceLogoThumbnail(file, index) } </TableRowColumn>
                         </TableRow>
                     );
                 })};

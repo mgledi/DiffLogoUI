@@ -59,4 +59,19 @@ fileRoutes.get('/result/:name', (req, res) => {
     });
 });
 
+fileRoutes.get('/seqLogo/:name', (req, res) => {
+    var sessionId = req.session.id;
+    var fileName = req.params.name;
+    var options = {
+        root: path.join(process.cwd(), 'files', sessionId, 'seqLogos'),
+        dotfiles: 'deny'
+    };
+
+    res.sendFile(fileName, options, (err) => {
+        if (err) {
+            res.status(err.status).end();
+        }
+    });
+});
+
 module.exports = fileRoutes;
