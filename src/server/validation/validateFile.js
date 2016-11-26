@@ -120,7 +120,7 @@ function validatePWM(filePath) {
     });
 }
 
-function validate(file) {
+module.exports = function validate(file) {
 
     switch(file.type) {
         case 'alignment':
@@ -133,7 +133,3 @@ function validate(file) {
             return Promise.resolve('Unknown filetype. Please see help for supported file types');
     }
 }
-
-module.exports = {
-    validate: validate
-};
