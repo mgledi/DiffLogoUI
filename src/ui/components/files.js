@@ -54,10 +54,11 @@ const styles = {
 
 };
 
-function renderSeqLogoThumbnailOrError(file, index) {
+function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
     if (file.seqLogoFile !== '') {
+        var seqLogoFile = `files/seqLogo/${file.seqLogoFile}`;
         return (
-            <img key={ `seqLogoThumbnail_${index}`} width='120' src={`files/seqLogo/${file.seqLogoFile}`}/>
+            <img onClick={(event) => handleSeqLogoPopoverOpen(event, index)} key={ `seqLogoThumbnail_${index}`} width='120' src={seqLogoFile}/>
         );
     } else if ( file.error !== '') {
         return (
@@ -83,7 +84,7 @@ function renderMessages(messages) {
     });
 }
 
-function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
+function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpen, setSelectedFiles) {
     return (
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
             <TableHeader adjustForCheckbox={ true } displaySelectAll= { false }>
@@ -111,7 +112,7 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
                                 { file.name }
                             </TableRowColumn>
                             <TableRowColumn width="150px">{ file.originalname }</TableRowColumn>
-                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index) } </TableRowColumn>
+                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) } </TableRowColumn>
                         </TableRow>
                     );
                 })};
@@ -120,7 +121,29 @@ function renderTable(files, selected, handlePopoverOpen, setSelectedFiles) {
     );
 }
 
+function getSeqLogoPopover(open, anchorEl, seqLogoFile, handleSeqLogoPopoverClose) {
+    if(seqLogoFile === '' || seqLogoFile === undefined) {
+        return "";
+    }
+    return (
+        <Popover
+            animation={PopoverAnimationVertical}
+            open={open}
+            anchorEl={anchorEl}
+            anchorOrigin={{horizontal: 'right', vertical: 'center'}}
+            targetOrigin={{horizontal: 'left', vertical: 'center'}}
+            onRequestClose={handleSeqLogoPopoverClose}
+            style={ styles.popover }
+        >
+            <img src={`files/seqlogo/${seqLogoFile}`}/>
+        </Popover>
+    );
+}
+
 function getPopover(open, anchorEl, inputValue, handlePopoverClose) {
+    if(inputValue ==='' || inputValue === undefined) {
+        return '';
+    }
     return (
         <Popover
             animation={PopoverAnimationVertical}
@@ -157,9 +180,28 @@ class Files extends Component {
         super(props);
         this.handlePopoverOpen = this.handlePopoverOpen.bind(this);
         this.handlePopoverClose = this.handlePopoverClose.bind(this);
+        this.handleSeqLogoPopoverOpen = this.handleSeqLogoPopoverOpen.bind(this);
+        this.handleSeqLogoPopoverClose = this.handleSeqLogoPopoverClose.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
+    }
+
+    handleSeqLogoPopoverOpen(event, index) {
+        event.stopPropagation();
+        this.setState({
+            seqLogoPopoverOpen: true,
+            anchorEl: event.target,
+            fileIndex: index
+        });
+    }
+
+    handleSeqLogoPopoverClose() {
+        this.setState({
+            seqLogoPopoverOpen: false,
+            anchorEl: null,
+            fileIndex: -1
+        });
     }
 
     handlePopoverOpen(event, index) {
@@ -212,30 +254,33 @@ class Files extends Component {
             text.push('Upload at least 2 files to start analysis.');
         }
 
-        if (this.filesContainErrors()) {
+        if (files.filter((file) => file.error !== '').length > 0) {
             text.push('Some files can not be parsed. Solve errors first.');
         }
 
         return text;
     }
 
-    filesContainErrors() {
+    disableStartButton() {
         const { files } = this.props;
-
-        return files.filter((file) => file.error !== '').length > 0;
+        return files.filter((file) => file.error === '').length < 2;
     }
+
 
     render() {
         const { files, uploadFiles } = this.props;
-        const { popoverOpen, anchorEl, fileIndex, selected } = this.state;
+        const { seqLogoPopoverOpen, popoverOpen, anchorEl, fileIndex, selected } = this.state;
         const fileValue = files[fileIndex] ? files[fileIndex].name : 'Untitled';
+        const seqLogoFile = files[fileIndex] ? files[fileIndex].seqLogoFile : '';
 
         return (
             <Card>
                 <CardText>
                     { renderMessages(this.getMessage()) }
-                    { renderTable(files, selected, this.handlePopoverOpen, this.setSelectedFiles) }
+                    { renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles) }
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
+                    { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
+                    
                 </CardText>
                 <CardActions>
                     <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
@@ -245,7 +290,7 @@ class Files extends Component {
                     <RaisedButton
                         label="Start"
                         primary={ true }
-                        disabled={ files.length < 2 }
+                        disabled={ this.disableStartButton() }
                         style={ styles.startButton }
                         onClick={ this.startAnalysis }
                     />

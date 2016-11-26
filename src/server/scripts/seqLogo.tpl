@@ -8,8 +8,8 @@ source("<%= rsource %>/seqLogo.R");
 motif_folder = "<%= motifFolder %>"
 
 <% files.forEach((file) => { %>
-    currentAlphabet = NULL;
-    <% if (file.error === "") { %>
+    <% if (file.error === "" && file.seqLogoFile === "") { %>
+        currentAlphabet = NULL;
         <% if (file.type === 'alignment' || file.type === 'fasta') { %>
             con = file("<%= motifFolder %>/<%= file.originalname %>",open="r");
             lines = as.vector(read.delim(con)[,1]);
@@ -40,9 +40,9 @@ motif_folder = "<%= motifFolder %>"
             }
         <% } %>
 
-        png("<%= outputFolder %>/seqLogo_<%= file.originalname %>.png",width=400,height=200); 
-        par(mar=c(0.3,1.2,0.0,0.1))
-        seqLogo(pwm,sparse=TRUE,alphabet=currentAlphabet);
-        dev.off();
+            png("<%= outputFolder %>/seqLogo_<%= file.originalname %>.png",width=400,height=200); 
+            par(mar=c(0.3,1.2,0.0,0.1))
+            seqLogo(pwm,sparse=TRUE,alphabet=currentAlphabet);
+            dev.off();
     <% } %>
 <% }); %>
