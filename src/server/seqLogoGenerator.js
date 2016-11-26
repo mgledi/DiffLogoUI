@@ -1,19 +1,19 @@
+/* eslint-disable  no-var */
 
 var path = require('path');
 var fs = require('fs-extra');
 var spawn = require('child_process').spawn;
 var helper = require('./helper');
 var template = require('lodash').template;
-
+var logger = require('winston');
 var seqLogoTemplate = fs.readFileSync(path.resolve(__dirname, './scripts/seqLogo.tpl'));
 
+logger.level = process.env.LOG_LEVEL || 'info';
 
 function writeConfig(state, sessionId, rsource) {
-    console.log(": " + sessionId + " : " + rsource);
     var uploadFolder = helper.getUploadFolder(sessionId);
     var configFolder = helper.getConfigFolder(sessionId);
     var motifFolder = path.relative(process.cwd(), uploadFolder);
-
     var finalConfig = Object.assign(
         {},
         {
@@ -23,12 +23,19 @@ function writeConfig(state, sessionId, rsource) {
             rsource: rsource
         }
     );
-    console.log(finalConfig);
     var configString = template(seqLogoTemplate)(finalConfig);
+
+    logger.log('debug', 'SeqLogoGenerator.writeConfig %s %s', sessionId, rsource);
+    logger.log('debug', 'SeqLogoGenerator.writeConfig - upload folder - %s', uploadFolder);
+    logger.log('debug', 'SeqLogoGenerator.writeConfig - config folder - %s', configFolder);
+    logger.log('debug', 'SeqLogoGenerator.writeConfig - motif folder - %s', motifFolder);
+    logger.log('debug', 'SeqLogoGenerator.writeConfig - final config -', finalConfig);
+    logger.log('debug', 'SeqLogoGenerator.writeConfig - template -', configString);
 
     return new Promise((resolve, reject) => {
         fs.outputFile(path.join(configFolder, 'seqLogos.R'), configString, (err) => {
             if (err) {
+                logger.log('error', 'SeqLogoGenerator.writeConfig - write config error - %s', err);
                 reject(err);
             } else {
                 resolve({state, sessionId});
@@ -38,27 +45,35 @@ function writeConfig(state, sessionId, rsource) {
 }
 
 function startProcess(obj) {
-    var state = obj.state;
     var sessionId = obj.sessionId;
+    var configFolder = helper.getConfigFolder(sessionId);
+    var seqLogoFolder = helper.getSeqLogoFolder(sessionId);
+    var scriptPath = path.relative(process.cwd(), path.join(configFolder, 'seqLogos.R'));
+    var args = ['--no-save', '--slave', '-f ' + scriptPath];
+    var R;
 
-	var outputFolder = path.join(process.cwd(), 'files', sessionId, 'seqLogos');
-    var script = path.relative(process.cwd(), path.join('files', sessionId, 'config', 'seqLogos.R'));
-    var args = ['--no-save', '--slave', '-f ' + script];
-    var R = spawn('R', args, { cwd: process.cwd() });
+    logger.log('debug', 'SeqLogoGenerator.startProcess - config folder - %s', configFolder);
+    logger.log('debug', 'SeqLogoGenerator.startProcess - seq logo folder - %s', seqLogoFolder);
+    logger.log('debug', 'SeqLogoGenerator.startProcess - script path - %s', scriptPath);
+    logger.log('debug', 'SeqLogoGenerator.startProcess - R argumnents - %s', args);
 
-    fs.ensureDirSync(path.join(process.cwd(), 'files', obj.sessionId, 'seqLogos'));
-    return new Promise((resolve, reject) => {
-        R.stdout.on('data', (data) => {
-            console.log(`stdout: ${data}`);
-        });
+    return new Promise((resolve) => {
+        fs.ensureDir(seqLogoFolder, (err) => {
+            if (err) {
+                logger.log('error', 'SeqLogoGenerator.startProcess - error -', err);
+                resolve(obj); // TODO add proper error handling to not write seqLogo path to state
+                return;
+            }
+            R = spawn('R', args, { cwd: process.cwd() });
 
-        R.stderr.on('data', (data) => {
-            console.log(`stderr: ${data}`);
-        });
+            R.stdout.on('data', (data) => logger.log('debug', 'R: %s', data));
 
-        R.on('close', (code) => {
-            console.log(`child process exited with code ${code}`);
-            resolve(obj);
+            R.stderr.on('data', (data) => logger.log('debug', 'R: %s', data));
+
+            R.on('close', (code) => {
+                logger.log('debug', 'R: exited with %d', code);
+                resolve(obj);
+            });
         });
     });
 }
@@ -66,9 +81,9 @@ function startProcess(obj) {
 function updateState(obj) {
     var state = obj.state;
     var sessionId = obj.sessionId;
-
+    var seqLogoFolder = helper.getSeqLogoFolder(sessionId);
     var updatedFiles = state.files.map((file) => {
-        file.seqLogoPath = path.join(process.cwd(), 'files', sessionId,'seqLogos','seqlogo_' + path.basename(file.path) + '.png');
+        file.seqLogoPath = path.join(seqLogoFolder, 'seqlogo_' + path.basename(file.path) + '.png');
         file.seqLogoFile = 'seqlogo_' + path.basename(file.path) + '.png';
         return file;
     });
