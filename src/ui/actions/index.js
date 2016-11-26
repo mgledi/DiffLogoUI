@@ -71,12 +71,13 @@ export const uploadFiles = (fileList) => {
 
 const generateSequenceLogos = (dispatch) => {
     fetch('/seqLogo', {
-            credentials: 'same-origin',
-            method: 'GET'
-        })
-            .then((response) => response.json())
-            .then((state) => dispatch(updateFiles(state)));
-}
+        credentials: 'same-origin',
+        method: 'GET'
+    })
+        .then((response) => response.json())
+        .then((state) => dispatch(updateFiles(state)));
+};
+
 export const deleteFiles = (selection) => {
     return (dispatch) => {
         fetch('/files', {
@@ -92,13 +93,6 @@ export const deleteFiles = (selection) => {
     };
 };
 
-export const PUBLISH_RESULT = 'PUBLISH_RESULT';
-
-export const publishResult = (result) => ({
-    type: PUBLISH_RESULT,
-    result
-});
-
 export const startAnalysis = (config) => {
     return (dispatch) => {
 
@@ -112,9 +106,9 @@ export const startAnalysis = (config) => {
             })
         })
             .then((response) => response.json())
-            .then((result) => {
+            .then((state) => {
                 dispatch(progressStopped());
-                dispatch(publishResult(result));
+                dispatch(updateFiles(state));
             });
     };
 };

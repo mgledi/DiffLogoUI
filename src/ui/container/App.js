@@ -16,23 +16,22 @@ import {
     startAnalysis
 } from '../actions';
 
-function renderResult(result) {
-    if(!result.fileList || result.fileList.length === 0) {
+function renderResult(files) {
+    if(files.length === 0) {
         return null;
     } else {
         let resultHTML = [];
-        result.fileList.reverse().forEach(function(entry, fileHMTL) {
+        files.reverse().forEach(function(entry, fileHMTL) {
             resultHTML.push(
                 <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
             );
         });
-        console.log(resultHTML);
         return (
             <Card>
                 <CardHeader title="Your results"/>
                 <CardText>
                     {resultHTML}
-                </CardText>       
+                </CardText>
             </Card>
         );
     }
@@ -108,7 +107,7 @@ class App extends Component {
     }
 
     render() {
-        const { files, result, progress } = this.props;
+        const { files, progress } = this.props;
 
         return (
             <div>
@@ -127,7 +126,7 @@ class App extends Component {
                     </Row>
                     <Row>
                         <Col xs={12}>
-                            { renderResult(result) }
+                            { renderResult(files.output) }
                         </Col>
                     </Row>
                 </Grid>
@@ -140,7 +139,6 @@ class App extends Component {
 App.propTypes = {
     dispatch: PropTypes.func.isRequired,
     files: PropTypes.object.isRequired,
-    result: PropTypes.array.isRequired,
     options: PropTypes.object.isRequired,
     progress: PropTypes.object.isRequired
 };
@@ -150,7 +148,6 @@ function mapStateToProps(state) {
     return {
         files,
         timestamp: files.timestamp,
-        result,
         options,
         progress
     };

@@ -3,10 +3,10 @@
 var path = require('path');
 var fs = require('fs-extra');
 var spawn = require('child_process').spawn;
-var helper = require('./helper');
+var helper = require('../helper');
 var template = require('lodash').template;
 var logger = require('winston');
-var seqLogoTemplate = fs.readFileSync(path.resolve(__dirname, './scripts/seqLogo.tpl'));
+var seqLogoTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/seqLogo.tpl'));
 
 logger.level = process.env.LOG_LEVEL || 'info';
 

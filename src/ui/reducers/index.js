@@ -16,7 +16,7 @@ const options = (state = {}, action) => {
     }
 };
 
-const files = (state = { list: [], alphabet: 'DNA', selection: [], timestamp: 0 }, action) => {
+const files = (state = { list: [], alphabet: 'DNA', selection: [], output: [], timestamp: 0 }, action) => {
     switch (action.type) {
         case ActionTypes.UPDATE_FILES: {
             return Object.assign(
@@ -25,23 +25,9 @@ const files = (state = { list: [], alphabet: 'DNA', selection: [], timestamp: 0 
                 {
                     list: action.filesState.files,
                     alphabet: action.filesState.alphabet,
+                    output: action.filesState.output,
                     timestamp: new Date().getTime()
                 }
-            );
-        }
-        default: {
-            return state;
-        }
-    }
-};
-
-const result = (state = {}, action) => {
-    switch (action.type) {
-        case ActionTypes.PUBLISH_RESULT: {
-            return Object.assign(
-                {},
-                state,
-                action.result
             );
         }
         default: {
@@ -82,6 +68,5 @@ const progress = (state = { active: false, message: '' }, action) => {
 export default combineReducers({
     options,
     files,
-    result,
     progress
 });

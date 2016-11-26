@@ -30,13 +30,13 @@ alphabet = NULL;
             stop("Unsupported alphabet.")
         }
         close(con);
-        PWMs[["<%= file.motifName %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=currentAlphabet,pseudoCount=0);
+        PWMs[["<%= file.name %>"]] = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=currentAlphabet,pseudoCount=0);
     <% } else if (file.type === 'pwm') { %>
 
-        PWMs[["<%= file.motifName %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
-        if(nrow(PWMs[["<%= file.motifName %>"]]) == length(DNA$chars)) {
+        PWMs[["<%= file.name %>"]] = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
+        if(nrow(PWMs[["<%= file.name %>"]]) == length(DNA$chars)) {
             currentAlphabet = DNA;
-        } else if(nrow(PWMs[["<%= file.motifName %>"]]) == length(ASN$chars)) {
+        } else if(nrow(PWMs[["<%= file.name %>"]]) == length(ASN$chars)) {
             currentAlphabet = ASN;
         } else {
             stop("The given PWM has an unkown size of rows.")
@@ -53,7 +53,7 @@ alphabet = NULL;
 
 motif_names = c(
 <% files.forEach((file, index) => { %>
-    "<%= file.motifName %>"<%= index < files.length -1 ? ',' : '' %>
+    "<%= file.name %>"<%= index < files.length -1 ? ',' : '' %>
 <% }); %>
 )
 

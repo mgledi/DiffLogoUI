@@ -7,7 +7,8 @@ var logger = require('winston');
 var helper = require('../helper');
 var initialState = require('./initialState.json');
 var fileValidator = require('../validation/validateFile');
-var seqLogoGenerator = require('../seqLogoGenerator');
+var seqLogoGenerator = require('../generators/seqLogoGenerator');
+var diffLogoTableGenerator = require('../generators/diffLogoTableGenerator');
 
 var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
 var FASTA_EXT = ['.fa', '.fasta'];
@@ -183,11 +184,18 @@ function addFilesToState(sessionId) {
         .then((state) => writeState(state, sessionId));
 }
 
-
 function generateSequenceLogos(sessionId, rsource) {
     logger.log('debug', 'State.generateSequenceLogos');
     return getState(sessionId)
         .then((state) => seqLogoGenerator(state, sessionId, rsource))
+        .then((state) => writeState(state, sessionId));
+}
+
+function generateDiffLogoTable(sessionId, fileList, rsource) {
+    logger.log('debug', 'State.generateDiffLogoTable');
+
+    return getState(sessionId)
+        .then((state) => diffLogoTableGenerator(state, fileList, sessionId, rsource))
         .then((state) => writeState(state, sessionId));
 }
 
@@ -216,5 +224,6 @@ module.exports = {
     addFiles: addFilesToState,
     removeFiles: removeFilesFormState,
     updateFiles: updateFilesState,
-    generateSequenceLogos: generateSequenceLogos
+    generateSequenceLogos: generateSequenceLogos,
+    generateDiffLogoTable: generateDiffLogoTable
 };
