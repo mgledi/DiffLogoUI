@@ -84,7 +84,7 @@ function updateState(obj) {
     var seqLogoFolder = helper.getSeqLogoFolder(sessionId);
     var updatedFiles = state.files.map((file) => {
         if( file.error === '') {
-            file.seqLogoFile = 'seqlogo_' + path.basename(file.path) + '.png';   
+            file.seqLogoFile = 'seqLogo_' + path.basename(file.path) + '.png';   
         }
         return file;
     });
