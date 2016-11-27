@@ -123,8 +123,9 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
 
 function getSeqLogoPopover(open, anchorEl, seqLogoFile, handleSeqLogoPopoverClose) {
     if(seqLogoFile === '' || seqLogoFile === undefined) {
-        return "";
+        return '';
     }
+
     return (
         <Popover
             animation={PopoverAnimationVertical}
@@ -144,6 +145,7 @@ function getPopover(open, anchorEl, inputValue, handlePopoverClose) {
     if(inputValue ==='' || inputValue === undefined) {
         return '';
     }
+
     return (
         <Popover
             animation={PopoverAnimationVertical}

@@ -31,9 +31,9 @@ motif_folder = "<%= motifFolder %>"
         <% } else if (file.type === 'pwm') { %>
 
             pwm = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
-            if(nrow(PWMs[["<%= file.motifName %>"]]) == length(DNA$chars)) {
+            if(nrow(pwm) == length(DNA$chars)) {
                 currentAlphabet = DNA;
-            } else if(nrow(PWMs[["<%= file.motifName %>"]]) == length(ASN$chars)) {
+            } else if(nrow(pwm) == length(ASN$chars)) {
                 currentAlphabet = ASN;
             } else {
                 stop("The given PWM has an unkown size of rows.")
