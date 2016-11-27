@@ -1,10 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {Grid, Row, Col} from 'react-flexbox-grid';
+import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Header from '../components/header';
 import Files from '../components/files';
 import Progress from '../components/progress';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
+import Footer from '../components/footer';
 
 import {
     getOptions,
@@ -117,6 +118,7 @@ class App extends Component {
             <div>
                 <Grid>
                     <Header />
+                    <br />
                     <Row>
                         <Col xs={ 12 } >
                             <Files
@@ -128,11 +130,14 @@ class App extends Component {
                             />
                         </Col>
                     </Row>
+                    <br />
                     <Row>
                         <Col xs={12}>
                             { renderResult(files.output) }
                         </Col>
                     </Row>
+                    <br />
+                    <Footer />
                 </Grid>
                 { progress.active ? <Progress message={ progress.message } /> : null }
             </div>
