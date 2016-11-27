@@ -58,7 +58,12 @@ function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
     if (file.seqLogoFile !== '') {
         var seqLogoFile = `files/seqLogo/${file.seqLogoFile}`;
         return (
-            <img onClick={(event) => handleSeqLogoPopoverOpen(event, index)} key={ `seqLogoThumbnail_${index}`} width='120' src={seqLogoFile}/>
+            <img 
+                onClick={(event) => handleSeqLogoPopoverOpen(event, index)} 
+                key={ `seqLogoThumbnail_${index}`} 
+                width='120' 
+                src={seqLogoFile} 
+                style={{cursor: 'pointer'}}/>
         );
     } else if ( file.error !== '') {
         return (
