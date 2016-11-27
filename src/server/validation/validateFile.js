@@ -1,20 +1,23 @@
 /* eslint-disable no-var */
 
 var logger = require('winston');
-var LineByLineReader = require('line-by-line');
+var lineReader = require('line-reader');
 var path = require('path');
 logger.level = process.env.LOG_LEVEL || 'info';
+
+function getLineLengthError(line, filePath) {
+    return `Error in line ${line}. All lines in ${path.basename(filePath)} must have the same length!`;
+}
 
 function validateAlignment(filePath) {
     logger.log('debug', 'Validating alignment: %s', filePath);
 
     return new Promise((resolve) => {
-        var lr = new LineByLineReader(filePath);
         var length = -1;
         var error = '';
         var row = 0;
 
-        lr.on('line', (line) => {
+        lineReader.eachLine(filePath, (line, last) => {
             // in an alignment file there can be scores
             var tfbs = line.split('\t')[0];
 
@@ -24,13 +27,16 @@ function validateAlignment(filePath) {
             } else if(tfbs.length === 0) {
                 // do nothing
             } else if(length !== tfbs.length) {
-                error = 'Error in line ' + row + '. All lines in ' + path.basename(filePath) + ' must have the same length!';
-                logger.log('debug', error);
+                error = getLineLengthError(row, filePath);
+                logger.log('debug', 'validateAlignment - line length error -%s', error);
+                resolve(error);
+                return false;
+            }
+
+            if (last) {
+                resolve(error);
             }
         });
-
-        lr.on('end', () => resolve(error));
-
     });
 }
 
@@ -38,82 +44,113 @@ function validateFasta(filePath) {
     logger.log('debug', 'Validating fasta: %s', filePath);
 
     return new Promise((resolve) => {
-        var lr = new LineByLineReader(filePath);
         var length = -1;
         var error = '';
         var row = 0;
         var tfbs = '';
 
-        lr.on('line', (line) => {
+        lineReader.eachLine(filePath, (line, last) => {
+            line = line.trim();
+
             row++;
 
-            if(line.trim().length === 0) {
-                // do nothing
-            } else if (line.startsWith('>') || line.startsWith(';')) {
-                if(tfbs.length > 0) {
-                    logger.log('debug', '%d: %s', row, tfbs);
-                    if(length === -1) {
-                        length = tfbs.length;
-                    } else if(length !== tfbs.length) {
-                        error = 'Error in line ' + (row - 1) + '. All lines in ' + path.basename(filePath) + ' must have the same length!';
-                        logger.log('debug', error);
+            if (line.length > 0) {
+                if (line.startsWith('>') || line.startsWith(';')) {
+                    if(tfbs.length > 0) {
+                        logger.log('debug', '%d: %s', row, tfbs);
+                        if(length === -1) {
+                            length = tfbs.length;
+                        } else if(length !== tfbs.length) {
+                            error = getLineLengthError(row - 1, filePath);
+                            logger.log('debug', 'validateFasta - line length error - %s', error);
+                            resolve(error);
+                            return false;
+                        }
                     }
-                }
 
-                tfbs = '';
-            } else {
-                // concatenate tfbs
-                tfbs += line.trim();
+                    tfbs = '';
+                } else {
+                    // concatenate tfbs
+                    tfbs += line;
+                }
+            }
+
+            if (last) {
+                if(length !== tfbs.length) {
+                    error = getLineLengthError(row - 1, filePath);
+                    logger.log('debug', 'validateFasta - line length error - %s', error);
+                }
+                resolve(error);
             }
         });
-
-        lr.on('end', () => resolve(error));
-
     });
+}
+
+function getSumForPwmColumn(alphabet, columnCount) {
+    return alphabet.reduce((sum, line) => (sum + Number(line[columnCount])), 0);
 }
 
 function validatePWM(filePath) {
     logger.log('debug', 'Validating PWM: %s', filePath);
 
     return new Promise((resolve) => {
-        var data = [];
-        var lr = new LineByLineReader(filePath);
+        var error = '';
+        var alphabet = [];
+        var lineCount = 0;
+        var lineLength = -1;
+        var columnCount = 0;
+        var totalColumns = 0;
+        var columnSum = 0;
 
-        lr.on('line', (line) => data.push(line.trim().split('\t')));
+        lineReader.eachLine(filePath, (line, last) => {
+            var lineSplit = line.trim().split('\t');
+            var splitLength = lineSplit.length;
+            var splitCount = 0;
 
-        lr.on('end', () => {
-            var error = '';
-            var alphabetSize = data.length;
-            var motifLength = data[0].length;
-            var m = 0, a = 0, val, sum;
+            lineCount++;
 
-            for(; m < motifLength; m++) {
-                sum = 0;
-                a = 0;
-                for(; a < alphabetSize; a++) {
-                    val = Number(data[a][m]);
-                    if(isNaN(val)) {
-                        error = 'Element ' + m + ' in line ' + a + ' is not a valid number.';
-                        logger.log('debug', error);
-                        resolve(error);
-                    } else {
-                        sum += val;
-                    }
-                }
+            if (lineLength > -1 && lineLength !== lineSplit.length) {
+                error = getLineLengthError(lineCount, filePath);
+                logger.log('debug', 'validatePWM - line length error - %s', error);
+                resolve(error);
+                return false;
+            }
 
-                if (Math.abs(1 - sum) > 0.000001) {
-                    error = 'Elements in column ' + m + ' sum not to 1.0. ('+sum+')';
-                    logger.log('debug', error);
-                    resolve(error);
+            for (; splitCount < splitLength; splitCount++) {
+                if (isNaN(lineSplit[splitCount])) {
+                    error = `Element ${splitCount + 1} in line ${lineCount} is not a valid number.`;
+                    break;
                 }
             }
 
-            resolve(error);
+            if (error !== '') {
+                logger.log('debug', 'validatePWM - NAN error - %s', error);
+                resolve(error);
+                return false;
+            }
+
+            lineLength = lineSplit.length;
+            alphabet.push(lineSplit);
+            if (last) {
+                totalColumns = lineSplit.length;
+
+                for (; columnCount <= totalColumns; columnCount++) {
+                    columnSum = getSumForPwmColumn(alphabet, columnCount);
+                    if (Math.abs(1 - columnSum) > 0.000001) {
+                        error = `Elements in column ${columnCount + 1} sum not to 1.0 (${columnSum})`;
+                        logger.log('debug', 'validatePWM - sum error - %s', error);
+                        resolve(error);
+                    }
+                }
+
+                resolve(error);
+            }
         });
     });
 }
 
-function validate(file) {
+module.exports = function validate(file) {
+    const error = 'Unknown filetype. Please see help for supported file types';
 
     switch(file.type) {
         case 'alignment':
@@ -123,10 +160,7 @@ function validate(file) {
         case 'pwm':
             return validatePWM(file.path);
         default:
-            return Promise.resolve('Unknown filetype. Please see help for supported file types');
+            logger.log('debug', 'validate - unknow filetype - %s', error);
+            return Promise.resolve(error);
     }
 }
-
-module.exports = {
-    validate: validate
-};

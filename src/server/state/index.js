@@ -6,7 +6,7 @@ var _ = require('lodash');
 var logger = require('winston');
 var helper = require('../helper');
 var initialState = require('./initialState.json');
-var fileValidator = require('../validation/validateFile');
+var validate = require('../validation/validateFile');
 var seqLogoGenerator = require('../generators/seqLogoGenerator');
 var diffLogoTableGenerator = require('../generators/diffLogoTableGenerator');
 
@@ -124,7 +124,7 @@ function filterNewFiles(sessionId, files) {
 
 function validateFiles(files) {
     var promiseMap = files.map((file) => {
-        return fileValidator.validate(file)
+        return validate(file)
             .then((error) => {
                 file.error = error;
                 file.validated = true;

@@ -1,7 +1,7 @@
 import path from 'path';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import { validateAlignment } from '../../../src/server/validation/validateFile';
+import validate from '../../../src/server/validation/validateFile';
 
 chai.use(chaiAsPromised);
 
@@ -13,16 +13,31 @@ const alignmentErrorLastLinePath = path.join(rootFolder, 'test', 'assets', 'alli
 
 describe('Validate: Alignment', () => {
     it('should have empty error if file is valid', () => {
-        return expect(validateAlignment(alignmentCorrectPath)).to.eventually.be.empty;
+        const file = {
+            type: 'alignment',
+            path: alignmentCorrectPath
+        };
+
+        return expect(validate(file)).to.eventually.be.empty;
     });
 
     it('should have specific error if alignments have different length', () => {
-        return expect(validateAlignment(alignmentErrorFirstLinePath))
+        const file = {
+            type: 'alignment',
+            path: alignmentErrorFirstLinePath
+        };
+
+        return expect(validate(file))
             .to.eventually.equal('Error in line 2. All lines in allignment_error_first_line.al must have the same length!');
     });
 
     it('should fail if last alignment has different length', () => {
-        return expect(validateAlignment(alignmentErrorLastLinePath))
+        const file = {
+            type: 'alignment',
+            path: alignmentErrorLastLinePath
+        };
+
+        return expect(validate(file))
             .to.eventually.equal('Error in line 3. All lines in allignment_error_last_line.al must have the same length!');
     });
 
