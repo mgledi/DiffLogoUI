@@ -84,7 +84,11 @@ class App extends Component {
 
     deleteFiles(selected) {
         const { dispatch, files } = this.props;
-        const filtered = files.list.filter((file, index) => selected.includes(index));
+        let filtered = files.list.filter((file, index) => selected.includes(index));
+
+        if (filtered.length === 0) {
+            filtered = [].concat(files.list);
+        }
 
         dispatch(deleteFiles({ files: filtered }));
     }
