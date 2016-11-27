@@ -262,15 +262,22 @@ class Files extends Component {
         }
 
         if (files.filter((file) => file.error !== '').length > 0) {
-            text.push('Some files can not be parsed. Solve errors first.');
+            text.push('Some files can not be parsed. Only valid files will be processed.');
         }
 
         return text;
     }
 
-    disableStartButton() {
+    disableStartButton(selected) {
         const { files } = this.props;
-        return files.filter((file) => file.error === '').length < 2;
+        if( selected.length == 0) {
+            return files.filter((file) => file.error === '').length < 2;
+        } else {
+            return files.filter((file, index, array) => file.error !== '' && selected.indexOf(index) > -1).length > 0 ||
+                   files.filter((file, index, array) => file.error === '' && selected.indexOf(index) > -1).length < 2;
+        }
+        
+        
     }
 
 
@@ -297,7 +304,7 @@ class Files extends Component {
                     <RaisedButton
                         label="Start"
                         primary={ true }
-                        disabled={ this.disableStartButton() }
+                        disabled={ this.disableStartButton(selected) }
                         style={ styles.startButton }
                         onClick={ this.startAnalysis }
                     />
