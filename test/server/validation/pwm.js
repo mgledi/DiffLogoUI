@@ -7,11 +7,11 @@ chai.use(chaiAsPromised);
 
 const { describe, it } = global;
 const rootFolder = process.cwd();
-const pwmCorrectPath = path.join(rootFolder, 'test', 'assets', 'pwm_correct.al');
-const pwmSumErrorPath = path.join(rootFolder, 'test', 'assets', 'pwm_sum_error.al');
-const pwmErrorFirstLinePath = path.join(rootFolder, 'test', 'assets', 'pwm_error_first_line.al');
-const pwmErrorLastLinePath = path.join(rootFolder, 'test', 'assets', 'pwm_error_last_line.al');
-const pwmNanErrorPath = path.join(rootFolder, 'test', 'assets', 'pwm_nan_error.al');
+const pwmCorrectPath = path.join(rootFolder, 'test', 'assets', 'pwm_correct.pwm');
+const pwmSumErrorPath = path.join(rootFolder, 'test', 'assets', 'pwm_sum_error.pwm');
+const pwmErrorFirstLinePath = path.join(rootFolder, 'test', 'assets', 'pwm_error_first_line.pwm');
+const pwmErrorLastLinePath = path.join(rootFolder, 'test', 'assets', 'pwm_error_last_line.pwm');
+const pwmNanErrorPath = path.join(rootFolder, 'test', 'assets', 'pwm_nan_error.pwm');
 
 describe('Validate: PWM', () => {
     it('should have empty error if file is valid', () => {
@@ -40,7 +40,7 @@ describe('Validate: PWM', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Error in line 2. All lines in pwm_error_first_line.al must have the same length!');
+            .to.eventually.equal('Error in line 2. All lines in pwm_error_first_line.pwm must have the same length!');
     });
 
     it('should fail if last line has different length', () => {
@@ -50,7 +50,7 @@ describe('Validate: PWM', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Error in line 4. All lines in pwm_error_last_line.al must have the same length!');
+            .to.eventually.equal('Error in line 4. All lines in pwm_error_last_line.pwm must have the same length!');
     });
 
     it('should throw error if value in line not a number', () => {
