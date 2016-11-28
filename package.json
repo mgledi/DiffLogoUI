@@ -13,7 +13,7 @@
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "postbuild": "sh ./build.sh"
   },
-  "author": "Jörg Weber",
+  "author": "Jörg Weber, Martin Nettling",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.15.2",

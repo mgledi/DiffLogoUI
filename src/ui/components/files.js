@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
-import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import {Table, TableBody, TableHeader, TableFooter, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
@@ -42,7 +42,6 @@ const styles = {
     rowValid: {
         border: 'none'
     }
-
 };
 
 function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
@@ -282,21 +281,30 @@ class Files extends Component {
         return (
             <Card>
                 <CardText>
-                    <DropZone onDrop={ uploadFiles } />
+                    
                     { renderMessages(this.getMessage()) }
                     { renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles) }
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
                 <CardActions>
-                    <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
-                    <RaisedButton
-                        label="Start"
-                        primary={ true }
-                        disabled={ this.disableStartButton(selected) }
-                        style={ styles.startButton }
-                        onClick={ this.startAnalysis }
-                    />
+                <div style={{width:'100%',height:'50px'}}>
+                    <div style={{width:'20%', float:'left'}}>
+                        <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
+                    </div>
+                    <div style={{width:'50%', float:'left'}}>
+                        <DropZone onDrop={ uploadFiles }/>
+                    </div>
+                    <div style={{width:'20%', float:'left'}}>
+                        <RaisedButton
+                            label="Start"
+                            primary={ true }
+                            disabled={ this.disableStartButton(selected) }
+                            style={ styles.startButton }
+                            onClick={ this.startAnalysis }
+                        />
+                    </div>
+                </div>
                 </CardActions>
             </Card>
         );

@@ -5,8 +5,9 @@ const styles = {
     dropZone: {
         display: 'flex',
         width: '100%',
-        height: '100px',
-        border: 'dashed 1px #ccc',
+        height: '50px',
+        border: '2px dashed #666',
+        color: '#666',
         justifyContent: 'space-around'
     },
     helpText: {
@@ -25,7 +26,7 @@ class DropZone extends Component {
         return (
             <Dropzone onDrop={onDrop} style={ styles.dropZone } >
                 <div style={ styles.helpText }>
-                    Drag'n'Drop your files here or click to open file dialog.
+                    Drop your motif files here, or click to select files to upload. 
                 </div>
             </Dropzone>
         );
