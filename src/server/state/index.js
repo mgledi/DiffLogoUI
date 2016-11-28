@@ -13,6 +13,8 @@ var diffLogoTableGenerator = require('../generators/diffLogoTableGenerator');
 var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
 var FASTA_EXT = ['.fa', '.fasta'];
 var PWM_EXT = ['.pwm'];
+var PFM_EXT = ['.pfm'];
+var HOMEr_EXT = ['.homer' , '.hom'];
 
 logger.level = process.env.LOG_LEVEL || 'info';
 
@@ -86,8 +88,12 @@ function getUploadFolderContent(sessionId) {
                         fileType = 'alignment';
                     } else if (PWM_EXT.indexOf(extension) > -1) {
                         fileType = 'pwm';
+                    } else if (PFM_EXT.indexOf(extension) > -1) {
+                        fileType = 'pfm';
                     } else if (FASTA_EXT.indexOf(extension) > -1) {
                         fileType = 'fasta';
+                    } else if (HOMER_EXT.indexOf(extension) > -1) {
+                        fileType = 'homer';
                     }
 
                     return {

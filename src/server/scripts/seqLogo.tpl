@@ -28,9 +28,10 @@ motif_folder = "<%= motifFolder %>"
             }
             close(con);
             pwm = getPwmFromAlignment(lines[grep("^[^>]",lines)],alphabet=currentAlphabet,pseudoCount=0);
-        <% } else if (file.type === 'pwm') { %>
+        <% } else if (file.type === 'pwm' || file.type === 'pfm') { %>
 
             pwm = as.matrix(read.delim(paste(motif_folder, "/", "<%= file.originalname %>", sep=""), header=F))
+            pwm = pwm / apply(pwm,2,sum); # normalize pwm
             if(nrow(pwm) == length(DNA$chars)) {
                 currentAlphabet = DNA;
             } else if(nrow(pwm) == length(ASN$chars)) {

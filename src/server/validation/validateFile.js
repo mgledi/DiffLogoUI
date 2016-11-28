@@ -98,14 +98,13 @@ function validatePWM(filePath) {
         var alphabet = [];
         var lineCount = 0;
         var lineLength = -1;
-        var columnCount = 0;
+        var m = 0;
         var totalColumns = 0;
         var columnSum = 0;
 
         lineReader.eachLine(filePath, (line, last) => {
             var lineSplit = line.trim().split('\t');
             var splitLength = lineSplit.length;
-            var splitCount = 0;
 
             lineCount++;
 
@@ -116,9 +115,9 @@ function validatePWM(filePath) {
                 return false;
             }
 
-            for (; splitCount < splitLength; splitCount++) {
-                if (isNaN(lineSplit[splitCount])) {
-                    error = `Element ${splitCount + 1} in line ${lineCount} is not a valid number.`;
+            for (m = 0; m < splitLength; m++) {
+                if (isNaN(lineSplit[m])) {
+                    error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
                     break;
                 }
             }
@@ -134,15 +133,71 @@ function validatePWM(filePath) {
             if (last) {
                 totalColumns = lineSplit.length;
 
-                for (; columnCount <= totalColumns; columnCount++) {
-                    columnSum = getSumForPwmColumn(alphabet, columnCount);
+                for (m = 0; m <= totalColumns; m++) {
+                    columnSum = getSumForPwmColumn(alphabet, m);
                     if (Math.abs(1 - columnSum) > 0.000001) {
-                        error = `Elements in column ${columnCount + 1} sum not to 1.0 (${columnSum})`;
+                        error = `Elements in column ${m + 1} sum not to 1.0 (${columnSum})`;
                         logger.log('debug', 'validatePWM - sum error - %s', error);
                         resolve(error);
                     }
                 }
 
+                resolve(error);
+            }
+        });
+    });
+}
+
+function validatePFM(filePath) {
+    logger.log('debug', 'Validating PFM: %s', filePath);
+
+    return new Promise((resolve) => {
+        var error = '';
+        var alphabet = [];
+        var lineCount = 0;
+        var lineLength = -1;
+        var m = 0;
+        var totalColumns = 0;
+        var columnSum = 0;
+
+        lineReader.eachLine(filePath, (line, last) => {
+            var lineSplit = line.trim().split('\t');
+            var splitLength = lineSplit.length;
+
+            lineCount++;
+
+            if (lineLength > -1 && lineLength !== lineSplit.length) {
+                error = getLineLengthError(lineCount, filePath);
+                logger.log('debug', 'validatePFM - line length error - %s', error);
+                resolve(error);
+                return false;
+            }
+
+            // try parsing all numbers
+            for (m=0; m < splitLength; m++) {
+                if (isNaN(lineSplit[m])) {
+                    error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
+                    break;
+                }
+            }
+
+            if (error !== '') {
+                logger.log('debug', 'validatePFM - NAN error - %s', error);
+                resolve(error);
+                return false;
+            }
+
+            lineLength = lineSplit.length;
+            alphabet.push(lineSplit);
+            if (last) {
+                for (m=0; m <= lineLength; m++) {
+                    columnSum = getSumForPwmColumn(alphabet, m);
+                    if (columnSum < 1) {
+                        error = `At least one element in column ${m + 1} must be larger than 0.`;
+                        logger.log('debug', 'validatePFM - sum error - %s', error);
+                        resolve(error);
+                    }
+                }
                 resolve(error);
             }
         });
@@ -159,6 +214,8 @@ module.exports = function validate(file) {
             return validateFasta(file.path);
         case 'pwm':
             return validatePWM(file.path);
+        case 'pfm':
+            return validatePFM(file.path);
         default:
             logger.log('debug', 'validate - unknow filetype - %s', error);
             return Promise.resolve(error);
