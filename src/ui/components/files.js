@@ -9,16 +9,6 @@ import TextField from 'material-ui/TextField';
 import DropZone from './dropzone';
 
 const styles = {
-    filesInput: {
-        cursor: 'pointer',
-        position: 'absolute',
-        top: 0,
-        bottom: 0,
-        right: 0,
-        left: 0,
-        width: '100%',
-        opacity: 0
-    },
     startButton: {
         float: 'right'
     },
@@ -56,26 +46,29 @@ const styles = {
 };
 
 function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
-    if (file.seqLogoFile !== '') {
-        var seqLogoFile = `files/seqLogo/${file.seqLogoFile}`;
-        return (
-            <img 
-                onClick={(event) => handleSeqLogoPopoverOpen(event, index)} 
-                key={ `seqLogoThumbnail_${index}`} 
-                width='120' 
-                src={seqLogoFile} 
-                style={{cursor: 'pointer'}}/>
-        );
-    } else if ( file.error !== '') {
+    if (file.error !== '') {
         return (
             <span style={styles.textError} >Can not parse file: {file.error}</span>
-        );      
-    } else {
-        return (
-            '...'
-        )
+        );
     }
-    
+
+    if (file.seqLogoFile !== '') {
+        const seqLogoFile = `files/seqLogo/${file.seqLogoFile}`;
+
+        return (
+            <img
+                onClick={(event) => handleSeqLogoPopoverOpen(event, index)}
+                key={ `seqLogoThumbnail_${index}`}
+                width='120'
+                src={seqLogoFile}
+                style={{cursor: 'pointer'}}
+            />
+        );
+    }
+
+    return (
+        '...'
+    );
 }
 
 function renderMessages(messages) {
@@ -128,7 +121,7 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
 }
 
 function getSeqLogoPopover(open, anchorEl, seqLogoFile, handleSeqLogoPopoverClose) {
-    if(seqLogoFile === '' || seqLogoFile === undefined) {
+    if(seqLogoFile === '' || seqLogoFile === void 0) {
         return '';
     }
 
@@ -148,7 +141,7 @@ function getSeqLogoPopover(open, anchorEl, seqLogoFile, handleSeqLogoPopoverClos
 }
 
 function getPopover(open, anchorEl, inputValue, handlePopoverClose) {
-    if(inputValue ==='' || inputValue === undefined) {
+    if(inputValue === '' || inputValue === void 0) {
         return '';
     }
 
@@ -271,16 +264,14 @@ class Files extends Component {
 
     disableStartButton(selected) {
         const { files } = this.props;
-        if( selected.length == 0) {
-            return files.filter((file) => file.error === '').length < 2;
-        } else {
-            return files.filter((file, index, array) => file.error !== '' && selected.indexOf(index) > -1).length > 0 ||
-                   files.filter((file, index, array) => file.error === '' && selected.indexOf(index) > -1).length < 2;
-        }
-        
-        
-    }
 
+        if (selected.length === 0) {
+            return files.filter((file) => file.error === '').length < 2;
+        }
+
+        return files.filter((file, index) => file.error !== '' && selected.indexOf(index) > -1).length > 0 ||
+               files.filter((file, index) => file.error === '' && selected.indexOf(index) > -1).length < 2;
+    }
 
     render() {
         const { files, uploadFiles } = this.props;
