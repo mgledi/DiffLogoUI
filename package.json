@@ -7,8 +7,6 @@
     "clean": "rimraf ./files ./sessions",
     "test": "mocha --require ./test/mocha_runner ./test/**/*.js",
     "test-watch": "npm test -- --watch --watch-extension js",
-    "predev": "rimraf ./files ./sessions",
-    "dev": "NODE_ENV=development LOG_LEVEL=debug node server.js",
     "prebuild": "rimraf ./dist",
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "postbuild": "sh ./build.sh"
