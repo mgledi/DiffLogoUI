@@ -87,9 +87,10 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
             <TableHeader adjustForCheckbox={ true } displaySelectAll= { false }>
                 <TableRow selectable= {false }>
-                    <TableHeaderColumn width="150px">Name in DiffLogo</TableHeaderColumn>
-                    <TableHeaderColumn width="150px">Filename</TableHeaderColumn>
+                    <TableHeaderColumn width="20%">Name in DiffLogo</TableHeaderColumn>
+                    <TableHeaderColumn width="20%">Filename</TableHeaderColumn>
                     <TableHeaderColumn>Sequence logo</TableHeaderColumn>
+                    <TableHeaderColumn width="10%">File type</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={ false } >
@@ -98,9 +99,8 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                         <TableRow
                             key={ index }
                             selected={ selected.includes(index) }
-                            selectable={ file.type !== 'unknown' }
                             style={ file.error !== '' ? styles.rowError : styles.rowValid}>
-                            <TableRowColumn width="150px">
+                            <TableRowColumn width="20%">
                                 <IconButton
                                     iconClassName="material-icons"
                                     iconStyle={ styles.smallIcon }
@@ -109,8 +109,9 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                                 >edit</IconButton>
                                 { file.name }
                             </TableRowColumn>
-                            <TableRowColumn width="150px">{ file.originalname }</TableRowColumn>
+                            <TableRowColumn width="20%">{ file.originalname }</TableRowColumn>
                             <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) } </TableRowColumn>
+                            <TableRowColumn width="10%">auto detect</TableRowColumn>
                         </TableRow>
                     );
                 })};
