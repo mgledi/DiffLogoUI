@@ -4,8 +4,10 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import {Table, TableBody, TableHeader, TableFooter, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Card, CardText, CardActions} from 'material-ui/Card';
-import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
+import {Popover, PopoverAnimationVertical} from 'material-ui/Popover'
 import TextField from 'material-ui/TextField';
+import SelectField from 'material-ui/SelectField';
+import MenuItem from 'material-ui/MenuItem';
 import DropZone from './dropzone';
 
 const styles = {
@@ -111,7 +113,21 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                             </TableRowColumn>
                             <TableRowColumn width="20%">{ file.originalname }</TableRowColumn>
                             <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) } </TableRowColumn>
-                            <TableRowColumn width="10%">auto detect</TableRowColumn>
+                            <TableRowColumn width="120px">
+                                <div>
+                                    <SelectField 
+                                        onChange={(event, index, value) => file.type = value}
+                                        value={file.type}
+                                        autoWidth={true}
+                                        style={{fontSize:'14px', width:'100px', thumbOnColor: 'yellow', fill: '#000000'}}>
+                                        <MenuItem value={'alignment'} primaryText="alignment" />
+                                        <MenuItem value={'fasta'} primaryText="fasta" />
+                                        <MenuItem value={'homer'} primaryText="homer" />
+                                        <MenuItem value={'pfm'} primaryText="pfm" />
+                                        <MenuItem value={'pwm'} primaryText="pwm" />
+                                    </SelectField>
+                                </div>
+                            </TableRowColumn>
                         </TableRow>
                     );
                 })};
