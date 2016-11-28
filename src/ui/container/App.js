@@ -77,8 +77,7 @@ class App extends Component {
         dispatch(renameFile(files.list, index, name));
     }
 
-    uploadFiles(event) {
-        const { files } = event.target;
+    uploadFiles(files) {
         const { dispatch } = this.props;
         dispatch(uploadFiles(files));
     }

@@ -6,6 +6,7 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
+import DropZone from './dropzone';
 
 const styles = {
     filesInput: {
@@ -290,17 +291,14 @@ class Files extends Component {
         return (
             <Card>
                 <CardText>
+                    <DropZone onDrop={ uploadFiles } />
                     { renderMessages(this.getMessage()) }
                     { renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles) }
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
-                    
                 </CardText>
                 <CardActions>
                     <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
-                    <FlatButton label="Add Files" labelPosition="before">
-                        <input type="file" multiple onChange={ uploadFiles } style={styles.filesInput}/>
-                    </FlatButton>
                     <RaisedButton
                         label="Start"
                         primary={ true }
