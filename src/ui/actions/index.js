@@ -26,6 +26,29 @@ export const getFiles = () => {
     };
 };
 
+export const changeFileType = (files, type, index) => {
+    files[index].type = type;
+    files[index].error = '';
+    files[index].validated = false;
+    files[index].seqLogoFile = '';
+
+    return (dispatch) => {
+        fetch('/files', {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify(files),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+            .then((response) => response.json())
+            .then((state) => {
+                dispatch(updateFiles(state))
+                generateSeqLogos(dispatch);
+            });
+    };
+};
+
 export const renameFile = (files, name, index) => {
     files[index].name = name;
 
@@ -39,7 +62,9 @@ export const renameFile = (files, name, index) => {
             })
         })
             .then((response) => response.json())
-            .then((state) => dispatch(updateFiles(state)));
+            .then((state) => {
+                dispatch(updateFiles(state))
+            });
     };
 };
 

@@ -84,7 +84,7 @@ function renderMessages(messages) {
     });
 }
 
-function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpen, setSelectedFiles) {
+function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpen, setSelectedFiles, handleChangeFileType) {
     return (
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
             <TableHeader adjustForCheckbox={ true } displaySelectAll= { false }>
@@ -116,7 +116,7 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                             <TableRowColumn width="120px">
                                 <div>
                                     <SelectField 
-                                        onChange={(event, index, value) => file.type = value}
+                                        onChange={(event, selectedIdx, value) => handleChangeFileType(value, index)}
                                         value={file.type}
                                         autoWidth={true}
                                         style={{fontSize:'14px', width:'100px', thumbOnColor: 'yellow', fill: '#000000'}}>
@@ -199,6 +199,7 @@ class Files extends Component {
         this.handlePopoverClose = this.handlePopoverClose.bind(this);
         this.handleSeqLogoPopoverOpen = this.handleSeqLogoPopoverOpen.bind(this);
         this.handleSeqLogoPopoverClose = this.handleSeqLogoPopoverClose.bind(this);
+        this.handleChangeFileType = this.handleChangeFileType.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
@@ -233,13 +234,21 @@ class Files extends Component {
     handlePopoverClose() {
         const { renameFile } = this.props;
         const { fileIndex } = this.state;
-
+        console.log("renameFile " + fileIndex);
         renameFile(fileIndex, this.refs.rename.input.value);
         this.setState({
             popoverOpen: false,
             anchorEl: null,
             fileIndex: -1
         });
+    }
+
+    handleChangeFileType(newType, index) {
+        const { files, changeFileType, renameFile } = this.props;
+        console.log("Propagate event. handleChangeFileType => changeFileType " + newType);
+        
+        //renameFile(index, newType);
+        changeFileType(newType, index);
     }
 
     setSelectedFiles(selected) {
@@ -298,9 +307,8 @@ class Files extends Component {
         return (
             <Card>
                 <CardText>
-                    
                     { renderMessages(this.getMessage()) }
-                    { renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles) }
+                    { renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType) }
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
@@ -333,6 +341,7 @@ Files.propTypes = {
     uploadFiles: PropTypes.func.isRequired,
     deleteFiles: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
+    changeFileType: PropTypes.func.isRequired,
     startAnalysis: PropTypes.func.isRequired
 };
 

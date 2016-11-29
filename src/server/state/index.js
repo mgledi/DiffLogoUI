@@ -122,6 +122,16 @@ function filterNewFiles(sessionId, files) {
         });
 }
 
+function validateFile(files, index) {
+    logger.log('debug', 'State.validateFile');
+    return validate(files[index])
+        .then((error) => {
+            file.error = error;
+            file.validated = true;
+            return Promise.resolve(file);
+        });
+}
+
 function validateFiles(files) {
     var promiseMap = files.map((file) => {
         return validate(file)

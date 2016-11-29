@@ -11,6 +11,7 @@ import {
     getOptions,
     getFiles,
     renameFile,
+    changeFileType,
     uploadFiles,
     deleteFiles,
     editAnalysis,
@@ -58,6 +59,7 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.renameFile = this.renameFile.bind(this);
+        this.changeFileType = this.changeFileType.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
         this.editAnalysis = this.editAnalysis.bind(this);
@@ -73,8 +75,12 @@ class App extends Component {
 
     renameFile(name, index) {
         const { dispatch, files } = this.props;
-
         dispatch(renameFile(files.list, index, name));
+    }
+
+    changeFileType(newType, index) {
+        const { dispatch, files } = this.props;
+        dispatch(changeFileType(files.list, newType, index));
     }
 
     uploadFiles(files) {
@@ -122,6 +128,7 @@ class App extends Component {
                         <Col xs={ 12 } >
                             <Files
                                 files={ files.list }
+                                changeFileType = { this.changeFileType }
                                 renameFile = { this.renameFile }
                                 uploadFiles = { this.uploadFiles }
                                 deleteFiles = { this.deleteFiles }
