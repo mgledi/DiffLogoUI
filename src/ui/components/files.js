@@ -7,6 +7,7 @@ import {Card, CardText, CardActions} from 'material-ui/Card';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
 import DropZone from './dropzone';
+import {Row, Col} from 'react-flexbox-grid';
 
 const styles = {
     startButton: {
@@ -289,14 +290,14 @@ class Files extends Component {
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
                 <CardActions>
-                <div style={{width:'100%',height:'50px'}}>
-                    <div style={{width:'20%', float:'left'}}>
+                <Row around="xs" center="xs">
+                    <Col xs={2}>
                         <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
-                    </div>
-                    <div style={{width:'50%', float:'left'}}>
+                    </Col>
+                    <Col xs>
                         <DropZone onDrop={ uploadFiles }/>
-                    </div>
-                    <div style={{width:'20%', float:'left'}}>
+                    </Col>
+                    <Col xs={2}>
                         <RaisedButton
                             label="Start"
                             primary={ true }
@@ -304,8 +305,8 @@ class Files extends Component {
                             style={ styles.startButton }
                             onClick={ this.startAnalysis }
                         />
-                    </div>
-                </div>
+                    </Col>
+                </Row>
                 </CardActions>
             </Card>
         );
