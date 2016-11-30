@@ -1,9 +1,9 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import {Grid, Row, Col} from 'react-flexbox-grid';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
 import Header from '../components/header';
 import Files from '../components/files';
+import ResultTable from '../components/resultTable';
 import Progress from '../components/progress';
 import Footer from '../components/footer';
 
@@ -16,43 +16,6 @@ import {
     editAnalysis,
     startAnalysis
 } from '../actions';
-
-function renderResult(files) {
-    if(files.length === 0) {
-        return null;
-    } else {
-        let resultHTML = [];
-        files.reverse().forEach(function(entry, fileHMTL) {
-            resultHTML.push(
-                <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
-            );
-        });
-        return (
-            <Card>
-                <CardHeader title="Your results"/>
-                <CardText>
-                    {resultHTML}
-                </CardText>
-            </Card>
-        );
-    }
-
-    const resultHTML = [];
-    result.fileList.forEach((entry) => {
-        resultHTML.push(
-            <div><a href={'/files/result/' + entry} target='_blank'>{entry}</a></div>
-        );
-    });
-
-    return (
-        <Card>
-            <CardHeader title="Your results"/>
-            <CardText>
-                {resultHTML}
-            </CardText>
-        </Card>
-    );
-}
 
 class App extends Component {
     constructor(props) {
@@ -132,7 +95,7 @@ class App extends Component {
                     <br />
                     <Row>
                         <Col xs={12}>
-                            { renderResult(files.output) }
+                            <ResultTable files= { files.output } />
                         </Col>
                     </Row>
                     <br />

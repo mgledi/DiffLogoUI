@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import FlatButton from 'material-ui/FlatButton';
 import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
-import {Table, TableBody, TableHeader, TableFooter, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
+import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
