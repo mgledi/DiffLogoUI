@@ -130,6 +130,11 @@ function filterNewFiles(sessionId, files) {
 
 function validateFiles(files) {
     var promiseMap = files.map((file) => {
+
+        if (file.validated) {
+            return Promise.resolve(file);
+        }
+
         return validate(file)
             .then((error) => {
                 file.error = error;
@@ -204,22 +209,25 @@ function generateDiffLogoTable(sessionId, fileList, rsource) {
         .then((state) => writeState(state, sessionId));
 }
 
-function removeFilesFormState(sessionId, files) {
+function removeFilesFromState(sessionId, files) {
     return deleteFiles(sessionId, files)
         .then(() => updateStateWithoutFiles(sessionId, files))
         .then((state) => writeState(state, sessionId));
 }
 
 function updateFilesState(sessionId, files) {
-    return getState(sessionId)
-        .then((state) => {
-            var newState = Object.assign(
-                {},
-                state,
-                { files: [].concat(files) }
-            );
+    return validateFiles(files)
+        .then((fileList) => {
+            return getState(sessionId)
+                .then((state) => {
+                    var newState = Object.assign(
+                        {},
+                        state,
+                        { files: [].concat(fileList) }
+                    );
 
-            return Promise.resolve(newState);
+                    return Promise.resolve(newState);
+                });
         })
         .then((state) => writeState(state, sessionId));
 }
@@ -227,7 +235,7 @@ function updateFilesState(sessionId, files) {
 module.exports = {
     get: getState,
     addFiles: addFilesToState,
-    removeFiles: removeFilesFormState,
+    removeFiles: removeFilesFromState,
     updateFiles: updateFilesState,
     generateDiffLogoTable: generateDiffLogoTable,
     generateSeqLogos: generateSeqLogos

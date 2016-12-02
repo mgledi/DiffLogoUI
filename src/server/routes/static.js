@@ -12,7 +12,6 @@ module.exports = function defaultRouter(middleware, PRODUCTION) {
             res.write(middleware.fileSystem.readFileSync(path.join(process.cwd(), 'dist/ui/index.html')));
             res.end();
         }
-
     });
 
     router.get('/options', (req, res) => {
