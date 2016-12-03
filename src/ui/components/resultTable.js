@@ -27,7 +27,7 @@ class ResultTable extends Component {
                             </TableRow>
                         </TableHeader>
                         <TableBody displayRowCheckbox={ false }>
-                            { files.map((file, index) => {
+                            { files.reverse().map((file, index) => {
                                 return (
                                     <TableRow
                                         key={ index }
