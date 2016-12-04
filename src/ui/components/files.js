@@ -123,6 +123,7 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                             <TableRowColumn width="120px">
                                 <div>
                                     <SelectField
+                                        onClick={(event) => event.stopPropagation()}
                                         onChange={(event, selectedIdx, value) => handleChangeFileType(value, index)}
                                         value={file.type}
                                         autoWidth={true}
