@@ -66,7 +66,7 @@ fileRoutes.get('/seqLogo/:name', (req, res) => {
         root: path.join(process.cwd(), 'files', sessionId, 'seqLogos'),
         dotfiles: 'deny'
     };
-    console.log(options.root + "/"+fileName);
+
     res.sendFile(fileName, options, (err) => {
         if (err) {
             res.status(err.status).end();

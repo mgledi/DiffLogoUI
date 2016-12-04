@@ -4,7 +4,7 @@ import RaisedButton from 'material-ui/RaisedButton';
 import IconButton from 'material-ui/IconButton';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {Card, CardText, CardActions} from 'material-ui/Card';
-import {Popover, PopoverAnimationVertical} from 'material-ui/Popover'
+import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
 import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
@@ -44,6 +44,12 @@ const styles = {
     },
     rowValid: {
         border: 'none'
+    },
+    typeSelect: {
+        fontSize: '14px',
+        width: '100px',
+        thumbOnColor: 'yellow',
+        fill: '#000000'
     }
 };
 
@@ -116,11 +122,11 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                             <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) } </TableRowColumn>
                             <TableRowColumn width="120px">
                                 <div>
-                                    <SelectField 
+                                    <SelectField
                                         onChange={(event, selectedIdx, value) => handleChangeFileType(value, index)}
                                         value={file.type}
                                         autoWidth={true}
-                                        style={{fontSize:'14px', width:'100px', thumbOnColor: 'yellow', fill: '#000000'}}>
+                                        style={ styles.typeSelect }>
                                         <MenuItem value={'alignment'} primaryText="alignment" />
                                         <MenuItem value={'fasta'} primaryText="fasta" />
                                         <MenuItem value={'homer'} primaryText="homer" />
@@ -235,7 +241,7 @@ class Files extends Component {
     handlePopoverClose() {
         const { renameFile } = this.props;
         const { fileIndex } = this.state;
-        console.log("renameFile " + fileIndex);
+
         renameFile(fileIndex, this.refs.rename.input.value);
         this.setState({
             popoverOpen: false,
@@ -245,10 +251,8 @@ class Files extends Component {
     }
 
     handleChangeFileType(newType, index) {
-        const { files, changeFileType, renameFile } = this.props;
-        console.log("Propagate event. handleChangeFileType => changeFileType " + newType);
-        
-        //renameFile(index, newType);
+        const { changeFileType } = this.props;
+
         changeFileType(newType, index);
     }
 

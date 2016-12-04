@@ -26,6 +26,15 @@ export const getFiles = () => {
     };
 };
 
+const generateSeqLogos = (dispatch) => {
+    fetch('/seqLogo', {
+        credentials: 'same-origin',
+        method: 'GET'
+    })
+        .then((response) => response.json())
+        .then((state) => dispatch(updateFiles(state)));
+};
+
 export const changeFileType = (files, type, index) => {
     files[index].type = type;
     files[index].error = '';
@@ -43,7 +52,7 @@ export const changeFileType = (files, type, index) => {
         })
             .then((response) => response.json())
             .then((state) => {
-                dispatch(updateFiles(state))
+                dispatch(updateFiles(state));
                 generateSeqLogos(dispatch);
             });
     };
@@ -62,9 +71,7 @@ export const renameFile = (files, name, index) => {
             })
         })
             .then((response) => response.json())
-            .then((state) => {
-                dispatch(updateFiles(state))
-            });
+            .then((state) => dispatch(updateFiles(state)));
     };
 };
 
@@ -92,15 +99,6 @@ export const uploadFiles = (fileList) => {
                 generateSeqLogos(dispatch);
             });
     };
-};
-
-const generateSeqLogos = (dispatch) => {
-    fetch('/seqLogo', {
-        credentials: 'same-origin',
-        method: 'GET'
-    })
-        .then((response) => response.json())
-        .then((state) => dispatch(updateFiles(state)));
 };
 
 export const deleteFiles = (selection) => {

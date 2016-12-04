@@ -6,7 +6,7 @@ var spawn = require('child_process').spawn;
 var logger = require('winston');
 var template = require('lodash').template;
 var helper = require('../helper');
-var diffLogoTableTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/diffLogoTable.tpl'));
+var diffLogoTableTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/diffLogoTable.tpl')); // eslint-disable-line no-sync
 
 logger.level = process.env.LOG_LEVEL || 'info';
 logger.handleExceptions(new logger.transports.Console());
@@ -85,7 +85,13 @@ function updateState(obj) {
     var outputFolder = helper.getDiffLogoTableFolder(sessionId);
     return new Promise((resolve) => {
         fs.readdir(outputFolder, (err, files) => {
-            var newState = Object.assign(
+            var newState;
+
+            if (err) {
+                logger.log('error', 'DiffLogoTableGenerator.updateState - read dir error -', err);
+            }
+
+            newState = Object.assign(
                 {},
                 state,
                 { output: files }

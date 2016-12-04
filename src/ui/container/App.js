@@ -122,7 +122,7 @@ App.propTypes = {
 };
 
 function mapStateToProps(state) {
-    const { files, result, options, progress } = state;
+    const { files, options, progress } = state;
     return {
         files,
         timestamp: files.timestamp,

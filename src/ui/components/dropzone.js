@@ -26,7 +26,7 @@ class DropZone extends Component {
         return (
             <Dropzone onDrop={onDrop} style={ styles.dropZone } >
                 <div style={ styles.helpText }>
-                    Drop your motif files here, or click to select files to upload. 
+                    Drop your motif files here, or click to select files to upload.
                 </div>
             </Dropzone>
         );

@@ -6,7 +6,7 @@ var spawn = require('child_process').spawn;
 var helper = require('../helper');
 var template = require('lodash').template;
 var logger = require('winston');
-var seqLogoTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/seqLogo.tpl'));
+var seqLogoTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/seqLogo.tpl')); // eslint-disable-line no-sync
 
 logger.level = process.env.LOG_LEVEL || 'info';
 
@@ -80,11 +80,9 @@ function startProcess(obj) {
 
 function updateState(obj) {
     var state = obj.state;
-    var sessionId = obj.sessionId;
-    var seqLogoFolder = helper.getSeqLogoFolder(sessionId);
     var updatedFiles = state.files.map((file) => {
-        if( file.error === '') {
-            file.seqLogoFile = 'seqLogo_' + path.basename(file.path) + '.png';   
+        if (file.error === '') {
+            file.seqLogoFile = 'seqLogo_' + path.basename(file.path) + '.png';
         }
         return file;
     });
@@ -100,4 +98,4 @@ module.exports = (state, sessionId, rsource) => {
     return writeConfig(state, sessionId, rsource)
         .then((obj) => startProcess(obj))
         .then((obj) => updateState(obj));
-}
+};

@@ -156,13 +156,12 @@ function validatePFM(filePath) {
         var alphabet = [];
         var lineCount = 0;
         var lineLength = -1;
-        var m = 0;
-        var totalColumns = 0;
         var columnSum = 0;
 
         lineReader.eachLine(filePath, (line, last) => {
             var lineSplit = line.trim().split('\t');
             var splitLength = lineSplit.length;
+            var m = 0;
 
             lineCount++;
 
@@ -174,7 +173,7 @@ function validatePFM(filePath) {
             }
 
             // try parsing all numbers
-            for (m=0; m < splitLength; m++) {
+            for (; m < splitLength; m++) {
                 if (isNaN(lineSplit[m])) {
                     error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
                     break;
@@ -190,7 +189,7 @@ function validatePFM(filePath) {
             lineLength = lineSplit.length;
             alphabet.push(lineSplit);
             if (last) {
-                for (m=0; m <= lineLength; m++) {
+                for (m = 0; m <= lineLength; m++) {
                     columnSum = getSumForPwmColumn(alphabet, m);
                     if (columnSum < 1) {
                         error = `At least one element in column ${m + 1} must be larger than 0.`;
@@ -220,4 +219,4 @@ module.exports = function validate(file) {
             logger.log('debug', 'validate - unknow filetype - %s', error);
             return Promise.resolve(error);
     }
-}
+};
