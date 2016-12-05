@@ -81,7 +81,6 @@ class App extends Component {
 
     render() {
         const { files, progress } = this.props;
-
         return (
             <div>
                 <Grid>
@@ -99,7 +98,7 @@ class App extends Component {
                             />
                         </Col>
                     </Row>
-                    <br />
+                    <br />  
                     <Row>
                         <Col xs={12}>
                             <ResultTable files= { files.output } />

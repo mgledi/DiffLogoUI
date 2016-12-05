@@ -73,7 +73,7 @@ if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
     
-    png(paste0("<%= outputFolder %>/",prefix,"_differenceLogo.pdf"),width=8,height=4, units="in", res=150); 
+    png(paste0("<%= outputFolder %>/",prefix,"_differenceLogo.png"),width=8,height=4, units="in", res=150); 
 
         diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet)
         diffLogo(diffLogoObj)

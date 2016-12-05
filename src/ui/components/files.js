@@ -10,6 +10,7 @@ import SelectField from 'material-ui/SelectField';
 import MenuItem from 'material-ui/MenuItem';
 import DropZone from './dropzone';
 import {Row, Col} from 'react-flexbox-grid';
+import ReactGA from 'react-ga';
 
 const styles = {
     startButton: {
@@ -214,6 +215,7 @@ class Files extends Component {
     }
 
     handleSeqLogoPopoverOpen(event, index) {
+        ReactGA.event({ category: 'User', action: 'Open sequence logo'});
         event.stopPropagation();
         this.setState({
             seqLogoPopoverOpen: true,
@@ -223,6 +225,7 @@ class Files extends Component {
     }
 
     handleSeqLogoPopoverClose() {
+        ReactGA.event({category: 'User', action: 'Close sequence logo' });
         this.setState({
             seqLogoPopoverOpen: false,
             anchorEl: null,
@@ -231,6 +234,7 @@ class Files extends Component {
     }
 
     handlePopoverOpen(event, index) {
+        ReactGA.event({category: 'User', action: 'Open change name dialog' });
         event.stopPropagation();
         this.setState({
             popoverOpen: true,
@@ -240,6 +244,7 @@ class Files extends Component {
     }
 
     handlePopoverClose() {
+        ReactGA.event({category: 'User', action: 'Close change name dialog' });
         const { renameFile } = this.props;
         const { fileIndex } = this.state;
 
@@ -252,8 +257,8 @@ class Files extends Component {
     }
 
     handleChangeFileType(newType, index) {
+        ReactGA.event({category: 'User', action: 'Change file type' });
         const { changeFileType } = this.props;
-
         changeFileType(newType, index);
     }
 

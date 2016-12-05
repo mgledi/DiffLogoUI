@@ -1,4 +1,5 @@
 import fetch from 'isomorphic-fetch';
+import ReactGA from 'react-ga';
 
 export const PROGRESS_UPLOAD = 'PROGRESS_UPLOAD';
 export const PROGRESS_PROCESS = 'PROGRESS_PROCESS';
@@ -77,6 +78,7 @@ export const renameFile = (files, name, index) => {
 
 export const uploadFiles = (fileList) => {
     return (dispatch) => {
+        ReactGA.event({category: 'User', action: 'Upload files' });
         const formData = new FormData();
         const length = fileList.length;
 
@@ -95,6 +97,7 @@ export const uploadFiles = (fileList) => {
             .then((response) => response.json())
             .then((state) => {
                 dispatch(progressStopped());
+                ReactGA.event({category: 'User', action: 'Files uploaded' });
                 dispatch(updateFiles(state));
                 generateSeqLogos(dispatch);
             });
@@ -119,6 +122,7 @@ export const deleteFiles = (selection) => {
 export const startAnalysis = (config) => {
     return (dispatch) => {
 
+        ReactGA.event({category: 'User', action: 'Start analysis' });
         dispatch(progressProcess());
         fetch('/diffLogo', {
             credentials: 'same-origin',
@@ -131,7 +135,9 @@ export const startAnalysis = (config) => {
             .then((response) => response.json())
             .then((state) => {
                 dispatch(progressStopped());
+                ReactGA.event({category: 'User', action: 'analysis finished' });
                 dispatch(updateFiles(state));
+                // dispatch(showResult());
             });
     };
 };

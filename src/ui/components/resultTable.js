@@ -3,6 +3,7 @@ import {Card, CardHeader, CardText} from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+import ReactGA from 'react-ga';
 
 class ResultTable extends Component {
     constructor(props) {
@@ -36,6 +37,7 @@ class ResultTable extends Component {
                                         <TableRowColumn>
                                             { file }
                                             <IconButton
+                                                onClick={ ReactGA.event({category: 'User', action: 'Download result' }) }
                                                 href={ `/files/result/${file}` }
                                                 target="_blank"
                                             >
