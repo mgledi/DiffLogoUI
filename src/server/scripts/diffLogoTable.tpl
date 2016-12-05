@@ -8,6 +8,17 @@ source("<%= rsource %>/seqLogo.R");
 source("<%= rsource %>/diffSeqLogoSupport.R");
 source("<%= rsource %>/diffSeqLogo.R");
 
+saveToPDF <- function(...) {
+    d = dev.copy(pdf,...)
+    dev.off(d)
+}
+
+saveToPNG <- function(...) {
+    d = dev.copy(png,...)
+    dev.off(d)
+}
+
+
 motif_folder = "<%= motifFolder %>"
 PWMs = list()
 
@@ -62,7 +73,7 @@ if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
     
-    pdf(paste0("<%= outputFolder %>/",prefix,"_differenceLogo.pdf"),width=8,height=4); 
+    png(paste0("<%= outputFolder %>/",prefix,"_differenceLogo.pdf"),width=8,height=4, units="in", res=150); 
 
         diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet)
         diffLogo(diffLogoObj)
@@ -70,7 +81,8 @@ if ( length(PWMs) < 2 ) {
     dev.off()
 
 } else {
-    pdf(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.pdf"),width=10 * 16/10,height = 10); 
+    #pdf(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.pdf"),width=10 * 16/10,height = 10); 
+    png(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.png"),width=10 * 16/10,height = 10, units="in", res=150); 
     configuration = list();
     configuration[['ratio']] = 16/10;
     diffLogoTable(
@@ -78,7 +90,7 @@ if ( length(PWMs) < 2 ) {
         motif_names,
         alphabet=alphabet
     );
-    dev.off()     
+    dev.off()      
 }
 
 
