@@ -14,8 +14,8 @@ function getConfigFolder(sessionId) {
     return path.join(getSessionFolder(sessionId), 'config');
 }
 
-function getDiffLogoTableFolder(sessionId) {
-    return path.join(getSessionFolder(sessionId), 'output');
+function getDiffLogoTableFolder(sessionId, timestamp) {
+    return path.join(getSessionFolder(sessionId), 'output', `${timestamp}`);
 }
 
 function getSeqLogoFolder(sessionId) {

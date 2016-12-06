@@ -1,9 +1,67 @@
 import React, { Component, PropTypes } from 'react';
-import {Card, CardHeader, CardText} from 'material-ui/Card';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
+import moment from 'moment';
 import ReactGA from 'react-ga';
+const styles = {
+    tdIcon: {
+        paddingLeft: '0px',
+        paddingRight: '0px',
+        width: '28px'
+    },
+    icon: {
+        paddingLeft: '2px',
+        paddingRight: '2px',
+    }
+};
+
+function renderRows(results, dialog) {
+
+    function showResult(event, url) {
+        ReactGA.event({ category: 'User', action: 'Show result' });
+        dialog(event, url);
+    }
+
+    return results.map((result) => {
+        const { timestamp, files } = result;
+        const humanReadableTimestamp = moment(Number(timestamp)).format('llll');
+
+        return files.map((file) => {
+            return (
+                <TableRow key={timestamp} selectable={false} >
+                    <TableRowColumn  width={150}>
+                        { humanReadableTimestamp }
+                    </TableRowColumn>
+                    <TableRowColumn style={styles.tdIcon}>
+                        <IconButton
+                            onClick={() => ReactGA.event({ category: 'User', action: 'Download result' }) }
+                            href={ `/files/result/${timestamp}/${file}` }
+                            target='_blank'
+                            style={styles.icon}
+                        >
+                            <FontIcon className="material-icons">file_download</FontIcon>
+                        </IconButton>
+                    </TableRowColumn>
+                    <TableRowColumn style={styles.tdIcon}>
+                        <IconButton
+                            onClick={ (event) => showResult(event, `/files/result/${timestamp}/${file}`) }
+                            href="#"
+                            style={styles.icon}
+                        >
+                            <FontIcon className="material-icons">visibility</FontIcon>
+                        </IconButton>
+                    </TableRowColumn>
+                     <TableRowColumn>
+                        { file }
+                    </TableRowColumn>
+                    <TableRowColumn>n.a.</TableRowColumn>
+                    <TableRowColumn>n.a.</TableRowColumn>
+                </TableRow>
+            );
+        });
+    });
+}
 
 class ResultTable extends Component {
     constructor(props) {
@@ -11,52 +69,35 @@ class ResultTable extends Component {
     }
 
     render() {
-        const { files } = this.props;
+        const { results, dialog } = this.props;
 
-        if (files.length === 0) {
+        if (results.length < 1) {
             return null;
         }
 
         return (
-            <Card>
-                <CardHeader title="Your results"/>
-                <CardText>
-                    <Table maxHeight="241px" selectable={false}>
-                        <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
-                            <TableRow selectable={false}>
-                                <TableHeaderColumn>Filename</TableHeaderColumn>
-                            </TableRow>
-                        </TableHeader>
-                        <TableBody displayRowCheckbox={ false }>
-                            { files.reverse().map((file, index) => {
-                                return (
-                                    <TableRow
-                                        key={ index }
-                                        selectable={ false }
-                                    >
-                                        <TableRowColumn>
-                                            { file }
-                                            <IconButton
-                                                onClick={ ReactGA.event({category: 'User', action: 'Download result' }) }
-                                                href={ `/files/result/${file}` }
-                                                target="_blank"
-                                            >
-                                                <FontIcon className="material-icons">file_download</FontIcon>
-                                            </IconButton>
-                                        </TableRowColumn>
-                                    </TableRow>
-                                );
-                            })};
-                        </TableBody>
-                    </Table>
-                </CardText>
-            </Card>
+            <Table maxHeight="241px" selectable={false}>
+                    <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
+                        <TableRow selectable={false}>
+                            <TableHeaderColumn width={150}>Date</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
+                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
+                            <TableHeaderColumn>Filename</TableHeaderColumn>
+                            <TableHeaderColumn>R Script</TableHeaderColumn>
+                            <TableHeaderColumn>Logs</TableHeaderColumn>
+                        </TableRow>
+                    </TableHeader>
+                    <TableBody displayRowCheckbox={ false }>
+                        { renderRows(results, dialog) }
+                    </TableBody>
+            </Table>
         );
     }
 }
 
 ResultTable.propTypes = {
-    files: PropTypes.array.isRequired
+    results: PropTypes.array.isRequired,
+    dialog: PropTypes.func.isRequired
 };
 
 export default ResultTable;

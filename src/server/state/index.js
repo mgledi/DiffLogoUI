@@ -232,11 +232,26 @@ function updateFilesState(sessionId, files) {
         .then((state) => writeState(state, sessionId));
 }
 
+function updateResults(sessionId, results) {
+    return getState(sessionId)
+        .then((state) => {
+            var newState = Object.assign(
+                {},
+                state,
+                { results: results }
+            );
+
+            return Promise.resolve(newState);
+        })
+        .then((newState) => writeState(newState, sessionId));
+}
+
 module.exports = {
     get: getState,
     addFiles: addFilesToState,
     removeFiles: removeFilesFromState,
     updateFiles: updateFilesState,
     generateDiffLogoTable: generateDiffLogoTable,
-    generateSeqLogos: generateSeqLogos
+    generateSeqLogos: generateSeqLogos,
+    updateResults: updateResults
 };

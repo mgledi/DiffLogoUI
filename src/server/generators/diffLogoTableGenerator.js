@@ -9,12 +9,12 @@ var helper = require('../helper');
 var diffLogoTableTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/diffLogoTable.tpl')); // eslint-disable-line no-sync
 
 logger.level = process.env.LOG_LEVEL || 'info';
-logger.handleExceptions(new logger.transports.Console());
 
 function writeConfig(state, fileList, sessionId, rsource) {
+    var timestamp = new Date().getTime();
     var uploadFolder = helper.getUploadFolder(sessionId);
     var configFolder = helper.getConfigFolder(sessionId);
-    var outputFolder = helper.getDiffLogoTableFolder(sessionId);
+    var outputFolder = helper.getDiffLogoTableFolder(sessionId, timestamp);
     var motifFolder = path.relative(process.cwd(), uploadFolder);
     var finalConfig = Object.assign(
         {},
@@ -26,6 +26,7 @@ function writeConfig(state, fileList, sessionId, rsource) {
         }
     );
     var configString = template(diffLogoTableTemplate)(finalConfig);
+    var configFilePath = path.join(configFolder, 'diffLogoTable.R');
 
     logger.log('debug', 'DiffLogoTableGenerator.writeConfig %s %s', sessionId, rsource);
     logger.log('debug', 'DiffLogoTableGenerator.writeConfig - upload folder - %s', uploadFolder);
@@ -35,25 +36,24 @@ function writeConfig(state, fileList, sessionId, rsource) {
     logger.log('debug', 'DiffLogoTableGenerator.writeConfig - template -', configString);
 
     return new Promise((resolve, reject) => {
-        fs.outputFile(path.join(configFolder, 'diffLogoTable.R'), configString, (err) => {
+        fs.outputFile(configFilePath, configString, (err) => {
             if (err) {
                 logger.log('error', 'DiffLogoTableGenerator.writeConfig - write config error - %s', err);
                 reject(err);
             } else {
-                resolve({state, fileList, sessionId});
+                resolve({state, fileList, timestamp, sessionId, outputFolder, configFilePath });
             }
         });
     });
 }
 function startProcess(obj) {
-    var sessionId = obj.sessionId;
-    var configFolder = helper.getConfigFolder(sessionId);
-    var outputFolder = helper.getDiffLogoTableFolder(sessionId);
-    var scriptPath = path.relative(process.cwd(), path.join(configFolder, 'diffLogoTable.R'));
+    var configFilePath = obj.configFilePath;
+    var outputFolder = obj.outputFolder;
+    var scriptPath = path.relative(process.cwd(), configFilePath);
     var args = ['--no-save', '--slave', '-f ' + scriptPath];
     var R;
 
-    logger.log('debug', 'DiffLogoTableGenerator.startProcess - config folder - %s', configFolder);
+    logger.log('debug', 'DiffLogoTableGenerator.startProcess - config path - %s', configFilePath);
     logger.log('debug', 'DiffLogoTableGenerator.startProcess - output folder - %s', outputFolder);
     logger.log('debug', 'DiffLogoTableGenerator.startProcess - script path - %s', scriptPath);
     logger.log('debug', 'DiffLogoTableGenerator.startProcess - R argumnents - %s', args);
@@ -80,24 +80,24 @@ function startProcess(obj) {
 }
 
 function updateState(obj) {
-    var sessionId = obj.sessionId;
     var state = obj.state;
-    var outputFolder = helper.getDiffLogoTableFolder(sessionId);
+    var timestamp = obj.timestamp;
+    var outputFolder = obj.outputFolder;
     return new Promise((resolve) => {
         fs.readdir(outputFolder, (err, files) => {
-            var newState;
+            var result = {
+                timestamp,
+                files,
+                adhoc: true
+            };
 
             if (err) {
                 logger.log('error', 'DiffLogoTableGenerator.updateState - read dir error -', err);
             }
 
-            newState = Object.assign(
-                {},
-                state,
-                { output: files }
-            );
-
-            resolve(newState);
+            resolve(Object.assign({}, state,
+                { results: state.results.concat([result]) }
+            ));
         });
     });
 }

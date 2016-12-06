@@ -44,11 +44,13 @@ fileRoutes.put('/', (req, res) => {
         .then((newState) => res.json(newState));
 });
 
-fileRoutes.get('/result/:name', (req, res) => {
+fileRoutes.get('/result/:timestamp/:name', (req, res) => {
     var sessionId = req.session.id;
+    var timestamp = req.params.timestamp;
     var fileName = req.params.name;
+    var folder = helper.getDiffLogoTableFolder(sessionId, timestamp);
     var options = {
-        root: path.join(process.cwd(), 'files', sessionId, 'output'),
+        root: folder,
         dotfiles: 'deny'
     };
 

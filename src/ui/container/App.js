@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import {Grid, Row, Col} from 'react-flexbox-grid';
 import Header from '../components/header';
 import Files from '../components/files';
-import ResultTable from '../components/resultTable';
+import Results from '../components/results';
 import Progress from '../components/progress';
 import Footer from '../components/footer';
 
@@ -15,7 +15,8 @@ import {
     uploadFiles,
     deleteFiles,
     editAnalysis,
-    startAnalysis
+    startAnalysis,
+    updateResults
 } from '../actions';
 
 class App extends Component {
@@ -27,6 +28,7 @@ class App extends Component {
         this.deleteFiles = this.deleteFiles.bind(this);
         this.editAnalysis = this.editAnalysis.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
+        this.updateResults = this.updateResults.bind(this);
     }
 
     componentWillMount() {
@@ -79,6 +81,12 @@ class App extends Component {
         dispatch(startAnalysis({ files: filtered }));
     }
 
+    updateResults(results) {
+        const { dispatch } = this.props;
+
+        dispatch(updateResults(results));
+    }
+
     render() {
         const { files, progress } = this.props;
         return (
@@ -98,10 +106,10 @@ class App extends Component {
                             />
                         </Col>
                     </Row>
-                    <br />  
+                    <br />
                     <Row>
-                        <Col xs={12}>
-                            <ResultTable files= { files.output } />
+                        <Col xs={ 12 }>
+                            <Results results={ files.results } update={ this.updateResults } />
                         </Col>
                     </Row>
                     <br />
