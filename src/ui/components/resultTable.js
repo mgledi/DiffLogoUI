@@ -7,6 +7,11 @@ import ReactGA from 'react-ga';
 
 function renderRows(results, dialog) {
 
+    function showResult(event, url) {
+        ReactGA.event({ category: 'User', action: 'Show result' });
+        dialog(event, url);
+    }
+
     return results.map((result) => {
         const { timestamp, files } = result;
         const humanReadableTimestamp = moment(Number(timestamp)).format('llll');
@@ -20,14 +25,14 @@ function renderRows(results, dialog) {
                     <TableRowColumn>
                         { file }
                         <IconButton
-                            onClick={ ReactGA.event({ category: 'User', action: 'Download result' }) }
+                            onClick={() => ReactGA.event({ category: 'User', action: 'Download result' }) }
                             href={ `/files/result/${timestamp}/${file}` }
                             target='_blank'
                         >
                             <FontIcon className="material-icons">file_download</FontIcon>
                         </IconButton>
                         <IconButton
-                            onClick={ (event) => dialog(event, `/files/result/${timestamp}/${file}`) }
+                            onClick={ (event) => showResult(event, `/files/result/${timestamp}/${file}`) }
                             href="#"
                         >
                             <FontIcon className="material-icons">visibility</FontIcon>
