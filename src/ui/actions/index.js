@@ -76,6 +76,22 @@ export const renameFile = (files, name, index) => {
     };
 };
 
+export const updateResults = (results) => {
+
+    return (dispatch) => {
+        fetch('/results', {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify(results),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+            .then((response) => response.json())
+            .then((state) => dispatch(updateFiles(state)));
+    };
+};
+
 export const uploadFiles = (fileList) => {
     return (dispatch) => {
         ReactGA.event({category: 'User', action: 'Upload files' });

@@ -16,7 +16,7 @@ const options = (state = {}, action) => {
     }
 };
 
-const files = (state = { list: [], alphabet: 'DNA', selection: [], output: [], timestamp: 0 }, action) => {
+const files = (state = { list: [], alphabet: 'DNA', selection: [], results: [], timestamp: 0 }, action) => {
     switch (action.type) {
         case ActionTypes.UPDATE_FILES: {
             return Object.assign(
@@ -25,7 +25,7 @@ const files = (state = { list: [], alphabet: 'DNA', selection: [], output: [], t
                 {
                     list: action.filesState.files,
                     alphabet: action.filesState.alphabet,
-                    output: action.filesState.output,
+                    results: action.filesState.results,
                     timestamp: new Date().getTime()
                 }
             );

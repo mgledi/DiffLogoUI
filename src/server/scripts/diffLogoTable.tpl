@@ -56,7 +56,7 @@ alphabet = NULL;
     if( is.null(alphabet)) {
         alphabet = currentAlphabet;
     } else if( all(alphabet$chars == currentAlphabet$chars) ) {
-       
+
     } else {
          stop("Detected at least two different alphabets.");
     }
@@ -68,12 +68,10 @@ motif_names = c(
 <% }); %>
 )
 
-prefix = format(Sys.time(), "%Y%m%d_%H%M%S")
 if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
-    
-    png(paste0("<%= outputFolder %>/",prefix,"_differenceLogo.png"),width=8,height=4, units="in", res=150); 
+    png(paste0("<%= outputFolder %>/","differenceLogo.png"),width=8,height=4, units="in", res=150); 
 
         diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet)
         diffLogo(diffLogoObj)
@@ -81,8 +79,8 @@ if ( length(PWMs) < 2 ) {
     dev.off()
 
 } else {
-    #pdf(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.pdf"),width=10 * 16/10,height = 10); 
-    png(paste0("<%= outputFolder %>/",prefix,"_diffLogoTable.png"),width=10 * 16/10,height = 10, units="in", res=150); 
+    #pdf(paste0("<%= outputFolder %>/","diffLogoTable.pdf"),width=10 * 16/10,height = 10); 
+    png(paste0("<%= outputFolder %>/","diffLogoTable.png"),width=10 * 16/10,height = 10, units="in", res=150); 
     configuration = list();
     configuration[['ratio']] = 16/10;
     diffLogoTable(
