@@ -88,7 +88,7 @@ class ResultTable extends Component {
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={ false }>
-                        { renderRows(results.reverse(), dialog) }
+                        { renderRows(results, dialog) }
                     </TableBody>
             </Table>
         );
