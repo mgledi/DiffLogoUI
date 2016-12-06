@@ -74,7 +74,6 @@ class Results extends Component {
                     </CardText>
                 </Card>
                 <Dialog
-                    title="Dialog With Actions"
                     modal={false}
                     open={dialogOpen}
                     style={{ paddingTop: 0 }}
