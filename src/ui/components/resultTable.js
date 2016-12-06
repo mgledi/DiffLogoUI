@@ -59,7 +59,7 @@ function renderRows(results, dialog) {
                     <TableRowColumn>n.a.</TableRowColumn>
                 </TableRow>
             );
-        });
+        }).reverse();
     });
 }
 
