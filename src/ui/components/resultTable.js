@@ -4,6 +4,17 @@ import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import moment from 'moment';
 import ReactGA from 'react-ga';
+const styles = {
+    tdIcon: {
+        paddingLeft: '0px',
+        paddingRight: '0px',
+        width: '28px'
+    },
+    icon: {
+        paddingLeft: '2px',
+        paddingRight: '2px',
+    }
+};
 
 function renderRows(results, dialog) {
 
@@ -19,24 +30,30 @@ function renderRows(results, dialog) {
         return files.map((file) => {
             return (
                 <TableRow key={timestamp} selectable={false} >
-                    <TableRowColumn>
+                    <TableRowColumn  width={150}>
                         { humanReadableTimestamp }
                     </TableRowColumn>
-                    <TableRowColumn>
-                        { file }
+                    <TableRowColumn style={styles.tdIcon}>
                         <IconButton
                             onClick={() => ReactGA.event({ category: 'User', action: 'Download result' }) }
                             href={ `/files/result/${timestamp}/${file}` }
                             target='_blank'
+                            style={styles.icon}
                         >
                             <FontIcon className="material-icons">file_download</FontIcon>
                         </IconButton>
+                    </TableRowColumn>
+                    <TableRowColumn style={styles.tdIcon}>
                         <IconButton
                             onClick={ (event) => showResult(event, `/files/result/${timestamp}/${file}`) }
                             href="#"
+                            style={styles.icon}
                         >
                             <FontIcon className="material-icons">visibility</FontIcon>
                         </IconButton>
+                    </TableRowColumn>
+                     <TableRowColumn>
+                        { file }
                     </TableRowColumn>
                     <TableRowColumn>n.a.</TableRowColumn>
                     <TableRowColumn>n.a.</TableRowColumn>
@@ -62,14 +79,16 @@ class ResultTable extends Component {
             <Table maxHeight="241px" selectable={false}>
                     <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                         <TableRow selectable={false}>
-                            <TableHeaderColumn>Date</TableHeaderColumn>
+                            <TableHeaderColumn width={150}>Date</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
+                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn>Filename</TableHeaderColumn>
                             <TableHeaderColumn>R Script</TableHeaderColumn>
                             <TableHeaderColumn>Logs</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={ false }>
-                        { renderRows(results, dialog) }
+                        { renderRows(results.reverse(), dialog) }
                     </TableBody>
             </Table>
         );
