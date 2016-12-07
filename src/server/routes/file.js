@@ -44,36 +44,5 @@ fileRoutes.put('/', (req, res) => {
         .then((newState) => res.json(newState));
 });
 
-fileRoutes.get('/result/:timestamp/:name', (req, res) => {
-    var sessionId = req.session.id;
-    var timestamp = req.params.timestamp;
-    var fileName = req.params.name;
-    var folder = helper.getDiffLogoTableFolder(sessionId, timestamp);
-    var options = {
-        root: folder,
-        dotfiles: 'deny'
-    };
-
-    res.sendFile(fileName, options, (err) => {
-        if (err) {
-            res.status(err.status).end();
-        }
-    });
-});
-
-fileRoutes.get('/seqLogo/:name', (req, res) => {
-    var sessionId = req.session.id;
-    var fileName = req.params.name;
-    var options = {
-        root: path.join(process.cwd(), 'files', sessionId, 'seqLogos'),
-        dotfiles: 'deny'
-    };
-
-    res.sendFile(fileName, options, (err) => {
-        if (err) {
-            res.status(err.status).end();
-        }
-    });
-});
 
 module.exports = fileRoutes;

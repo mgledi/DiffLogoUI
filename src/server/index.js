@@ -11,7 +11,7 @@ var ui = require('./routes/static');
 var fileRoutes = require('./routes/file');
 var diffLogoRoute = require('./routes/diffLogo');
 var seqLogoRoute = require('./routes/seqLogo');
-var resultRoute = require('./routes/results');
+var resultRoutes = require('./routes/results');
 
 var app = express();
 
@@ -63,7 +63,7 @@ module.exports = function server(options) {
     app.use('/files', fileRoutes);
     app.use('/diffLogo', diffLogoRoute(rsource));
     app.use('/seqLogo', seqLogoRoute(rsource));
-    app.use('/results', resultRoute);
+    app.use('/results', resultRoutes);
 
     app.listen(options.port, () => console.log('App is listen to port ', options.port)); // eslint-disable-line no-console
 };

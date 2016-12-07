@@ -26,7 +26,7 @@ class Results extends Component {
             const adhoc = results[unseen];
             this.setState({
                 dialogOpen: true,
-                dialogContentUrl: `/files/result/${adhoc.timestamp}/${adhoc.files[0]}`,
+                dialogContentUrl: `/results/diff-table/${adhoc.timestamp}/${adhoc.files[0]}`,
                 adhoc: unseen
             });
         }

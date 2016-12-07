@@ -36,7 +36,7 @@ function renderRows(results, dialog) {
                     <TableRowColumn style={styles.tdIcon}>
                         <IconButton
                             onClick={() => ReactGA.event({ category: 'User', action: 'Download result' }) }
-                            href={ `/files/result/${timestamp}/${file}` }
+                            href={ `/results/diff-table/${timestamp}/${file}` }
                             target='_blank'
                             style={styles.icon}
                         >
@@ -45,7 +45,7 @@ function renderRows(results, dialog) {
                     </TableRowColumn>
                     <TableRowColumn style={styles.tdIcon}>
                         <IconButton
-                            onClick={ (event) => showResult(event, `/files/result/${timestamp}/${file}`) }
+                            onClick={ (event) => showResult(event, `/results/diff-table/${timestamp}/${file}`) }
                             href="#"
                             style={styles.icon}
                         >

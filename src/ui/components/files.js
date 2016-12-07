@@ -62,7 +62,7 @@ function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
     }
 
     if (file.seqLogoFile !== '') {
-        const seqLogoFile = `files/seqLogo/${file.seqLogoFile}`;
+        const seqLogoFile = `/results/seq-logo/${file.seqLogoFile}`;
 
         return (
             <img
@@ -160,7 +160,7 @@ function getSeqLogoPopover(open, anchorEl, seqLogoFile, handleSeqLogoPopoverClos
             onRequestClose={handleSeqLogoPopoverClose}
             style={ styles.popover }
         >
-            <img src={`files/seqlogo/${seqLogoFile}`}/>
+            <img src={`/results/seq-logo/${seqLogoFile}`}/>
         </Popover>
     );
 }
