@@ -8,7 +8,6 @@ import Progress from '../components/progress';
 import Footer from '../components/footer';
 
 import {
-    getOptions,
     getFiles,
     renameFile,
     changeFileType,
@@ -35,7 +34,6 @@ class App extends Component {
         const { dispatch } = this.props;
 
         dispatch(getFiles());
-        dispatch(getOptions());
     }
 
     renameFile(name, index) {
@@ -124,16 +122,14 @@ class App extends Component {
 App.propTypes = {
     dispatch: PropTypes.func.isRequired,
     files: PropTypes.object.isRequired,
-    options: PropTypes.object.isRequired,
     progress: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-    const { files, options, progress } = state;
+    const { files, progress } = state;
     return {
         files,
         timestamp: files.timestamp,
-        options,
         progress
     };
 }

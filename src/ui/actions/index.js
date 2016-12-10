@@ -153,15 +153,3 @@ export const startAnalysis = (config) => {
     };
 };
 
-export const setOptions = (options) => ({
-    type: ActionTypes.SET_OPTIONS,
-    options
-});
-
-export const getOptions = () => {
-    return (dispatch) => {
-        fetch('/options')
-            .then((response) => response.json())
-            .then((options) => dispatch(setOptions(options)));
-    };
-};
