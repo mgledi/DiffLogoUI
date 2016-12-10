@@ -6,7 +6,7 @@
   "scripts": {
     "clean": "rimraf ./files ./sessions",
     "pretest": "eslint ./src/",
-    "test": "mocha --require ./test/mocha_runner ./test/**/*.js",
+    "test": "mocha --require babel-register ./test/**/*.js",
     "test-watch": "npm test -- --watch --watch-extension js",
     "prebuild": "rimraf ./dist",
     "build": "NODE_ENV=production webpack --config webpack.config.js",
