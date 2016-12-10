@@ -1,19 +1,14 @@
 import fetch from 'isomorphic-fetch';
 import ReactGA from 'react-ga';
+import * as ActionTypes from'./types';
 
-export const PROGRESS_UPLOAD = 'PROGRESS_UPLOAD';
-export const PROGRESS_PROCESS = 'PROGRESS_PROCESS';
-export const PROGRESS_STOPPED = 'PROGRESS_STOPPED';
-
-export const progressUpload = () => ({ type: PROGRESS_UPLOAD });
-export const progressProcess = () => ({ type: PROGRESS_PROCESS });
-export const progressStopped = () => ({ type: PROGRESS_STOPPED });
+export const progressUpload = () => ({ type: ActionTypes.PROGRESS_UPLOAD });
+export const progressProcess = () => ({ type: ActionTypes.PROGRESS_PROCESS });
+export const progressStopped = () => ({ type: ActionTypes.PROGRESS_STOPPED });
 
 // Files
-export const UPDATE_FILES = 'UPDATE_FILES';
-
 export const updateFiles = (filesState) => ({
-    type: UPDATE_FILES,
+    type: ActionTypes.UPDATE_FILES,
     filesState
 });
 
@@ -158,10 +153,8 @@ export const startAnalysis = (config) => {
     };
 };
 
-export const SET_OPTIONS = 'SET_OPTIONS';
-
 export const setOptions = (options) => ({
-    type: SET_OPTIONS,
+    type: ActionTypes.SET_OPTIONS,
     options
 });
 

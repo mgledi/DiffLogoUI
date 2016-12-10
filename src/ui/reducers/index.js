@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux';
-import * as ActionTypes from '../actions';
+import * as ActionTypes from '../actions/types';
 
 const options = (state = {}, action) => {
     switch (action.type) {
