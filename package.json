@@ -3,6 +3,7 @@
   "version": "0.0.1",
   "description": "",
   "main": "index.js",
+  "repository": "https://github.com/mgledi/DiffLogoUI",
   "scripts": {
     "clean": "rimraf ./files ./sessions",
     "pretest": "eslint ./src/",
