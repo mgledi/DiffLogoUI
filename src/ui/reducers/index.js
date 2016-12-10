@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import * as ActionTypes from '../actions/types';
 
-const files = (state = { list: [], alphabet: 'DNA', selection: [], results: [], timestamp: 0 }, action) => {
+export const files = (state = { list: [], alphabet: 'DNA', selection: [], results: [], timestamp: 0 }, action) => {
     switch (action.type) {
         case ActionTypes.UPDATE_FILES: {
             return Object.assign(
@@ -21,7 +21,7 @@ const files = (state = { list: [], alphabet: 'DNA', selection: [], results: [], 
     }
 };
 
-const progress = (state = { active: false, message: '' }, action) => {
+export const progress = (state = { active: false, message: '' }, action) => {
     switch (action.type) {
         case ActionTypes.PROGRESS_UPLOAD: {
             return Object.assign(
