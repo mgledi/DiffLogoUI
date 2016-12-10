@@ -1,6 +1,5 @@
 /* eslint-disable no-var */
 
-var path = require('path');
 var fs = require('fs-extra');
 var helper = require('../helper');
 var express = require('express');
@@ -43,6 +42,5 @@ fileRoutes.put('/', (req, res) => {
     state.updateFiles(req.session.id, files)
         .then((newState) => res.json(newState));
 });
-
 
 module.exports = fileRoutes;

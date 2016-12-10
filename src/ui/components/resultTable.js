@@ -12,7 +12,7 @@ const styles = {
     },
     icon: {
         paddingLeft: '2px',
-        paddingRight: '2px',
+        paddingRight: '2px'
     }
 };
 
@@ -30,7 +30,7 @@ function renderRows(results, dialog) {
         return files.map((file) => {
             return (
                 <TableRow key={timestamp} selectable={false} >
-                    <TableRowColumn  width={150}>
+                    <TableRowColumn width={150}>
                         { humanReadableTimestamp }
                     </TableRowColumn>
                     <TableRowColumn style={styles.tdIcon}>
