@@ -204,17 +204,18 @@ function validatePFM(filePath) {
 }
 
 module.exports = function validate(file) {
-    const error = 'Unknown filetype. Please see help for supported file types';
+    const error = 'Unknown filetype. Please see help for supported file types.';
+    const suffix = ' Is the file type '+file.type+' correct?';
 
     switch(file.type) {
         case 'alignment':
-            return validateAlignment(file.path);
+            return validateAlignment(file.path).then((error) => {return error !== '' ? (error + suffix) : '';});
         case 'fasta':
-            return validateFasta(file.path);
+            return validateFasta(file.path).then((error) => {return error !== '' ? (error + suffix) : '';});
         case 'pwm':
-            return validatePWM(file.path);
+            return validatePWM(file.path).then((error) => {return error !== '' ? (error + suffix) : '';});
         case 'pfm':
-            return validatePFM(file.path);
+            return validatePFM(file.path).then((error) => {return error !== '' ? (error + suffix) : '';});
         default:
             logger.log('debug', 'validate - unknow filetype - %s', error);
             return Promise.resolve(error);

@@ -83,6 +83,12 @@ class Results extends Component {
                     autoScrollBodyContent={true}
                     actions={[
                         <FlatButton
+                                label="Download"
+                                primary={true}
+                                href={ dialogContentUrl }
+                                onTouchTap={this.closeDialog}
+                              />,
+                        <FlatButton
                                 label="Close"
                                 primary={true}
                                 onTouchTap={this.closeDialog}
