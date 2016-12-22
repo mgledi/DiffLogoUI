@@ -14,6 +14,7 @@ motif_folder = "<%= motifFolder %>"
             con = file("<%= motifFolder %>/<%= file.originalname %>",open="r");
             lines = as.vector(read.delim(con)[,1]);
             lines = lines[grep("^[^>]",lines)]
+            lines = toupper(lines);
             chars = unique(strsplit(paste(lines,collapse=""), "")[[1]]);
             DNAchars = sort(unique(strsplit(gsub("-","",paste(lines,collapse="")), "")[[1]]));
             ASNchars = sort(unique(strsplit(gsub("[BZX-]","",paste(lines,collapse="")), "")[[1]]));
