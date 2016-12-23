@@ -87,6 +87,22 @@ export const updateResults = (results) => {
     };
 };
 
+export const copyExampleFilesToSession = () => {
+    return (dispatch) => {
+        dispatch(progressUpload());
+        fetch('/files/example', {
+            credentials: 'same-origin',
+            method: 'POST'
+        })
+            .then((response) => response.json())
+            .then((state) => {
+                dispatch(progressStopped());
+                dispatch(updateFiles(state));
+                generateSeqLogos(dispatch);
+            });
+    };
+};
+
 export const uploadFiles = (fileList) => {
     return (dispatch) => {
         ReactGA.event({category: 'User', action: 'Upload files' });
@@ -152,4 +168,3 @@ export const startAnalysis = (config) => {
             });
     };
 };
-

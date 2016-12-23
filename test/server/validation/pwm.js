@@ -30,7 +30,7 @@ describe('Validate: PWM', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Elements in column 3 sum not to 1.0 (1.5)');
+            .to.eventually.equal('Elements in column 3 sum not to 1.0 (1.5) Is the file type pwm correct?');
     });
 
     it('should have specific error if line have different length', () => {
@@ -40,7 +40,7 @@ describe('Validate: PWM', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Error in line 2. All lines in pwm_error_first_line.pwm must have the same length!');
+            .to.eventually.equal('Error in line 2. All lines in pwm_error_first_line.pwm must have the same length! Is the file type pwm correct?');
     });
 
     it('should fail if last line has different length', () => {
@@ -50,7 +50,7 @@ describe('Validate: PWM', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Error in line 4. All lines in pwm_error_last_line.pwm must have the same length!');
+            .to.eventually.equal('Error in line 4. All lines in pwm_error_last_line.pwm must have the same length! Is the file type pwm correct?');
     });
 
     it('should throw error if value in line not a number', () => {
@@ -60,6 +60,6 @@ describe('Validate: PWM', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Element 4 in line 3 is not a valid number.');
+            .to.eventually.equal('Element 4 in line 3 is not a valid number. Is the file type pwm correct?');
     });
 });

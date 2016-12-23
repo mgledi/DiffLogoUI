@@ -10,6 +10,10 @@ function getUploadFolder(sessionId) {
     return path.join(getSessionFolder(sessionId), 'upload');
 }
 
+function getExampleFolder() {
+    return path.join(process.cwd(), 'example');
+}
+
 function getConfigFolder(sessionId) {
     return path.join(getSessionFolder(sessionId), 'config');
 }
@@ -25,6 +29,7 @@ function getSeqLogoFolder(sessionId) {
 module.exports = {
     getSessionFolder: getSessionFolder,
     getUploadFolder: getUploadFolder,
+    getExampleFolder: getExampleFolder,
     getConfigFolder: getConfigFolder,
     getDiffLogoTableFolder: getDiffLogoTableFolder,
     getSeqLogoFolder: getSeqLogoFolder

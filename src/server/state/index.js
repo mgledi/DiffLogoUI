@@ -73,7 +73,7 @@ function getUploadFolderContent(sessionId) {
 
         fs.readdir(uploadFolder, (err, files) => {
             var fileList;
-
+            logger.log('debug', 'State.getUploadFolderContent - uploadFolder %s', uploadFolder);
             if (err) {
                 console.error(err); // eslint-disable-line no-console
                 reject(err);
@@ -194,6 +194,36 @@ function addFilesToState(sessionId) {
         .then((state) => writeState(state, sessionId));
 }
 
+function copyExampleFiles(sessionId) {
+    return new Promise((resolve, reject) => {
+        var sourceFolder = helper.getExampleFolder();
+        var uploadFolder = helper.getUploadFolder(sessionId);
+        fs.mkdirs(uploadFolder);
+
+        fs.readdir(sourceFolder, (err, files) => {
+            var copiedFiles = [];
+            if (err) {
+                console.error(err); // eslint-disable-line no-console
+                reject(err);
+            } else {
+                copiedFiles = files.map((file) => {
+                    return new Promise((resolve2, reject2) => {
+                        var source = path.join(sourceFolder, file);
+                        var target = path.join(uploadFolder, file);
+                        fs.copy(source, target, function(err2) {
+                            if (err2) {
+                                reject2(err);
+                            }
+                            resolve2(file);
+                        });
+                    });
+                });
+            }
+            resolve(Promise.all(copiedFiles));
+        });
+    });
+}
+
 function generateSeqLogos(sessionId, rsource) {
     logger.log('debug', 'State.generateSeqLogos');
     return getState(sessionId)
@@ -249,6 +279,7 @@ function updateResults(sessionId, results) {
 module.exports = {
     get: getState,
     addFiles: addFilesToState,
+    copyExampleFiles: copyExampleFiles,
     removeFiles: removeFilesFromState,
     updateFiles: updateFilesState,
     generateDiffLogoTable: generateDiffLogoTable,

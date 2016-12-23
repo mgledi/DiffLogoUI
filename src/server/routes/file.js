@@ -24,6 +24,14 @@ fileRoutes.get('/list', (req, res) => {
         .catch(() => res.status(500).json([]));
 });
 
+fileRoutes.post('/example', (req, res) => {
+    state.copyExampleFiles(req.session.id)
+        .then(() => {
+            state.addFiles(req.session.id)
+                .then((newState) => res.json(newState));
+        });
+});
+
 fileRoutes.post('/', upload.array('files'), (req, res) => {
     state.addFiles(req.session.id)
         .then((newState) => res.json(newState));
