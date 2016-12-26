@@ -28,7 +28,7 @@ describe('Validate: Alignment', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Error in line 2. All lines in allignment_error_first_line.al must have the same length!');
+            .to.eventually.equal('Error in line 2. All lines in allignment_error_first_line.al must have the same length! Is the file type alignment correct?');
     });
 
     it('should fail if last alignment has different length', () => {
@@ -38,7 +38,7 @@ describe('Validate: Alignment', () => {
         };
 
         return expect(validate(file))
-            .to.eventually.equal('Error in line 3. All lines in allignment_error_last_line.al must have the same length!');
+            .to.eventually.equal('Error in line 3. All lines in allignment_error_last_line.al must have the same length! Is the file type alignment correct?');
     });
 
     it('should ignore scoring');

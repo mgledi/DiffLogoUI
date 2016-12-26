@@ -211,6 +211,7 @@ class Files extends Component {
         this.handleChangeFileType = this.handleChangeFileType.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
+        this.uploadExample = this.uploadExample.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
     }
 
@@ -259,6 +260,7 @@ class Files extends Component {
     handleChangeFileType(newType, index) {
         ReactGA.event({category: 'User', action: 'Change file type' });
         const { changeFileType } = this.props;
+        // -----------------------------------
         changeFileType(newType, index);
     }
 
@@ -268,17 +270,23 @@ class Files extends Component {
         });
     }
 
+    uploadExample() {
+        const { uploadExample } = this.props;
+        // -----------------------------------
+        uploadExample();
+    }
+
     startAnalysis() {
         const { startAnalysis } = this.props;
         const { selected } = this.state;
-
+        // -----------------------------------
         startAnalysis(selected);
     }
 
     deleteFiles() {
         const { deleteFiles } = this.props;
         const { selected } = this.state;
-
+        // -----------------------------------
         deleteFiles(selected);
         this.setSelectedFiles([]);
     }
@@ -286,7 +294,7 @@ class Files extends Component {
     getMessage() {
         const { files } = this.props;
         const text = [];
-
+        // -----------------------------------
         if (files.length < 2) {
             text.push('Upload at least 2 files to start analysis.');
         }
@@ -319,7 +327,11 @@ class Files extends Component {
             <Card>
                 <CardText>
                     { renderMessages(this.getMessage()) }
-                    { renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType) }
+                    { (files.length === 0) ?
+                        <div style={{height: '141px', textAlign: 'center', paddingTop: '100px'}}>
+                            <FlatButton label="Upload Example" labelPosition="before" onClick={ this.uploadExample }/>
+                        </div> :
+                        renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType)}
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
@@ -353,6 +365,7 @@ Files.propTypes = {
     deleteFiles: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
     changeFileType: PropTypes.func.isRequired,
+    uploadExample: PropTypes.func.isRequired,
     startAnalysis: PropTypes.func.isRequired
 };
 

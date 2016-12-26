@@ -15,6 +15,7 @@ import {
     deleteFiles,
     editAnalysis,
     startAnalysis,
+    copyExampleFilesToSession,
     updateResults
 } from '../actions';
 
@@ -27,6 +28,7 @@ class App extends Component {
         this.deleteFiles = this.deleteFiles.bind(this);
         this.editAnalysis = this.editAnalysis.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
+        this.uploadExample = this.uploadExample.bind(this);
         this.updateResults = this.updateResults.bind(this);
     }
 
@@ -64,7 +66,6 @@ class App extends Component {
 
     editAnalysis(config) {
         const { dispatch } = this.props;
-
         dispatch(editAnalysis(config));
     }
 
@@ -79,9 +80,13 @@ class App extends Component {
         dispatch(startAnalysis({ files: filtered }));
     }
 
+    uploadExample() {
+        const { dispatch } = this.props;
+        dispatch(copyExampleFilesToSession());
+    }
+
     updateResults(results) {
         const { dispatch } = this.props;
-
         dispatch(updateResults(results));
     }
 
@@ -101,6 +106,7 @@ class App extends Component {
                                 uploadFiles = { this.uploadFiles }
                                 deleteFiles = { this.deleteFiles }
                                 startAnalysis = { this.startAnalysis }
+                                uploadExample = { this.uploadExample }
                             />
                         </Col>
                     </Row>
