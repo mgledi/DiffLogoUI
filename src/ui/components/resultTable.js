@@ -55,8 +55,6 @@ function renderRows(results, dialog) {
                      <TableRowColumn>
                         { file }
                     </TableRowColumn>
-                    <TableRowColumn>n.a.</TableRowColumn>
-                    <TableRowColumn>n.a.</TableRowColumn>
                 </TableRow>
             );
         }).reverse();
@@ -83,8 +81,6 @@ class ResultTable extends Component {
                             <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn>Filename</TableHeaderColumn>
-                            <TableHeaderColumn>R Script</TableHeaderColumn>
-                            <TableHeaderColumn>Logs</TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={ false }>
