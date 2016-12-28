@@ -6,6 +6,7 @@ source("<%= rsource %>/baseDistrs.R");
 source("<%= rsource %>/utilities.R");
 source("<%= rsource %>/seqLogo.R");
 source("<%= rsource %>/diffSeqLogoSupport.R");
+source("<%= rsource %>/pwmAlignment.R");
 source("<%= rsource %>/diffSeqLogo.R");
 
 saveToPDF <- function(...) {
@@ -63,33 +64,35 @@ alphabet = NULL;
     }
 <% }); %>
 
-motif_names = c(
-<% files.forEach((file, index) => { %>
-    "<%= file.name %>"<%= index < files.length -1 ? ',' : '' %>
-<% }); %>
-)
-
 if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
-    png(paste0("<%= outputFolder %>/","differenceLogo.png"),width=8,height=4, units="in", res=150); 
-
-        diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet)
+    
+    diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet)
+        
+    png(paste0("<%= outputFolder %>/","differenceLogo.png"),width=8,height=4, units="in", res=300); 
         diffLogo(diffLogoObj)
+    dev.off()
 
+    pdf(paste0("<%= outputFolder %>/","differenceLogo.pdf"),width=8,height=4); 
+        diffLogo(diffLogoObj)
     dev.off()
 
 } else {
-    #pdf(paste0("<%= outputFolder %>/","diffLogoTable.pdf"),width=10 * 16/10,height = 10); 
-    png(paste0("<%= outputFolder %>/","diffLogoTable.png"),width=10 * 16/10,height = 10, units="in", res=150); 
+    
     configuration = list();
     configuration[['ratio']] = 16/10;
-    diffLogoTable(
-        PWMs,
-        motif_names,
-        alphabet=alphabet
-    );
-    dev.off()      
+    diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration);
+    diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']]
+    hc = diffLogoTable[['hc']]
+
+    png(paste0("<%= outputFolder %>/","diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300); 
+        drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
+    dev.off()  
+
+    pdf(paste0("<%= outputFolder %>/","diffLogoTable.pdf"),width=10 * 16/10, height = 10); 
+        drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
+    dev.off()         
 }
 
 
