@@ -86,6 +86,7 @@ class Results extends Component {
                                 label="Download"
                                 primary={true}
                                 href={ dialogContentUrl }
+                                target="_blank"
                                 onTouchTap={this.closeDialog}
                               />,
                         <FlatButton
