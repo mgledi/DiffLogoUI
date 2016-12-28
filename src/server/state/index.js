@@ -104,6 +104,7 @@ function getUploadFolderContent(sessionId) {
                         type: fileType,
                         error: '',
                         validated: false,
+                        seqLogoFileSparse: '',
                         seqLogoFile: ''
                     };
                 });

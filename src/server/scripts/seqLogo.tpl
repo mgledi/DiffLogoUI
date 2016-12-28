@@ -42,9 +42,14 @@ motif_folder = "<%= motifFolder %>"
             }
         <% } %>
 
-            png("<%= outputFolder %>/seqLogo_<%= file.originalname %>.png",width=400,height=200); 
+            png("<%= outputFolder %>/seqLogo_<%= file.originalname %>_sparse.png",width=6,height=3,units="in", res=150); 
             par(mar=c(0.3,1.2,0.0,0.1))
             seqLogo(pwm,sparse=TRUE,alphabet=currentAlphabet);
+            dev.off();
+
+            png("<%= outputFolder %>/seqLogo_<%= file.originalname %>.png",width=6,height=3,units="in", res=150); 
+            par(mar=c(4.2,4.2,0.1,1.1))
+            seqLogo(pwm,sparse=FALSE,alphabet=currentAlphabet);
             dev.off();
     <% } %>
 <% }); %>

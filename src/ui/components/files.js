@@ -61,15 +61,15 @@ function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
         );
     }
 
-    if (file.seqLogoFile !== '') {
-        const seqLogoFile = `/results/seq-logo/${file.seqLogoFile}`;
+    if (file.seqLogoFileSparse !== '') {
+        const seqLogoFileSparse = `/results/seq-logo/${file.seqLogoFileSparse}`;
 
         return (
             <img
                 onClick={(event) => handleSeqLogoPopoverOpen(event, index)}
                 key={ `seqLogoThumbnail_${index}`}
                 width='120'
-                src={seqLogoFile}
+                src={seqLogoFileSparse}
                 style={{cursor: 'pointer'}}
             />
         );
@@ -160,7 +160,7 @@ function getSeqLogoPopover(open, anchorEl, seqLogoFile, handleSeqLogoPopoverClos
             onRequestClose={handleSeqLogoPopoverClose}
             style={ styles.popover }
         >
-            <img src={`/results/seq-logo/${seqLogoFile}`}/>
+            <img src={`/results/seq-logo/${seqLogoFile}`} style={{ width: '400px' }} />
         </Popover>
     );
 }
