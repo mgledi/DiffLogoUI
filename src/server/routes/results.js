@@ -67,4 +67,12 @@ resultRoutes.put('/', (req, res) => {
         .then((newState) => res.json(newState));
 });
 
+resultRoutes.delete('/:timestamp', (req, res) => {
+    var sessionId = req.session.id;
+    var timestamp = req.params.timestamp;
+
+    state.deleteResult(sessionId, timestamp)
+        .then((newState) => res.json(newState));
+});
+
 module.exports = resultRoutes;

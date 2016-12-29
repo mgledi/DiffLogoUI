@@ -13,6 +13,7 @@ import {
     changeFileType,
     uploadFiles,
     deleteFiles,
+    deleteResult,
     editAnalysis,
     startAnalysis,
     copyExampleFilesToSession,
@@ -26,6 +27,7 @@ class App extends Component {
         this.changeFileType = this.changeFileType.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
+        this.deleteResult = this.deleteResult.bind(this);
         this.editAnalysis = this.editAnalysis.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
         this.uploadExample = this.uploadExample.bind(this);
@@ -62,6 +64,12 @@ class App extends Component {
         }
 
         dispatch(deleteFiles({ files: filtered }));
+    }
+
+    deleteResult(timestamp) {
+        const { dispatch } = this.props;
+
+        dispatch(deleteResult(timestamp));
     }
 
     editAnalysis(config) {
@@ -113,7 +121,7 @@ class App extends Component {
                     <br />
                     <Row>
                         <Col xs={ 12 }>
-                            <Results results={ files.results } update={ this.updateResults } />
+                            <Results results={ files.results } update={ this.updateResults } deleteResult={ this.deleteResult }/>
                         </Col>
                     </Row>
                     <br />

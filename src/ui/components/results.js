@@ -16,6 +16,7 @@ class Results extends Component {
 
         this.openDialog = this.openDialog.bind(this);
         this.closeDialog = this.closeDialog.bind(this);
+        this.deleteResult = this.deleteResult.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -60,6 +61,14 @@ class Results extends Component {
         });
     }
 
+    deleteResult(event, timestamp) {
+        const { deleteResult } = this.props;
+
+        event.preventDefault();
+
+        deleteResult(timestamp);
+    }
+
     /*
      * special dialog style needed because of
      * https://github.com/callemall/material-ui/issues/1676
@@ -73,7 +82,7 @@ class Results extends Component {
                 <Card>
                     <CardHeader title="Your results"/>
                     <CardText>
-                        <ResultTable results={ results } dialog={ this.openDialog }/>
+                        <ResultTable results={ results } dialog={ this.openDialog } deleteResult={ this.deleteResult }/>
                     </CardText>
                 </Card>
                 <Dialog
@@ -107,7 +116,8 @@ class Results extends Component {
 
 Results.propTypes = {
     results: PropTypes.array.isRequired,
-    update: PropTypes.func.isRequired
+    update: PropTypes.func.isRequired,
+    deleteResult: PropTypes.func.isRequired
 };
 
 export default Results;

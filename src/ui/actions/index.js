@@ -146,6 +146,17 @@ export const deleteFiles = (selection) => {
     };
 };
 
+export const deleteResult = (timestamp) => {
+    return (dispatch) => {
+        fetch(`/results/${timestamp}`, {
+            credentials: 'same-origin',
+            method: 'DELETE'
+        })
+            .then((response) => response.json())
+            .then((state) => dispatch(updateFiles(state)));
+    };
+};
+
 export const startAnalysis = (config) => {
     return (dispatch) => {
 

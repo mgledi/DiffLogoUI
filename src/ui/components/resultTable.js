@@ -18,7 +18,7 @@ const styles = {
     }
 };
 
-function renderRows(results, dialog) {
+function renderRows(results, dialog, deleteResult) {
 
     function showResult(event, url) {
         ReactGA.event({ category: 'User', action: 'Show result' });
@@ -33,6 +33,7 @@ function renderRows(results, dialog) {
         const basename = files[0].replace(/\.[^/.]+$/, '');
         const filePNG = basename + '.png';
         const filePDF = basename + '.pdf';
+        const fileR = basename + '.R';
 
         let pdfIcon = '';
         if(result.files.indexOf(filePDF) > -1) {
@@ -41,6 +42,7 @@ function renderRows(results, dialog) {
                     onClick={() => ReactGA.event({ category: 'User', action: 'Download result PDF' }) }
                     href={ `/results/download/${timestamp}/${filePDF}` }
                     style={styles.icon}
+                    title="Download PDF"
                 >
                     <FontIcon className="material-icons">picture_as_pdf</FontIcon>
                 </IconButton>
@@ -52,27 +54,43 @@ function renderRows(results, dialog) {
                 <TableRowColumn width={170}>
                     { humanReadableTimestamp }
                 </TableRowColumn>
-                <TableRowColumn style={styles.tdIcon}>{pdfIcon}</TableRowColumn>
-                <TableRowColumn style={styles.tdIcon}>
+                <TableRowColumn>
+                    { basename }
+                </TableRowColumn>
+                <TableRowColumn style={{ textAlign: 'right' }}>
+                    {pdfIcon}
                     <IconButton
                         onClick={() => ReactGA.event({ category: 'User', action: 'Download result PNG' }) }
                         href={ `/results/download/${timestamp}/${filePNG}` }
                         style={styles.icon}
+                        title="Download PNG"
                     >
                         <FontIcon className="material-icons">image</FontIcon>
                     </IconButton>
-                </TableRowColumn>
-                <TableRowColumn style={styles.tdIcon}>
                     <IconButton
                         onClick={ (event) => showResult(event, `/results/diff-table/${timestamp}/${filePNG}`) }
                         href="#"
                         style={styles.icon}
+                        title="Preview"
                     >
                         <FontIcon className="material-icons">visibility</FontIcon>
                     </IconButton>
-                </TableRowColumn>
-                 <TableRowColumn>
-                    { basename }
+                    <IconButton
+                        onClick={() => ReactGA.event({ category: 'User', action: 'Download R script' })}
+                        href={ `/results/download/${timestamp}/${fileR}`}
+                        style={styles.icon}
+                        title="Download R Script"
+                    >
+                        <FontIcon className="material-icons">code</FontIcon>
+                    </IconButton>
+                    <IconButton
+                        onClick={(event) => deleteResult(event, timestamp)}
+                        href="#"
+                        style={styles.icon}
+                        title="Delete Result"
+                    >
+                        <FontIcon className="material-icons">delete</FontIcon>
+                    </IconButton>
                 </TableRowColumn>
             </TableRow>
         );
@@ -85,7 +103,7 @@ class ResultTable extends Component {
     }
 
     render() {
-        const { results, dialog } = this.props;
+        const { results, dialog, deleteResult } = this.props;
 
         if (results.length < 1) {
             return null;
@@ -96,14 +114,12 @@ class ResultTable extends Component {
                     <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                         <TableRow selectable={false}>
                             <TableHeaderColumn width={170}>Date</TableHeaderColumn>
-                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
-                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
-                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn>Filename</TableHeaderColumn>
+                            <TableHeaderColumn></TableHeaderColumn>
                         </TableRow>
                     </TableHeader>
                     <TableBody displayRowCheckbox={ false }>
-                        { renderRows(results, dialog) }
+                        { renderRows(results, dialog, deleteResult) }
                     </TableBody>
             </Table>
         );
@@ -112,7 +128,8 @@ class ResultTable extends Component {
 
 ResultTable.propTypes = {
     results: PropTypes.array.isRequired,
-    dialog: PropTypes.func.isRequired
+    dialog: PropTypes.func.isRequired,
+    deleteResult: PropTypes.func.isRequired
 };
 
 export default ResultTable;

@@ -211,9 +211,9 @@ function copyExampleFiles(sessionId) {
                     return new Promise((resolve2, reject2) => {
                         var source = path.join(sourceFolder, file);
                         var target = path.join(uploadFolder, file);
-                        fs.copy(source, target, function(err2) {
+                        fs.copy(source, target, (err2) => {
                             if (err2) {
-                                reject2(err);
+                                reject2(err2);
                             }
                             resolve2(file);
                         });
@@ -277,6 +277,31 @@ function updateResults(sessionId, results) {
         .then((newState) => writeState(newState, sessionId));
 }
 
+function deleteResult(sessionId, timestamp) {
+    return getState(sessionId)
+        .then((state) => {
+            return new Promise((resolve) => {
+                var resultDir = helper.getDiffLogoTableFolder(sessionId, timestamp);
+
+                fs.remove(resultDir, (err) => {
+                    var results = state.results;
+                    var newResults = results.filter((result) => {
+                        return result.timestamp !== Number(timestamp);
+                    });
+
+                    if (err) {
+                        logger.log('error', 'Could not remove result folder', err);
+                        resolve(results);
+                    }
+
+                    resolve(newResults);
+                });
+
+            });
+        })
+        .then((results) => updateResults(sessionId, results));
+}
+
 module.exports = {
     get: getState,
     addFiles: addFilesToState,
@@ -285,5 +310,6 @@ module.exports = {
     updateFiles: updateFilesState,
     generateDiffLogoTable: generateDiffLogoTable,
     generateSeqLogos: generateSeqLogos,
-    updateResults: updateResults
+    updateResults: updateResults,
+    deleteResult: deleteResult
 };

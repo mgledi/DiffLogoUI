@@ -81,10 +81,27 @@ function startProcess(obj) {
     });
 }
 
+function moveConfigToOutputFolder(obj) {
+    var configFilePath = obj.configFilePath;
+    var outputFolder = obj.outputFolder;
+
+    return new Promise((resolve) => {
+
+        fs.move(configFilePath, outputFolder + '/diffLogoTable.R', (err) => {
+            if (err) {
+                logger.log('error', 'Couldn\'t move config file', err);
+            }
+
+            resolve(obj);
+        });
+    });
+}
+
 function updateState(obj) {
     var state = obj.state;
     var timestamp = obj.timestamp;
     var outputFolder = obj.outputFolder;
+
     return new Promise((resolve) => {
         fs.readdir(outputFolder, (err, files) => {
             var result = {
@@ -108,5 +125,6 @@ module.exports = function generateDiffLogoTable(state, fileList, sessionId, rsou
     logger.log('debug', 'generateDiffLogoTable', sessionId, rsource);
     return writeConfig(state, fileList, sessionId, rsource)
         .then((obj) => startProcess(obj))
+        .then((obj) => moveConfigToOutputFolder(obj))
         .then((obj) => updateState(obj));
 };
