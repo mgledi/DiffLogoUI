@@ -329,8 +329,11 @@ class Files extends Component {
                     { renderMessages(this.getMessage()) }
                     { (files.length === 0) ?
                         <div style={{height: '141px', textAlign: 'center', paddingTop: '100px'}}>
-                            <FlatButton label="Load and compare CTCF motifs from four cell lines." labelPosition="before" onClick={ this.uploadExample }/>
-                        </div> :
+                            <div><FlatButton label="Load and compare CTCF motifs from four cell lines." labelPosition="before" onClick={ this.uploadExample }/></div>
+                            <div>or</div>
+                            <div><FlatButton label="Download example files." labelPosition="before" href="ctcf.zip"/></div>
+                        </div>
+                        :
                         renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType)}
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
