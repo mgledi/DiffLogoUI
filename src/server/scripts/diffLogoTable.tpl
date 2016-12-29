@@ -74,9 +74,9 @@ if ( length(PWMs) < 2 ) {
         diffLogo(diffLogoObj)
     dev.off()
 
-    #pdf(paste0("<%= outputFolder %>/","differenceLogo.pdf"),width=8,height=4); 
-    #    diffLogo(diffLogoObj)
-    #dev.off()
+    pdf(paste0("<%= outputFolder %>/","differenceLogo.pdf"),width=8,height=4); 
+        diffLogo(diffLogoObj)
+    dev.off()
 
 } else {
     
@@ -90,9 +90,9 @@ if ( length(PWMs) < 2 ) {
         drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
     dev.off()  
 
-    #pdf(paste0("<%= outputFolder %>/","diffLogoTable.pdf"),width=10 * 16/10, height = 10); 
-    #    drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
-    #dev.off()         
+    pdf(paste0("<%= outputFolder %>/","diffLogoTable.pdf"),width=10 * 16/10, height = 10); 
+        drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
+    dev.off()         
 }
 
 

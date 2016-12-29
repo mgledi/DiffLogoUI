@@ -46,6 +46,7 @@ function writeConfig(state, fileList, sessionId, rsource) {
         });
     });
 }
+
 function startProcess(obj) {
     var configFilePath = obj.configFilePath;
     var outputFolder = obj.outputFolder;

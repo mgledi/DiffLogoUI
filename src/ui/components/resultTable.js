@@ -1,9 +1,13 @@
+
 import React, { Component, PropTypes } from 'react';
 import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import moment from 'moment';
 import ReactGA from 'react-ga';
+
+var path = require('path');
+
 const styles = {
     tdIcon: {
         paddingLeft: '0px',
@@ -27,37 +31,52 @@ function renderRows(results, dialog) {
         const { timestamp, files } = result;
         const humanReadableTimestamp = moment(Number(timestamp)).format('llll');
 
-        return files.map((file) => {
-            return (
-                <TableRow key={timestamp} selectable={false} >
-                    <TableRowColumn width={150}>
-                        { humanReadableTimestamp }
-                    </TableRowColumn>
-                    <TableRowColumn style={styles.tdIcon}>
-                        <IconButton
-                            onClick={() => ReactGA.event({ category: 'User', action: 'Download result' }) }
-                            href={ `/results/diff-table/${timestamp}/${file}` }
-                            target='_blank'
-                            style={styles.icon}
-                        >
-                            <FontIcon className="material-icons">file_download</FontIcon>
-                        </IconButton>
-                    </TableRowColumn>
-                    <TableRowColumn style={styles.tdIcon}>
-                        <IconButton
-                            onClick={ (event) => showResult(event, `/results/diff-table/${timestamp}/${file}`) }
-                            href="#"
-                            style={styles.icon}
-                        >
-                            <FontIcon className="material-icons">visibility</FontIcon>
-                        </IconButton>
-                    </TableRowColumn>
-                     <TableRowColumn>
-                        { file }
-                    </TableRowColumn>
-                </TableRow>
-            );
-        }).reverse();
+        // each directory (timestamp) represents one result. A result consists of several files
+        var basename = files[0].replace(/\.[^/.]+$/, "");
+        var filePNG = basename + ".png";
+        var filePDF = basename + ".pdf";
+        var fileTXT = basename + ".txt"; // TODO: add functionality for txt output
+        console.log(basename);
+
+        return (
+            <TableRow key={timestamp} selectable={false} >
+                <TableRowColumn width={170}>
+                    { humanReadableTimestamp }
+                </TableRowColumn>
+                <TableRowColumn style={styles.tdIcon}>
+                    <IconButton
+                        onClick={() => ReactGA.event({ category: 'User', action: 'Download result PDF' }) }
+                        href={ `/results/diff-table/${timestamp}/${filePDF}` }
+                        target='_blank'
+                        style={styles.icon}
+                    >
+                        <FontIcon className="material-icons">picture_as_pdf</FontIcon>
+                    </IconButton>
+                </TableRowColumn>
+                <TableRowColumn style={styles.tdIcon}>
+                    <IconButton
+                        onClick={() => ReactGA.event({ category: 'User', action: 'Download result PNG' }) }
+                        href={ `/results/diff-table/${timestamp}/${filePNG}` }
+                        target='_blank'
+                        style={styles.icon}
+                    >
+                        <FontIcon className="material-icons">image</FontIcon>
+                    </IconButton>
+                </TableRowColumn>
+                <TableRowColumn style={styles.tdIcon}>
+                    <IconButton
+                        onClick={ (event) => showResult(event, `/results/diff-table/${timestamp}/${filePNG}`) }
+                        href="#"
+                        style={styles.icon}
+                    >
+                        <FontIcon className="material-icons">visibility</FontIcon>
+                    </IconButton>
+                </TableRowColumn>
+                 <TableRowColumn>
+                    { basename }
+                </TableRowColumn>
+            </TableRow>
+        );
     });
 }
 
@@ -77,7 +96,8 @@ class ResultTable extends Component {
             <Table maxHeight="241px" selectable={false}>
                     <TableHeader adjustForCheckbox={false} displaySelectAll={false}>
                         <TableRow selectable={false}>
-                            <TableHeaderColumn width={150}>Date</TableHeaderColumn>
+                            <TableHeaderColumn width={170}>Date</TableHeaderColumn>
+                            <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn style={styles.tdIcon}></TableHeaderColumn>
                             <TableHeaderColumn>Filename</TableHeaderColumn>

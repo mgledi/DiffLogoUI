@@ -24,9 +24,12 @@ class Results extends Component {
 
         if (unseen > -1) {
             const adhoc = results[unseen];
+
+            var filePNG = adhoc.files[0].replace(/\.[^/.]+$/, "") + ".png";
+
             this.setState({
                 dialogOpen: true,
-                dialogContentUrl: `/results/diff-table/${adhoc.timestamp}/${adhoc.files[0]}`,
+                dialogContentUrl: `/results/diff-table/${adhoc.timestamp}/${filePNG}`,
                 adhoc: unseen
             });
         }
