@@ -329,7 +329,7 @@ class Files extends Component {
                     { renderMessages(this.getMessage()) }
                     { (files.length === 0) ?
                         <div style={{height: '141px', textAlign: 'center', paddingTop: '100px'}}>
-                            <FlatButton label="Upload Example" labelPosition="before" onClick={ this.uploadExample }/>
+                            <FlatButton label="Load and compare CTCF motifs from four cell lines." labelPosition="before" onClick={ this.uploadExample }/>
                         </div> :
                         renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType)}
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
