@@ -331,7 +331,7 @@ class Files extends Component {
                         <div style={{height: '141px', textAlign: 'center', paddingTop: '100px'}}>
                             <div><FlatButton label="Load and compare CTCF motifs from four cell lines." labelPosition="before" onClick={ this.uploadExample }/></div>
                             <div>or</div>
-                            <div><FlatButton label="Download example files." labelPosition="before" href="https://github.com/mgledi/DiffLogoUI/blob/master/example/ctcf.zip"/></div>
+                            <div><FlatButton label="Download example files." labelPosition="before" href="https://github.com/mgledi/DiffLogoUI/raw/master/example/ctcf.zip"/></div>
                         </div>
                         :
                         renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType)}
