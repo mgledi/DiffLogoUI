@@ -6,12 +6,13 @@ source("<%= rsource %>/utilities.R");
 source("<%= rsource %>/seqLogo.R");
 
 motif_folder = "<%= motifFolder %>"
+output_folder = "<%= outputFolder %>"
 
 <% files.forEach((file) => { %>
     <% if (file.error === "" && file.seqLogoFile === "") { %>
         currentAlphabet = NULL;
         <% if (file.type === 'alignment' || file.type === 'fasta') { %>
-            con = file("<%= motifFolder %>/<%= file.originalname %>",open="r");
+            con = file(paste0(motif_folder, "/<%= file.originalname %>") ,open="r");
             lines = as.vector(read.delim(con)[,1]);
             lines = lines[grep("^[^>]",lines)]
             lines = toupper(lines);
@@ -42,12 +43,12 @@ motif_folder = "<%= motifFolder %>"
             }
         <% } %>
 
-            png("<%= outputFolder %>/seqLogo_<%= file.originalname %>_sparse.png",width=6,height=3,units="in", res=150); 
+            png(paste0(output_folder, "/seqLogo_<%= file.originalname %>_sparse.png"),width=6,height=3,units="in", res=150); 
             par(mar=c(0.3,1.2,0.0,0.1))
             seqLogo(pwm,sparse=TRUE,alphabet=currentAlphabet);
             dev.off();
 
-            png("<%= outputFolder %>/seqLogo_<%= file.originalname %>.png",width=6,height=3,units="in", res=150); 
+            png(paste0(output_folder, "/seqLogo_<%= file.originalname %>.png"),width=6,height=3,units="in", res=150); 
             par(mar=c(4.2,4.2,0.1,1.1))
             seqLogo(pwm,sparse=FALSE,alphabet=currentAlphabet);
             dev.off();

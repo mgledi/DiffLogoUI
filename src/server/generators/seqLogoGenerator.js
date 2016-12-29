@@ -14,13 +14,15 @@ function writeConfig(state, sessionId, rsource) {
     var uploadFolder = helper.getUploadFolder(sessionId);
     var configFolder = helper.getConfigFolder(sessionId);
     var motifFolder = path.relative(process.cwd(), uploadFolder);
+    var outputFolder = helper.getRelSeqLogoFolder(sessionId, process.cwd());
+    var rFolder = path.relative(process.cwd(), rsource);
     var finalConfig = Object.assign(
         {},
         {
             motifFolder: motifFolder,
             files: state.files,
-            outputFolder: path.join(process.cwd(), 'files', sessionId, 'seqLogos'),
-            rsource: rsource
+            outputFolder: outputFolder,
+            rsource: rFolder
         }
     );
     var configString = template(seqLogoTemplate)(finalConfig);

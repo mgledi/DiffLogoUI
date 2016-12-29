@@ -21,6 +21,7 @@ saveToPNG <- function(...) {
 
 
 motif_folder = "<%= motifFolder %>"
+output_folder = "<%= outputFolder %>"
 PWMs = list()
 
 alphabet = NULL;
@@ -67,32 +68,32 @@ alphabet = NULL;
 if ( length(PWMs) < 2 ) {
    # do nothing
 } else if ( length(PWMs) == 2 ) {
-    
+
     diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet)
-        
-    png(paste0("<%= outputFolder %>/","differenceLogo.png"),width=8,height=4, units="in", res=300); 
+
+    png(paste0(output_folder, "/", "differenceLogo.png"),width=8,height=4, units="in", res=300); 
         diffLogo(diffLogoObj)
     dev.off()
 
-    pdf(paste0("<%= outputFolder %>/","differenceLogo.pdf"),width=8,height=4); 
+    pdf(paste0(output_folder, "/", "differenceLogo.pdf"),width=8,height=4); 
         diffLogo(diffLogoObj)
     dev.off()
 
 } else {
-    
+
     configuration = list();
     configuration[['ratio']] = 16/10;
     diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration);
     diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']]
     hc = diffLogoTable[['hc']]
 
-    png(paste0("<%= outputFolder %>/","diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300); 
+    png(paste0(output_folder, "/", "diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300);
         drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
-    dev.off()  
+    dev.off()
 
-    pdf(paste0("<%= outputFolder %>/","diffLogoTable.pdf"),width=10 * 16/10, height = 10); 
+    pdf(paste0(output_folder, "/", "diffLogoTable.pdf"),width=10 * 16/10, height = 10);
         drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
-    dev.off()         
+    dev.off()
 }
 
 

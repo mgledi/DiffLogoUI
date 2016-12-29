@@ -14,15 +14,16 @@ function writeConfig(state, fileList, sessionId, rsource) {
     var timestamp = new Date().getTime();
     var uploadFolder = helper.getUploadFolder(sessionId);
     var configFolder = helper.getConfigFolder(sessionId);
-    var outputFolder = helper.getDiffLogoTableFolder(sessionId, timestamp);
+    var outputFolder = helper.getRelDiffLogoTableFolder(sessionId, timestamp, process.cwd());
     var motifFolder = path.relative(process.cwd(), uploadFolder);
+    var rFolder = path.relative(process.cwd(), rsource);
     var finalConfig = Object.assign(
         {},
         {
             motifFolder: motifFolder,
             files: fileList,
             outputFolder: outputFolder,
-            rsource: rsource
+            rsource: rFolder
         }
     );
     var configString = template(diffLogoTableTemplate)(finalConfig);

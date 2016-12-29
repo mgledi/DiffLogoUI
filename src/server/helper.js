@@ -22,8 +22,20 @@ function getDiffLogoTableFolder(sessionId, timestamp) {
     return path.join(getSessionFolder(sessionId), 'output', `${timestamp}`);
 }
 
+function getRelDiffLogoTableFolder(sessionId, timestamp, source) {
+    var folder = getDiffLogoTableFolder(sessionId, timestamp);
+
+    return path.relative(source, folder);
+}
+
 function getSeqLogoFolder(sessionId) {
     return path.join(getSessionFolder(sessionId), 'seqLogos');
+}
+
+function getRelSeqLogoFolder(sessionId, source) {
+    var folder = getSeqLogoFolder(sessionId);
+
+    return path.relative(source, folder);
 }
 
 module.exports = {
@@ -32,5 +44,7 @@ module.exports = {
     getExampleFolder: getExampleFolder,
     getConfigFolder: getConfigFolder,
     getDiffLogoTableFolder: getDiffLogoTableFolder,
-    getSeqLogoFolder: getSeqLogoFolder
+    getRelDiffLogoTableFolder: getRelDiffLogoTableFolder,
+    getSeqLogoFolder: getSeqLogoFolder,
+    getRelSeqLogoFolder: getRelSeqLogoFolder
 };
