@@ -40,7 +40,8 @@ class Results extends Component {
 
         this.setState({
             dialogOpen: true,
-            dialogContentUrl: url
+            dialogContentUrl: url,
+            downloadUrl: url.replace('diff-table', 'download')
         });
     }
 
@@ -65,7 +66,7 @@ class Results extends Component {
     */
     render() {
         const { results } = this.props;
-        const { dialogOpen, dialogContentUrl } = this.state;
+        const { dialogOpen, dialogContentUrl, downloadUrl } = this.state;
 
         return (
             <div>
@@ -87,8 +88,7 @@ class Results extends Component {
                         <FlatButton
                                 label="Download"
                                 primary={true}
-                                href={ dialogContentUrl }
-                                target="_blank"
+                                href={ downloadUrl }
                                 onTouchTap={this.closeDialog}
                               />,
                         <FlatButton

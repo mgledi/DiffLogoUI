@@ -33,15 +33,13 @@ function renderRows(results, dialog) {
         const basename = files[0].replace(/\.[^/.]+$/, '');
         const filePNG = basename + '.png';
         const filePDF = basename + '.pdf';
-        const fileTXT = basename + '.txt'; // TODO: add functionality for txt output
 
         let pdfIcon = '';
         if(result.files.indexOf(filePDF) > -1) {
             pdfIcon = (
                 <IconButton
                     onClick={() => ReactGA.event({ category: 'User', action: 'Download result PDF' }) }
-                    href={ `/results/diff-table/${timestamp}/${filePDF}` }
-                    target='_blank'
+                    href={ `/results/download/${timestamp}/${filePDF}` }
                     style={styles.icon}
                 >
                     <FontIcon className="material-icons">picture_as_pdf</FontIcon>
@@ -58,8 +56,7 @@ function renderRows(results, dialog) {
                 <TableRowColumn style={styles.tdIcon}>
                     <IconButton
                         onClick={() => ReactGA.event({ category: 'User', action: 'Download result PNG' }) }
-                        href={ `/results/diff-table/${timestamp}/${filePNG}` }
-                        target='_blank'
+                        href={ `/results/download/${timestamp}/${filePNG}` }
                         style={styles.icon}
                     >
                         <FontIcon className="material-icons">image</FontIcon>

@@ -22,6 +22,27 @@ resultRoutes.get('/diff-table/:timestamp/:name', (req, res) => {
     });
 });
 
+resultRoutes.get('/download/:timestamp/:name', (req, res) => {
+    var sessionId = req.session.id;
+    var timestamp = req.params.timestamp;
+    var fileName = req.params.name;
+    var downloadName = timestamp + '-' + fileName;
+    var folder = helper.getDiffLogoTableFolder(sessionId, timestamp);
+    var options = {
+        root: folder,
+        dotfiles: 'deny',
+        headers: {
+            'Content-Disposition': `attachment; filename=${downloadName}`
+        }
+    };
+
+    res.sendFile(fileName, options, (err) => {
+        if (err) {
+            res.status(err.status).end();
+        }
+    });
+});
+
 resultRoutes.get('/seq-logo/:name', (req, res) => {
     var sessionId = req.session.id;
     var fileName = req.params.name;
