@@ -49,6 +49,20 @@ function renderRows(results, dialog, deleteResult) {
             );
         }
 
+        let RIcon = '';
+        if(result.files.indexOf(fileR) > -1) {
+            RIcon = (
+                <IconButton
+                        onClick={() => ReactGA.event({ category: 'User', action: 'Download R script' })}
+                        href={ `/results/download/${timestamp}/${fileR}`}
+                        style={styles.icon}
+                        title="Download R Script"
+                    >
+                    <FontIcon className="material-icons">code</FontIcon>
+                </IconButton>
+            );
+        }
+
         return (
             <TableRow key={timestamp} selectable={false} >
                 <TableRowColumn width={170}>
@@ -75,14 +89,7 @@ function renderRows(results, dialog, deleteResult) {
                     >
                         <FontIcon className="material-icons">visibility</FontIcon>
                     </IconButton>
-                    <IconButton
-                        onClick={() => ReactGA.event({ category: 'User', action: 'Download R script' })}
-                        href={ `/results/download/${timestamp}/${fileR}`}
-                        style={styles.icon}
-                        title="Download R Script"
-                    >
-                        <FontIcon className="material-icons">code</FontIcon>
-                    </IconButton>
+                    {RIcon}
                     <IconButton
                         onClick={(event) => deleteResult(event, timestamp)}
                         href="#"
