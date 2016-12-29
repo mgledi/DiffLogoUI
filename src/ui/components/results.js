@@ -24,8 +24,7 @@ class Results extends Component {
 
         if (unseen > -1) {
             const adhoc = results[unseen];
-
-            var filePNG = adhoc.files[0].replace(/\.[^/.]+$/, "") + ".png";
+            const filePNG = adhoc.files[0].replace(/\.[^/.]+$/, '') + '.png';
 
             this.setState({
                 dialogOpen: true,

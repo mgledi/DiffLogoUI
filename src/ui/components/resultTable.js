@@ -6,8 +6,6 @@ import FontIcon from 'material-ui/FontIcon';
 import moment from 'moment';
 import ReactGA from 'react-ga';
 
-var path = require('path');
-
 const styles = {
     tdIcon: {
         paddingLeft: '0px',
@@ -32,27 +30,31 @@ function renderRows(results, dialog) {
         const humanReadableTimestamp = moment(Number(timestamp)).format('llll');
 
         // each directory (timestamp) represents one result. A result consists of several files
-        var basename = files[0].replace(/\.[^/.]+$/, "");
-        var filePNG = basename + ".png";
-        var filePDF = basename + ".pdf";
-        var fileTXT = basename + ".txt"; // TODO: add functionality for txt output
-        console.log(basename);
+        const basename = files[0].replace(/\.[^/.]+$/, '');
+        const filePNG = basename + '.png';
+        const filePDF = basename + '.pdf';
+        const fileTXT = basename + '.txt'; // TODO: add functionality for txt output
+
+        let pdfIcon = '';
+        if(result.files.indexOf(filePDF) > -1) {
+            pdfIcon = (
+                <IconButton
+                    onClick={() => ReactGA.event({ category: 'User', action: 'Download result PDF' }) }
+                    href={ `/results/diff-table/${timestamp}/${filePDF}` }
+                    target='_blank'
+                    style={styles.icon}
+                >
+                    <FontIcon className="material-icons">picture_as_pdf</FontIcon>
+                </IconButton>
+            );
+        }
 
         return (
             <TableRow key={timestamp} selectable={false} >
                 <TableRowColumn width={170}>
                     { humanReadableTimestamp }
                 </TableRowColumn>
-                <TableRowColumn style={styles.tdIcon}>
-                    <IconButton
-                        onClick={() => ReactGA.event({ category: 'User', action: 'Download result PDF' }) }
-                        href={ `/results/diff-table/${timestamp}/${filePDF}` }
-                        target='_blank'
-                        style={styles.icon}
-                    >
-                        <FontIcon className="material-icons">picture_as_pdf</FontIcon>
-                    </IconButton>
-                </TableRowColumn>
+                <TableRowColumn style={styles.tdIcon}>{pdfIcon}</TableRowColumn>
                 <TableRowColumn style={styles.tdIcon}>
                     <IconButton
                         onClick={() => ReactGA.event({ category: 'User', action: 'Download result PNG' }) }
@@ -77,7 +79,7 @@ function renderRows(results, dialog) {
                 </TableRowColumn>
             </TableRow>
         );
-    });
+    }).reverse();
 }
 
 class ResultTable extends Component {
