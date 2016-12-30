@@ -25,6 +25,7 @@ class Results extends Component {
 
         if (unseen > -1) {
             const adhoc = results[unseen];
+
             let filePNG = '';
             let filePDF = '';
             let fileR = '';
@@ -38,9 +39,12 @@ class Results extends Component {
                 }
             }
 
+            const url = `/results/diff-table/${adhoc.timestamp}/${filePNG}`;
+
             this.setState({
                 dialogOpen: true,
-                dialogContentUrl: `/results/diff-table/${adhoc.timestamp}/${filePNG}`,
+                dialogContentUrl: url,
+                downloadUrl: url.replace('diff-table', 'download'),
                 adhoc: unseen
             });
         }
