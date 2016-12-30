@@ -30,10 +30,19 @@ function renderRows(results, dialog, deleteResult) {
         const humanReadableTimestamp = moment(Number(timestamp)).format('llll');
 
         // each directory (timestamp) represents one result. A result consists of several files
-        const basename = files[0].replace(/\.[^/.]+$/, '');
-        const filePNG = basename + '.png';
-        const filePDF = basename + '.pdf';
-        const fileR = basename + '.R';
+        let filePNG = '';
+        let filePDF = '';
+        let fileR = '';
+        for (var i = 0; i < files.length; i++  ) {
+            if(files[i].endsWith('.png')) {
+                filePNG = files[i];
+            } else if(files[i].endsWith('.pdf')) {
+                filePDF = files[i];
+            } else if(files[i].endsWith('.R')) {
+                fileR = files[i];
+            }
+        }
+        const basename = filePNG.replace(/\.[^/.]+$/, '');
 
         let pdfIcon = '';
         if(result.files.indexOf(filePDF) > -1) {
