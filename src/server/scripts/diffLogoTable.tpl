@@ -77,7 +77,8 @@ alphabet = NULL;
     diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration);
     diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']]
     hc = diffLogoTable[['hc']]
-
+    PWMs = diffLogoTable[['PWMs']]
+    
     png(paste0(output_folder, "/", "diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300);
         drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
     dev.off()
