@@ -1,4 +1,4 @@
-import fetch from 'isomorphic-fetch';
+import 'isomorphic-fetch';
 import ReactGA from 'react-ga';
 import * as ActionTypes from'./types';
 
@@ -22,7 +22,7 @@ export const getFiles = () => {
     };
 };
 
-const generateSeqLogos = (dispatch) => {
+export const generateSeqLogos = (dispatch) => {
     fetch('/seqLogo', {
         credentials: 'same-origin',
         method: 'GET'
