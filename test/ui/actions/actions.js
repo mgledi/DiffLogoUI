@@ -7,6 +7,9 @@ import fetchMock from 'fetch-mock';
 
 const { describe, it, afterEach, beforeEach } = global;
 const mockStore = configureMockStore([thunk]);
+const expectedJsonHeader = new Headers({
+    'Content-Type': 'application/json'
+});
 
 function getFiles() {
     return [
@@ -41,6 +44,15 @@ describe('Actions:', () => {
                 type: types.PROGRESS_PROCESS
             };
             const actual = actions.progressProcess();
+
+            expect(actual).to.be.deep.equal(expected);
+        });
+
+        it('should create an action to start an examples progress', () => {
+            const expected = {
+                type: types.PROGRESS_EXAMPLES
+            };
+            const actual = actions.progressExamples();
 
             expect(actual).to.be.deep.equal(expected);
         });
@@ -233,6 +245,160 @@ describe('Actions:', () => {
 
             store.dispatch(actions.renameFile(getFiles(), 'TEST', 0));
         });
+
+        it('should have correct request header', (done) => {
+            const store = mockStore({ file: {} });
+
+            const unsubscribe = store.subscribe(() => {
+                const call = fetchMock.lastCall('/files')[1];
+                const actual = call.headers;
+
+                expect(actual).to.be.deep.equal(expectedJsonHeader);
+                unsubscribe();
+                done();
+            });
+
+            store.dispatch(actions.renameFile(getFiles(), '', 0));
+        });
     });
 
+    describe('Update Results', () => {
+        beforeEach(() => fetchMock.put('/results', {}));
+
+        afterEach(() => fetchMock.restore());
+
+        it('should call correct URL', () => {
+            const store = mockStore({ files: {} });
+            store.dispatch(actions.updateResults({}));
+
+            expect(fetchMock.called('/results')).to.equal(true);
+        });
+
+        it('should send JSON body with correct values', (done) => {
+            const store = mockStore({ files: {} });
+            const expected = {
+                test: 'TEST'
+            };
+            const unsubscribe = store.subscribe(() => {
+                const call = fetchMock.lastCall('/results')[1];
+                const callBody = JSON.parse(call.body);
+                const actual = callBody;
+
+                expect(actual).to.deep.equal(expected);
+                unsubscribe();
+                done();
+            });
+
+            store.dispatch(actions.updateResults({ test: 'TEST' }));
+        });
+
+        it('should create an action to update files', (done) => {
+            const store = mockStore({ files: {} });
+            const expected = {
+                type: types.UPDATE_FILES,
+                filesState: {}
+            };
+            const unsubscribe = store.subscribe(() => {
+                const actual = store.getActions();
+
+                expect(actual[0]).to.be.deep.equal(expected);
+                unsubscribe();
+                done();
+            });
+
+            store.dispatch(actions.updateResults({}));
+        });
+
+        it('should have correct request header', (done) => {
+            const store = mockStore({ file: {} });
+
+            const unsubscribe = store.subscribe(() => {
+                const call = fetchMock.lastCall('/results')[1];
+                const actual = call.headers;
+
+                expect(actual).to.be.deep.equal(expectedJsonHeader);
+                unsubscribe();
+                done();
+            });
+
+            store.dispatch(actions.updateResults({}));
+        });
+    });
+
+    describe('Copy Examples', () => {
+        beforeEach(() => {
+            fetchMock
+                .post('/files/example', {})
+                .get('/seqLogo', {});
+        });
+
+        afterEach(() => fetchMock.restore());
+
+        it('should call correct url', () => {
+            const store = mockStore({ files: {} });
+            store.dispatch(actions.copyExampleFilesToSession());
+
+            expect(fetchMock.called('/files/example')).to.equal(true);
+        });
+
+        it('should create actions to start/stop progress', (done) => {
+            const store = mockStore({ files: {} });
+            const exampleProgress = {
+                type: types.PROGRESS_EXAMPLES
+            };
+            const stopProgress = {
+                type: types.PROGRESS_STOPPED
+            };
+            let callCount = 0;
+            const unsubscribe = store.subscribe(() => {
+                callCount++;
+
+                if (callCount === 2) {
+                    const actualActions = store.getActions();
+
+                    expect(actualActions[0]).to.be.deep.equal(exampleProgress);
+                    expect(actualActions[1]).to.be.deep.equal(stopProgress);
+                    unsubscribe();
+                    done();
+                }
+
+            });
+
+            store.dispatch(actions.copyExampleFilesToSession());
+        });
+
+        it('should create an action to update files', (done) => {
+            const store = mockStore({ files: {} });
+            const expected = {
+                type: types.UPDATE_FILES,
+                filesState: {}
+            };
+            let callCount = 0;
+            const unsubscribe = store.subscribe(() => {
+                callCount++;
+
+                if (callCount === 3) {
+                    const actualActions = store.getActions();
+
+                    expect(actualActions[2]).to.be.deep.equal(expected);
+                    unsubscribe();
+                    done();
+                }
+
+            });
+
+            store.dispatch(actions.copyExampleFilesToSession());
+        });
+
+        it('should generate seq logos', (done) => {
+            const store = mockStore({ files: {} });
+
+            store.dispatch(actions.copyExampleFilesToSession());
+
+            setTimeout(() => {
+                expect(fetchMock.called('/seqLogo')).to.equal(true);
+                done();
+            }, 0);
+        });
+    });
 });

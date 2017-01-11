@@ -50,6 +50,20 @@ describe('Reducer:', () => {
             expect(actual).to.deep.equal(expected);
         });
 
+        it('should return correct state if action type is `PROGRESS_EXAMPLES`', () => {
+            const expected = { active: true, message: 'Prepare Examples' };
+            const actual = progress(undefinedState, { type: ActionTypes.PROGRESS_EXAMPLES });
+
+            expect(actual).to.deep.equal(expected);
+        });
+
+        it('should alter to correct state if action type is `PROGRESS_EXAMPLES`', () => {
+            const expected = { active: true, message: 'Prepare Examples' };
+            const actual = progress(randomProgressState, { type: ActionTypes.PROGRESS_EXAMPLES });
+
+            expect(actual).to.deep.equal(expected);
+        });
+
         it('should return correct state if action type is `PROGRESS_STOPPED`', () => {
             const expected = { active: false, message: '' };
             const actual = progress(undefinedState, { type: ActionTypes.PROGRESS_STOPPED });
