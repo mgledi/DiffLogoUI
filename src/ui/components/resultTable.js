@@ -33,7 +33,7 @@ function renderRows(results, dialog, deleteResult) {
         let filePNG = '';
         let filePDF = '';
         let fileR = '';
-        for (var i = 0; i < files.length; i++  ) {
+        for (let i = 0; i < files.length; i++) {
             if(files[i].endsWith('.png')) {
                 filePNG = files[i];
             } else if(files[i].endsWith('.pdf')) {

@@ -36,6 +36,8 @@ function validateAlignment(filePath) {
             if (last) {
                 resolve(error);
             }
+
+            return true;
         });
     });
 }
@@ -82,6 +84,8 @@ function validateFasta(filePath) {
                 }
                 resolve(error);
             }
+
+            return true;
         });
     });
 }
@@ -144,6 +148,8 @@ function validatePWM(filePath) {
 
                 resolve(error);
             }
+
+            return true;
         });
     });
 }
@@ -199,6 +205,8 @@ function validatePFM(filePath) {
                 }
                 resolve(error);
             }
+
+            return true;
         });
     });
 }

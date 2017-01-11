@@ -27,15 +27,9 @@ class Results extends Component {
             const adhoc = results[unseen];
 
             let filePNG = '';
-            let filePDF = '';
-            let fileR = '';
-            for (var i = 0; i < adhoc.files.length; i++  ) {
+            for (let i = 0; i < adhoc.files.length; i++) {
                 if(adhoc.files[i].endsWith('.png')) {
                     filePNG = adhoc.files[i];
-                } else if(adhoc.files[i].endsWith('.pdf')) {
-                    filePDF = adhoc.files[i];
-                } else if(adhoc.files[i].endsWith('.R')) {
-                    fileR = adhoc.files[i];
                 }
             }
 
