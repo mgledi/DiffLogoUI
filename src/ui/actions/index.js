@@ -4,6 +4,7 @@ import * as ActionTypes from'./types';
 
 export const progressUpload = () => ({ type: ActionTypes.PROGRESS_UPLOAD });
 export const progressProcess = () => ({ type: ActionTypes.PROGRESS_PROCESS });
+export const progressExamples = () => ({ type: ActionTypes.PROGRESS_EXAMPLES });
 export const progressStopped = () => ({ type: ActionTypes.PROGRESS_STOPPED });
 
 // Files
@@ -89,7 +90,7 @@ export const updateResults = (results) => {
 
 export const copyExampleFilesToSession = () => {
     return (dispatch) => {
-        dispatch(progressUpload());
+        dispatch(progressExamples());
         fetch('/files/example', {
             credentials: 'same-origin',
             method: 'POST'

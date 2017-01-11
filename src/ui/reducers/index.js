@@ -37,6 +37,13 @@ export const progress = (state = { active: false, message: '' }, action) => {
                 { active: true, message: 'Processing …' }
             );
         }
+        case ActionTypes.PROGRESS_EXAMPLES: {
+            return Object.assign(
+                {},
+                state,
+                { active: true, message: 'Prepare Examples' }
+            );
+        }
         case ActionTypes.PROGRESS_STOPPED: {
             return Object.assign(
                 {},
