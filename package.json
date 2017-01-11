@@ -6,12 +6,17 @@
   "repository": "https://github.com/mgledi/DiffLogoUI",
   "scripts": {
     "clean": "rimraf ./files ./sessions",
+    "mocha": "mocha --require babel-register ./test/**/*.js",
     "pretest": "eslint ./src/",
-    "test": "mocha --require babel-register ./test/**/*.js",
-    "test-watch": "npm test -- --watch --watch-extension js",
+    "test": "BABEL_ENV=coverage nyc --reporter=lcov --reporter=text npm run mocha",
+    "test-watch": "npm run mocha -- --watch --watch-extension js",
     "prebuild": "rimraf ./dist",
     "build": "NODE_ENV=production webpack --config webpack.config.js",
     "postbuild": "sh ./build.sh"
+  },
+  "nyc": {
+      "sourceMap": false,
+      "instrument": false
   },
   "author": "Jörg Weber, Martin Nettling",
   "license": "ISC",
@@ -33,6 +38,7 @@
     "babel-core": "^6.20.0",
     "babel-eslint": "^7.1.1",
     "babel-loader": "^6.2.9",
+    "babel-plugin-istanbul": "^3.1.2",
     "babel-polyfill": "^6.20.0",
     "babel-preset-es2015": "^6.16.0",
     "babel-preset-react": "^6.16.0",
@@ -53,6 +59,7 @@
     "material-ui": "^0.16.5",
     "mocha": "^3.2.0",
     "moment": "^2.17.1",
+    "nyc": "^10.0.0",
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-dropzone": "^3.7.3",

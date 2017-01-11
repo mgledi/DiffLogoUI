@@ -1,8 +1,10 @@
 .DS_Store
+.nyc_output
 node_modules
 dist
 sessions
 files
+coverage
 R
 *.sublime-*
 
