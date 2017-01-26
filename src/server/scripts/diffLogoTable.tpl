@@ -53,6 +53,12 @@ alphabet = NULL;
     } else {
          stop("Detected at least two different alphabets.");
     }
+
+    <% if (file.orientation === "backward") { %>
+        # switch orientation if possible
+        if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PWMs[["<%= file.name %>"]]);
+    <% } %>
+
 <% }); %>
 
 

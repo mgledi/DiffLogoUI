@@ -19,6 +19,9 @@ const styles = {
     smallIcon: {
         fontSize: '13px'
     },
+    largeIcon: {
+        fontSize: '20px'
+    },
     renameButton: {
         padding: 0,
         width: '28px',
@@ -54,7 +57,7 @@ const styles = {
     }
 };
 
-function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
+function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen, handleSwitchOrientation) {
     if (file.error !== '') {
         return (
             <span style={styles.textError} >Can not parse file: {file.error}</span>
@@ -65,13 +68,21 @@ function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) {
         const seqLogoFileSparse = `/results/seq-logo/${file.seqLogoFileSparse}`;
 
         return (
-            <img
-                onClick={(event) => handleSeqLogoPopoverOpen(event, index)}
-                key={ `seqLogoThumbnail_${index}`}
-                width='120'
-                src={seqLogoFileSparse}
-                style={{cursor: 'pointer'}}
-            />
+            <div>
+                <img
+                    onClick={(event) => handleSeqLogoPopoverOpen(event, index)}
+                    key={ `seqLogoThumbnail_${index}`}
+                    width='120'
+                    src={seqLogoFileSparse}
+                    style={{cursor: 'pointer', float: 'left'}}
+                />
+                <span>
+                    <IconButton iconClassName="material-icons"
+                        iconStyle={ styles.largeIcon }
+                        onClick={(event) => handleSwitchOrientation(event, index)}
+                    >swap_horiz</IconButton>
+                </span>
+            </div>
         );
     }
 
@@ -92,7 +103,7 @@ function renderMessages(messages) {
     });
 }
 
-function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpen, setSelectedFiles, handleChangeFileType) {
+function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpen, handleSwitchOrientation, setSelectedFiles, handleChangeFileType) {
     return (
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
             <TableHeader adjustForCheckbox={ true } displaySelectAll= { false }>
@@ -120,7 +131,7 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                                 { file.name }
                             </TableRowColumn>
                             <TableRowColumn width="20%">{ file.originalname }</TableRowColumn>
-                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen) } </TableRowColumn>
+                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen, handleSwitchOrientation) } </TableRowColumn>
                             <TableRowColumn width="120px">
                                 <div>
                                     <SelectField
@@ -196,6 +207,7 @@ function getPopover(open, anchorEl, inputValue, handlePopoverClose) {
 
 class Files extends Component {
     state = {
+        seqLogoPopoverOpen: false,
         popoverOpen: false,
         anchorEl: null,
         fileIndex: -1,
@@ -209,6 +221,7 @@ class Files extends Component {
         this.handleSeqLogoPopoverOpen = this.handleSeqLogoPopoverOpen.bind(this);
         this.handleSeqLogoPopoverClose = this.handleSeqLogoPopoverClose.bind(this);
         this.handleChangeFileType = this.handleChangeFileType.bind(this);
+        this.handleSwitchOrientation = this.handleSwitchOrientation.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
         this.uploadExample = this.uploadExample.bind(this);
@@ -242,6 +255,13 @@ class Files extends Component {
             anchorEl: event.target,
             fileIndex: index
         });
+    }
+
+    handleSwitchOrientation(event, index) {
+        ReactGA.event({category: 'User', action: 'Switch orientation' });
+        const { switchOrientation } = this.props;
+        event.stopPropagation();
+        switchOrientation(index);
     }
 
     handlePopoverClose() {
@@ -334,7 +354,7 @@ class Files extends Component {
                             <div><FlatButton label="Download example files." labelPosition="before" href="https://github.com/mgledi/DiffLogoUI/raw/master/example_ctcf/ctcf.zip"/></div>
                         </div>
                         :
-                        renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.setSelectedFiles, this.handleChangeFileType)}
+                        renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.handleSwitchOrientation, this.setSelectedFiles, this.handleChangeFileType)}
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
@@ -368,6 +388,7 @@ Files.propTypes = {
     deleteFiles: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
     changeFileType: PropTypes.func.isRequired,
+    switchOrientation: PropTypes.func.isRequired,
     uploadExample: PropTypes.func.isRequired,
     startAnalysis: PropTypes.func.isRequired
 };

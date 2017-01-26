@@ -11,6 +11,7 @@ import {
     getFiles,
     renameFile,
     changeFileType,
+    switchOrientation,
     uploadFiles,
     deleteFiles,
     deleteResult,
@@ -25,6 +26,7 @@ class App extends Component {
         super(props);
         this.renameFile = this.renameFile.bind(this);
         this.changeFileType = this.changeFileType.bind(this);
+        this.switchOrientation = this.switchOrientation.bind(this);
         this.uploadFiles = this.uploadFiles.bind(this);
         this.deleteFiles = this.deleteFiles.bind(this);
         this.deleteResult = this.deleteResult.bind(this);
@@ -36,7 +38,6 @@ class App extends Component {
 
     componentWillMount() {
         const { dispatch } = this.props;
-
         dispatch(getFiles());
     }
 
@@ -66,9 +67,13 @@ class App extends Component {
         dispatch(deleteFiles({ files: filtered }));
     }
 
+    switchOrientation(index) {
+        const { dispatch, files } = this.props;
+        dispatch(switchOrientation(files.list, index));
+    }
+
     deleteResult(timestamp) {
         const { dispatch } = this.props;
-
         dispatch(deleteResult(timestamp));
     }
 
@@ -110,6 +115,7 @@ class App extends Component {
                             <Files
                                 files={ files.list }
                                 changeFileType = { this.changeFileType }
+                                switchOrientation = { this.switchOrientation }
                                 renameFile = { this.renameFile }
                                 uploadFiles = { this.uploadFiles }
                                 deleteFiles = { this.deleteFiles }

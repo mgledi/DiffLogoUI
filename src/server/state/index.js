@@ -105,7 +105,8 @@ function getUploadFolderContent(sessionId) {
                         error: '',
                         validated: false,
                         seqLogoFileSparse: '',
-                        seqLogoFile: ''
+                        seqLogoFile: '',
+                        orientation: 'forward'
                     };
                 });
 

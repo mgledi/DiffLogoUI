@@ -84,8 +84,8 @@ function updateState(obj) {
     var state = obj.state;
     var updatedFiles = state.files.map((file) => {
         if (file.error === '') {
-            file.seqLogoFile = 'seqLogo_' + path.basename(file.path) + '.png';
-            file.seqLogoFileSparse = 'seqLogo_' + path.basename(file.path) + '_sparse.png';
+            file.seqLogoFile = 'seqLogo_' + path.basename(file.path) + '_' + file.orientation + '.png';
+            file.seqLogoFileSparse = 'seqLogo_' + path.basename(file.path) + '_' + file.orientation + '_sparse.png';
         }
         return file;
     });

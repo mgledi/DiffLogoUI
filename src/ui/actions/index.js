@@ -32,6 +32,32 @@ export const generateSeqLogos = (dispatch) => {
         .then((state) => dispatch(updateFiles(state)));
 };
 
+export const switchOrientation = (files, index) => {
+    if (files[index].orientation === 'forward') {
+        files[index].orientation = 'backward';
+    } else if (files[index].orientation === 'backward') {
+        files[index].orientation = 'forward';
+    }
+    files[index].seqLogoFile = '';
+    files[index].seqLogoFileSparse = '';
+
+    return (dispatch) => {
+        fetch('/files', {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify(files),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+            .then((response) => response.json())
+            .then((state) => {
+                dispatch(updateFiles(state));
+                generateSeqLogos(dispatch);
+            });
+    };
+};
+
 export const changeFileType = (files, type, index) => {
     files[index].type = type;
     files[index].error = '';
