@@ -15,8 +15,8 @@
     "postbuild": "sh ./build.sh"
   },
   "nyc": {
-      "sourceMap": false,
-      "instrument": false
+    "sourceMap": false,
+    "instrument": false
   },
   "author": "Jörg Weber, Martin Nettling",
   "license": "ISC",
