@@ -146,7 +146,7 @@ function validatePWM(filePath) {
 
                 for (m = 0; m <= totalColumns; m++) {
                     columnSum = getSumForPwmColumn(alphabet, m);
-                    if (Math.abs(1 - columnSum) > 0.000001) {
+                    if (Math.abs(1 - columnSum) > 0.001) {
                         error = `Elements in column ${m + 1} sum not to 1.0 (${columnSum})`;
                         logger.log('debug', 'validatePWM - sum error - %s', error);
                         resolve(error);
