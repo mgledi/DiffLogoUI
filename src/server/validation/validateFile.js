@@ -9,6 +9,10 @@ function getLineLengthError(line, filePath) {
     return `Error in line ${line}. All lines in ${path.basename(filePath)} must have the same length!`;
 }
 
+function getUnkownSymbolError(line, filePath) {
+    return `Error in line ${line}. All sequences in ${path.basename(filePath)} must only consist of letters!`;
+}
+
 function validateAlignment(filePath) {
     logger.log('debug', 'Validating alignment: %s', filePath);
 
@@ -31,6 +35,9 @@ function validateAlignment(filePath) {
                 logger.log('debug', 'validateAlignment - line length error -%s', error);
                 resolve(error);
                 return false;
+            } else if(!tfbs.match(/^[A-Za-z]+$/)) {
+                error = getUnkownSymbolError(row, filePath);
+                logger.log('debug', 'validateAlignment - line length error -%s', error);
             }
 
             if (last) {
@@ -107,7 +114,7 @@ function validatePWM(filePath) {
         var columnSum = 0;
 
         lineReader.eachLine(filePath, (line, last) => {
-            var lineSplit = line.trim().split('\t');
+            var lineSplit = line.trim().match(/\S+/g);
             var splitLength = lineSplit.length;
 
             lineCount++;
@@ -165,13 +172,13 @@ function validatePFM(filePath) {
         var columnSum = 0;
 
         lineReader.eachLine(filePath, (line, last) => {
-            var lineSplit = line.trim().split('\t');
+            var lineSplit = line.trim().match(/\S+/g);
             var splitLength = lineSplit.length;
             var m = 0;
 
             lineCount++;
 
-            if (lineLength > -1 && lineLength !== lineSplit.length) {
+            if (lineLength > -1 && lineLength !== splitLength) {
                 error = getLineLengthError(lineCount, filePath);
                 logger.log('debug', 'validatePFM - line length error - %s', error);
                 resolve(error);
@@ -192,7 +199,7 @@ function validatePFM(filePath) {
                 return false;
             }
 
-            lineLength = lineSplit.length;
+            lineLength = splitLength;
             alphabet.push(lineSplit);
             if (last) {
                 for (m = 0; m <= lineLength; m++) {
@@ -206,6 +213,45 @@ function validatePFM(filePath) {
                 resolve(error);
             }
 
+            return true;
+        });
+    });
+}
+
+function validateHomer(filePath) {
+    logger.log('debug', 'Validating PFM: %s', filePath);
+    return new Promise((resolve) => {
+        var error = '';
+        var lineCount = 0;
+        var lineLength = -1;
+
+        lineReader.eachLine(filePath, (line) => {
+            var lineSplit = line.trim().match(/\S+/g);
+            var splitLength = lineSplit.length;
+            var m = 0;
+
+            lineCount++;
+
+            if (lineLength > -1 && lineLength !== splitLength) {
+                error = getLineLengthError(lineCount, filePath);
+                logger.log('debug', 'validateHomer - line length error - %s', error);
+                resolve(error);
+                return false;
+            }
+
+            // try parsing all numbers
+            for (; m < splitLength; m++) {
+                if (isNaN(lineSplit[m])) {
+                    error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
+                    break;
+                }
+            }
+
+            if (error !== '') {
+                logger.log('debug', 'validateHomer - NAN error - %s', error);
+                resolve(error);
+                return false;
+            }
             return true;
         });
     });
@@ -230,6 +276,10 @@ module.exports = function validate(file) {
             });
         case 'pfm':
             return validatePFM(file.path).then((error) => {
+                return error !== '' ? (error + suffix) : '';
+            });
+        case 'homer':
+            return validateHomer(file.path).then((error) => {
                 return error !== '' ? (error + suffix) : '';
             });
         default:
