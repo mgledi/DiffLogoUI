@@ -155,9 +155,9 @@ function validatePWM(filePath) {
 
                 resolve(error);
             }
-
             return true;
         });
+        resolve(error);
     });
 }
 
@@ -215,11 +215,12 @@ function validatePFM(filePath) {
 
             return true;
         });
+        resolve(error);
     });
 }
 
 function validateHomer(filePath) {
-    logger.log('debug', 'Validating PFM: %s', filePath);
+    logger.log('debug', 'Validating Homer: %s', filePath);
     return new Promise((resolve) => {
         var error = '';
         var lineCount = 0;
@@ -254,6 +255,7 @@ function validateHomer(filePath) {
             }
             return true;
         });
+        resolve(error);
     });
 }
 
