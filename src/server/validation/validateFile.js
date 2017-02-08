@@ -23,7 +23,7 @@ function validateAlignment(filePath) {
 
         lineReader.eachLine(filePath, (line, last) => {
             // in an alignment file there can be scores
-            var tfbs = line.split('\t')[0];
+            var tfbs = line.split('\t')[0].trim();
 
             row++;
             if(length === -1) {
@@ -35,7 +35,7 @@ function validateAlignment(filePath) {
                 logger.log('debug', 'validateAlignment - line length error -%s', error);
                 resolve(error);
                 return false;
-            } else if(!tfbs.match(/^[A-Za-z]+$/)) {
+            } else if(!tfbs.match(/^[A-Za-z\-]+$/)) {
                 error = getUnkownSymbolError(row, filePath);
                 logger.log('debug', 'validateAlignment - line length error -%s', error);
             }

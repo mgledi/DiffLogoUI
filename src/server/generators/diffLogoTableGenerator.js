@@ -26,7 +26,7 @@ function writeConfig(state, fileList, sessionId, rsource) {
             rsource: rFolder
         }
     );
-    var configString = template(diffLogoTableTemplate)(finalConfig);
+    var configString = template(diffLogoTableTemplate)(finalConfig).replace(/\n\s*\n\s*\n/g, '\n\n');
     var configFilePath = path.join(configFolder, 'diffLogoTable.R');
 
     logger.log('debug', 'DiffLogoTableGenerator.writeConfig %s %s', sessionId, rsource);

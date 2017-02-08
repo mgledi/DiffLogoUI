@@ -25,7 +25,7 @@ function writeConfig(state, sessionId, rsource) {
             rsource: rFolder
         }
     );
-    var configString = template(seqLogoTemplate)(finalConfig);
+    var configString = template(seqLogoTemplate)(finalConfig).replace(/\n\s*\n\s*\n/g, '\n\n');
 
     logger.log('debug', 'SeqLogoGenerator.writeConfig %s %s', sessionId, rsource);
     logger.log('debug', 'SeqLogoGenerator.writeConfig - upload folder - %s', uploadFolder);

@@ -46,14 +46,13 @@ PWMs[["<%= file.name %>"]] = getPwmFromPfmFile(paste(motif_folder, "/", "<%= fil
         <% if (file.type === 'homer') { %> 
 PWMs[["<%= file.name %>"]] = getPwmFromHomerFile(paste(motif_folder, "/", "<%= file.originalname %>", sep=""));
         <% } %>
-
-        if(nrow(PWMs[["<%= file.name %>"]]) == length(DNA$chars)) {
-            currentAlphabet = DNA;
-        } else if(nrow(PWMs[["<%= file.name %>"]]) == length(ASN$chars)) {
-            currentAlphabet = ASN;
-        } else {
-            stop("The given PWM has an unkown size of rows.")
-        }
+if(nrow(PWMs[["<%= file.name %>"]]) == length(DNA$chars)) {
+    currentAlphabet = DNA;
+} else if(nrow(PWMs[["<%= file.name %>"]]) == length(ASN$chars)) {
+    currentAlphabet = ASN;
+} else {
+    stop("The given PWM has an unkown size of rows.")
+}
     <% } %>
 if( is.null(alphabet)) {
     alphabet = currentAlphabet;
@@ -62,7 +61,6 @@ if( is.null(alphabet)) {
 } else {
      stop("Detected at least two different alphabets.");
 }
-
     <% if (file.orientation === "backward") { %>
 # switch orientation if possible
 if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PWMs[["<%= file.name %>"]]);
@@ -73,7 +71,6 @@ if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PW
 <% if (files.length < 2) { %>
     
 <% } else if (files.length == 2) { %>
-
 diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet, align_pwms=T)
 png(paste0(output_folder, "/", "differenceLogo.png"),width=8,height=4, units="in", res=300); 
     diffLogo(diffLogoObj)
@@ -82,7 +79,6 @@ dev.off()
 pdf(paste0(output_folder, "/", "differenceLogo.pdf"),width=8,height=4); 
     diffLogo(diffLogoObj)
 dev.off()
-
 <% } else { %>
 
 configuration = list();
@@ -101,5 +97,3 @@ pdf(paste0(output_folder, "/", "diffLogoTable.pdf"),width=10 * 16/10, height = 1
 dev.off()
 
 <% } %>
-
-
