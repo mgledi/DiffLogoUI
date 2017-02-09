@@ -29,6 +29,7 @@ module.exports = function server(options) {
         secret: options.secret,
         resave: false,
         saveUninitialized: true,
+        ttl: 60 * 60 * 24,
         cookie: {
             path: '/',
             httpOnly: true,
