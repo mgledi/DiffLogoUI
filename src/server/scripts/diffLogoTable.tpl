@@ -84,16 +84,13 @@ dev.off()
 configuration = list();
 configuration[['ratio']] = 16/10;
 diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration);
-diffLogoObjMatrix = diffLogoTable[['diffLogoObjMatrix']]
-hc = diffLogoTable[['hc']]
-PWMs = diffLogoTable[['PWMs']]
 
 png(paste0(output_folder, "/", "diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300);
-    drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
+    drawDiffLogoTable(diffLogoTable);
 dev.off()
 
 pdf(paste0(output_folder, "/", "diffLogoTable.pdf"),width=10 * 16/10, height = 10);
-    drawDiffLogoTable(PWMs, diffLogoObjMatrix, hc, alphabet, configuration );
+    drawDiffLogoTable(diffLogoTable);
 dev.off()
 
 <% } %>
