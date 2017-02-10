@@ -32,8 +32,9 @@ function validateAlignment(filePath) {
             row++;
             if(length === -1) {
                 length = tfbs.length;
-            } else if(tfbs.length === 0) {
-                // do nothing
+            }
+            if(tfbs.length === 0) {
+                // empty line, do nothing
             } else if(length !== tfbs.length) {
                 error = getLineLengthError(row, filePath);
                 logger.log('debug', 'validateAlignment - line length error -%s', error);
@@ -42,6 +43,8 @@ function validateAlignment(filePath) {
             } else if(!tfbs.match(/^[A-Za-z\-]+$/)) {
                 error = getUnkownSymbolError(row, filePath);
                 logger.log('debug', 'validateAlignment - character error -%s', error);
+                resolve(error);
+                return false;
             }
 
             if (last) {
@@ -72,9 +75,15 @@ function validateFasta(filePath) {
                         logger.log('debug', '%d: %s', row, tfbs);
                         if(length === -1) {
                             length = tfbs.length;
-                        } else if(length !== tfbs.length) {
+                        }
+                        if(length !== tfbs.length) {
                             error = getLineLengthError(row - 1, filePath);
                             logger.log('debug', 'validateFasta - line length error - %s', error);
+                            resolve(error);
+                            return false;
+                        } else if(!(/^[A-Za-z\-]+$/).test(tfbs)) {
+                            error = getUnkownSymbolError(row, filePath);
+                            logger.log('debug', 'validateFasta - character error -%s', error);
                             resolve(error);
                             return false;
                         }
@@ -219,12 +228,20 @@ function validateHomer(filePath) {
         var lineLength = -1;
 
         lineReader.eachLine(filePath, (line, last) => {
-            var lineSplit = line.trim().match(/\S+/g);
+            var lineSplit = line.trim().split(/\S+/g);
             var splitLength = lineSplit.length;
             var m = 0;
 
             lineCount++;
 
+            if (lineCount === 1) {
+                if(!line.startsWith('>')) {
+                    error = 'First line must start with ">"';
+                    logger.log('debug', 'validateJaspar - first line error - %s', error);
+                    resolve(error);
+                    return false;
+                }
+            }
             if (lineLength > -1 && lineLength !== splitLength) {
                 error = getLineLengthError(lineCount, filePath);
                 logger.log('debug', 'validateHomer - line length error - %s', error);
@@ -256,6 +273,7 @@ function validateJaspar(filePath) {
         var columnCount = -1;
         var m = 0;
         var pfm = '';
+        var columns;
 
         lineReader.eachLine(filePath, (line, last) => {
             lineCount++;
@@ -275,7 +293,7 @@ function validateJaspar(filePath) {
                     resolve(error);
                     return false;
                 } else {
-                    var columns = pfm.trim().split(/\s+/);
+                    columns = pfm.trim().split(/\s+/);
                     if(columnCount !== -1 && columns.length !== columnCount) {
                         error = 'Error in line ' + lineCount + '. Expected ' + columnCount + ' columns, but saw ' + columns.length + '.';
                     } else {
