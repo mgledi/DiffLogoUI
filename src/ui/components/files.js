@@ -145,6 +145,7 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                                         <MenuItem value={'homer'} primaryText="homer" />
                                         <MenuItem value={'pfm'} primaryText="pfm" />
                                         <MenuItem value={'pwm'} primaryText="pwm" />
+                                        <MenuItem value={'jaspar'} primaryText="jaspar" />
                                     </SelectField>
                                 </div>
                             </TableRowColumn>

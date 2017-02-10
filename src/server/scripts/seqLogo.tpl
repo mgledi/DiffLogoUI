@@ -31,12 +31,12 @@ if( length(setdiff(DNAchars, DNA$chars))==0 ) {
     stop("Unsupported alphabet.")
 }
 pwm = getPwmFromAlignment(lines,alphabet=currentAlphabet,pseudoCount=0);
-        <% } else if (file.type === 'pwm' || file.type === 'pfm' || file.type === 'homer') { %>
+        <% } else if (file.type === 'pwm' || file.type === 'pfm' || file.type === 'homer' || file.type === 'jaspar') { %>
             <% if (file.type === 'pwm') { %> 
 pwm = getPwmFromPwmFile(paste(motif_folder, "/", "<%= file.originalname %>", sep=""));
             <% } %>
-            <% if (file.type === 'pfm') { %> 
-pwm = getPwmFromPfmFile(paste(motif_folder, "/", "<%= file.originalname %>", sep=""));
+            <% if (file.type === 'pfm' || file.type === 'jaspar') { %> 
+pwm = getPwmFromPfmOrJasparFile(paste(motif_folder, "/", "<%= file.originalname %>", sep=""));
             <% } %>
             <% if (file.type === 'homer') { %> 
 pwm = getPwmFromHomerFile(paste(motif_folder, "/", "<%= file.originalname %>", sep=""));

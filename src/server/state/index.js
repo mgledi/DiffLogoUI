@@ -15,6 +15,7 @@ var FASTA_EXT = ['.fa', '.fasta'];
 var PWM_EXT = ['.pwm'];
 var PFM_EXT = ['.pfm'];
 var HOMER_EXT = ['.homer', '.hom'];
+var JASPAR_EXT = ['.jaspar', '.jas'];
 
 logger.level = process.env.LOG_LEVEL || 'info';
 
@@ -94,6 +95,8 @@ function getUploadFolderContent(sessionId) {
                         fileType = 'fasta';
                     } else if (HOMER_EXT.indexOf(extension) > -1) {
                         fileType = 'homer';
+                    } else if (JASPAR_EXT.indexOf(extension) > -1) {
+                        fileType = 'jaspar';
                     }
 
                     return {
