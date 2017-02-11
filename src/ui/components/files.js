@@ -364,10 +364,11 @@ class Files extends Component {
                 <Row around="xs" center="xs">
                     <Col xs={2}>
                         <RaisedButton 
-                            label={ selected.length === 0 ? "Delete All Files" : "Delete Files" }
+                            label={ selected.length === 0 ? "Delete all motifs" : "Delete motifs" }
                             secondary={ true }
                             backgroundColor='red' 
                             onClick={ this.deleteFiles } 
+                            fullWidth={true}
                             disabled={ files.length === 0 }/>
                     </Col>
                     <Col xs>
@@ -375,10 +376,11 @@ class Files extends Component {
                     </Col>
                     <Col xs={2}>
                         <RaisedButton
-                            label="Start"
+                            label={selected.length === 0 ? 'Compare all motifs' : 'Compare motifs'}
                             primary={ true }
                             disabled={ this.disableStartButton(selected) }
                             style={ styles.startButton }
+                            fullWidth={true}
                             onClick={ this.startAnalysis }
                         />
                     </Col>

@@ -6,19 +6,33 @@ import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 
+const styles = {
+    link: {
+        color: 'black',
+        textDecoration: 'none'
+    }
+}
+
 const NavigationMenu = (props) => (
       <IconMenu
         {...props}
         iconButtonElement={
             <IconButton>
-                <FontIcon className="material-icons" color={ 'white' }>more_vert</FontIcon>
+                <FontIcon className="material-icons" color={ 'white' }>menu</FontIcon>
             </IconButton>
         }
         targetOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
+
       >
-        <Link to="about">
-            <MenuItem primaryText="About" />
+        <Link to="analysis" style={styles.link}>
+            <MenuItem   primaryText="Analysis"/>
+        </Link>
+        <Link to="about" style={styles.link}>
+            <MenuItem primaryText="About"/>
+        </Link>
+        <Link to="cite" style={styles.link}>
+            <MenuItem primaryText="Cite"/>
         </Link>
     </IconMenu>
 );
@@ -32,8 +46,8 @@ class Header extends Component {
         return (
             <AppBar
                 title="WebDiffLogo: Comparative visualization of sequence motifs"
-                showMenuIconButton={false}
-                iconElementRight={ <NavigationMenu /> }
+                showMenuIconButton={true}
+                iconElementLeft={ <NavigationMenu /> }
             />
         );
     }
