@@ -9,7 +9,7 @@ class Header extends Component {
     render() {
         return (
             <AppBar
-                title="WebDiffLogo"
+                title="WebDiffLogo: Comparative visualization of sequence motifs"
                 showMenuIconButton={false}
             />
         );

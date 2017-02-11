@@ -146,7 +146,7 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                                         <MenuItem value={'pfm'} primaryText="pfm" />
                                         <MenuItem value={'pwm'} primaryText="pwm" />
                                         <MenuItem value={'jaspar'} primaryText="jaspar" />
-                                        <MenuItem value={'unknown'} primaryText="unknown" />
+                                        <MenuItem value={'unknown'} primaryText="unknown" disabled={true}/>
                                     </SelectField>
                                 </div>
                             </TableRowColumn>
@@ -363,7 +363,12 @@ class Files extends Component {
                 <CardActions>
                 <Row around="xs" center="xs">
                     <Col xs={2}>
-                        <FlatButton label="Delete Files" labelPosition="before" onClick={ this.deleteFiles } disabled={ files.length === 0 }/>
+                        <RaisedButton 
+                            label="Delete Files" 
+                            secondary={ true }
+                            backgroundColor='red' 
+                            onClick={ this.deleteFiles } 
+                            disabled={ files.length === 0 }/>
                     </Col>
                     <Col xs>
                         <DropZone onDrop={ uploadFiles }/>
