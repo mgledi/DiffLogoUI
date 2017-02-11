@@ -364,7 +364,7 @@ class Files extends Component {
                 <Row around="xs" center="xs">
                     <Col xs={2}>
                         <RaisedButton 
-                            label="Delete Files" 
+                            label={ selected.length === 0 ? "Delete All Files" : "Delete Files" }
                             secondary={ true }
                             backgroundColor='red' 
                             onClick={ this.deleteFiles } 
