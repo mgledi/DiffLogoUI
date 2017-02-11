@@ -1,20 +1,20 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './container/App.js';
-import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import { browserHistory } from 'react-router';
+import { syncHistoryWithStore } from 'react-router-redux';
 import injectTapEventPlugin from 'react-tap-event-plugin';
-import { Provider } from 'react-redux';
 import configureStore from './store/store';
 import ReactGA from 'react-ga';
 
+import Root from './container/Root';
+
 injectTapEventPlugin();
 
+const store = configureStore();
+const history = syncHistoryWithStore(browserHistory, store);
+
 ReactDOM.render(
-    <Provider store={ configureStore() } >
-        <MuiThemeProvider>
-            <App />
-        </MuiThemeProvider>
-    </Provider>
+    <Root store={store} history={history} />
     , document.getElementById('root'));
 
 ReactGA.initialize('UA-88450928-1');

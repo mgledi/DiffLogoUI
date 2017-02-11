@@ -1,4 +1,5 @@
 import { combineReducers } from 'redux';
+import { routerReducer } from 'react-router-redux';
 import * as ActionTypes from '../actions/types';
 
 export const files = (state = { list: [], alphabet: 'DNA', selection: [], results: [], timestamp: 0 }, action) => {
@@ -59,5 +60,6 @@ export const progress = (state = { active: false, message: '' }, action) => {
 
 export default combineReducers({
     files,
-    progress
+    progress,
+    routing: routerReducer
 });
