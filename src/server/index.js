@@ -60,11 +60,11 @@ module.exports = function server(options) {
         app.use(webpackHotMiddleware(compiler));
     }
 
-    app.use('/', ui(middleware, PRODUCTION));
     app.use('/files', fileRoutes);
     app.use('/diffLogo', diffLogoRoute(rsource));
     app.use('/seqLogo', seqLogoRoute(rsource));
     app.use('/results', resultRoutes);
+    app.all('/*', ui(middleware, PRODUCTION));
 
     app.listen(options.port, () => console.log('App is listen to port ', options.port)); // eslint-disable-line no-console
 };
