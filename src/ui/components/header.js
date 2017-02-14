@@ -25,7 +25,7 @@ const NavigationMenu = (props) => (
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 
       >
-        <Link to="analysis" style={styles.link}>
+        <Link to="/" style={styles.link}>
             <MenuItem   primaryText="Analysis"/>
         </Link>
         <Link to="about" style={styles.link}>
@@ -33,6 +33,9 @@ const NavigationMenu = (props) => (
         </Link>
         <Link to="cite" style={styles.link}>
             <MenuItem primaryText="Cite"/>
+        </Link>
+        <Link to="fileformats" style={styles.link}>
+            <MenuItem primaryText="Supported file formats"/>
         </Link>
     </IconMenu>
 );
@@ -45,7 +48,7 @@ class Header extends Component {
     render() {
         return (
             <AppBar
-                title="WebDiffLogo: Comparative visualization of sequence motifs"
+                title="WebDiffLogo: Alignment, clustering, and comparative visualization of sequence motifs"
                 showMenuIconButton={true}
                 iconElementLeft={ <NavigationMenu /> }
             />

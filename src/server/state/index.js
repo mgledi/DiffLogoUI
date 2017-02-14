@@ -14,7 +14,7 @@ var ALIGNMENT_EXT = ['.txt', '.text', '.al', '.alignment'];
 var FASTA_EXT = ['.fa', '.fasta'];
 var PWM_EXT = ['.pwm'];
 var PFM_EXT = ['.pfm'];
-var HOMER_EXT = ['.homer', '.hom'];
+var HOMER_EXT = ['.homer', '.hom', '.motif'];
 var JASPAR_EXT = ['.jaspar', '.jas'];
 
 logger.level = process.env.LOG_LEVEL || 'info';
