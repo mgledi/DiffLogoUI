@@ -363,13 +363,13 @@ class Files extends Component {
                 <CardActions>
                 <Row around="xs" center="xs">
                     <Col xs={2}>
-                        <RaisedButton 
-                            label={ selected.length === 0 && files.length > 0  ? "Delete all motifs" : "Delete motifs" }
+                        <RaisedButton
+                            label={ selected.length === 0 && files.length > 0 ? 'Delete all motifs' : 'Delete motifs' }
                             overlayStyle={{ 'overflowX': 'hidden' }}
                             labelPosition={'before'}
                             secondary={ true }
-                            backgroundColor='red' 
-                            onClick={ this.deleteFiles } 
+                            backgroundColor='red'
+                            onClick={ this.deleteFiles }
                             fullWidth={true}
                             disabled={ files.length === 0 }/>
                     </Col>

@@ -63,7 +63,7 @@ function startProcess(obj) {
         fs.ensureDir(seqLogoFolder, (err) => {
             if (err) {
                 logger.log('error', 'SeqLogoGenerator.startProcess - error -', err);
-                resolve(obj); // TODO add proper error handling to not write seqLogo path to state
+                resolve(obj);
                 return;
             }
             R = spawn('R', args, { cwd: process.cwd() });

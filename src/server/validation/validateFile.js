@@ -292,19 +292,19 @@ function validateJaspar(filePath) {
                     logger.log('debug', 'validateJaspar - no numbers error - %s', error);
                     resolve(error);
                     return false;
+                }
+
+                columns = pfm.trim().split(/\s+/);
+                if(columnCount !== -1 && columns.length !== columnCount) {
+                    error = 'Error in line ' + lineCount + '. Expected ' + columnCount + ' columns, but saw ' + columns.length + '.';
                 } else {
-                    columns = pfm.trim().split(/\s+/);
-                    if(columnCount !== -1 && columns.length !== columnCount) {
-                        error = 'Error in line ' + lineCount + '. Expected ' + columnCount + ' columns, but saw ' + columns.length + '.';
-                    } else {
-                        columnCount = columns.length;
-                        // check numbers
-                        for (m = 0; m < columnCount; m++) {
-                            if (isNaN(columns[m])) {
-                                error = `Element ${m + 1} (${columns[m]}) in line ${lineCount} is not a valid number.`;
-                                resolve(error);
-                                return false;
-                            }
+                    columnCount = columns.length;
+                    // check numbers
+                    for (m = 0; m < columnCount; m++) {
+                        if (isNaN(columns[m])) {
+                            error = `Element ${m + 1} (${columns[m]}) in line ${lineCount} is not a valid number.`;
+                            resolve(error);
+                            return false;
                         }
                     }
                 }

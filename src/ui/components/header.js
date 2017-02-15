@@ -11,7 +11,7 @@ const styles = {
         color: 'black',
         textDecoration: 'none'
     }
-}
+};
 
 const NavigationMenu = (props) => (
       <IconMenu
@@ -26,7 +26,7 @@ const NavigationMenu = (props) => (
 
       >
         <Link to="/" style={styles.link}>
-            <MenuItem   primaryText="Analysis"/>
+            <MenuItem primaryText="Analysis"/>
         </Link>
         <Link to="about" style={styles.link}>
             <MenuItem primaryText="About"/>
