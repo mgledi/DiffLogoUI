@@ -30,7 +30,7 @@ class App extends Component {
 }
 
 App.propTypes = {
-    children: PropTypes.element.isRequired,
+    children: PropTypes.element,
     progress: PropTypes.object.isRequired
 };
 
