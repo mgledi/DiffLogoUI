@@ -6,9 +6,9 @@ import {Table, TableBody, TableHeader, TableHeaderColumn, TableRow, TableRowColu
 import {Card, CardText, CardActions} from 'material-ui/Card';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
-import SelectField from 'material-ui/SelectField';
-import MenuItem from 'material-ui/MenuItem';
 import DropZone from './dropzone';
+import SeqLogoThumbnail from './seq_logo_thumbnail';
+import FileTypeSelect from './file_type_select';
 import {Row, Col} from 'react-flexbox-grid';
 import ReactGA from 'react-ga';
 
@@ -43,53 +43,10 @@ const styles = {
     rowError: {
         border: '2px solid #D33'
     },
-    textError: {
-        color: '#D33'
-    },
     rowValid: {
         border: 'none'
-    },
-    typeSelect: {
-        fontSize: '14px',
-        width: '100px',
-        thumbOnColor: 'yellow',
-        fill: '#000000'
     }
 };
-
-function renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen, handleSwitchOrientation) {
-    if (file.error !== '') {
-        return (
-            <span style={styles.textError} >Can not parse file: {file.error}</span>
-        );
-    }
-
-    if (file.seqLogoFileSparse !== '') {
-        const seqLogoFileSparse = `/results/seq-logo/${file.seqLogoFileSparse}`;
-
-        return (
-            <div>
-                <img
-                    onClick={(event) => handleSeqLogoPopoverOpen(event, index)}
-                    key={ `seqLogoThumbnail_${index}`}
-                    width='120'
-                    src={seqLogoFileSparse}
-                    style={{cursor: 'pointer', float: 'left'}}
-                />
-                <span>
-                    <IconButton iconClassName="material-icons"
-                        iconStyle={ styles.largeIcon }
-                        onClick={(event) => handleSwitchOrientation(event, index)}
-                    >swap_horiz</IconButton>
-                </span>
-            </div>
-        );
-    }
-
-    return (
-        '...'
-    );
-}
 
 function renderMessages(messages) {
     if (messages.length === 0) {
@@ -131,24 +88,11 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                                 { file.name }
                             </TableRowColumn>
                             <TableRowColumn width="20%">{ file.originalname }</TableRowColumn>
-                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>{ renderSeqLogoThumbnailOrError(file, index, handleSeqLogoPopoverOpen, handleSwitchOrientation) } </TableRowColumn>
+                            <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>
+                                <SeqLogoThumbnail file={ file } index={ index } switchOrientation={ handleSwitchOrientation } openPopup={ handleSeqLogoPopoverOpen } />
+                            </TableRowColumn>
                             <TableRowColumn width="120px">
-                                <div>
-                                    <SelectField
-                                        onClick={(event) => event.stopPropagation()}
-                                        onChange={(event, selectedIdx, value) => handleChangeFileType(value, index)}
-                                        value={file.type}
-                                        autoWidth={true}
-                                        style={ styles.typeSelect }>
-                                        <MenuItem value={'alignment'} primaryText="alignment" />
-                                        <MenuItem value={'fasta'} primaryText="fasta" />
-                                        <MenuItem value={'homer'} primaryText="homer" />
-                                        <MenuItem value={'pfm'} primaryText="pfm" />
-                                        <MenuItem value={'pwm'} primaryText="pwm" />
-                                        <MenuItem value={'jaspar'} primaryText="jaspar" />
-                                        <MenuItem value={'unknown'} primaryText="unknown" disabled={true}/>
-                                    </SelectField>
-                                </div>
+                                <FileTypeSelect index={ index } type={ file.type } changeType={ handleChangeFileType } />
                             </TableRowColumn>
                         </TableRow>
                     );
