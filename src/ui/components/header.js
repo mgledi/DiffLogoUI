@@ -1,19 +1,12 @@
-import React, { Component } from 'react';
-import { Link } from 'react-router';
+import React, { Component, PropTypes } from 'react';
+import { withRouter } from 'react-router';
 import IconButton from 'material-ui/IconButton';
 import FontIcon from 'material-ui/FontIcon';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 
-const styles = {
-    link: {
-        color: 'black',
-        textDecoration: 'none'
-    }
-};
-
-const NavigationMenu = (props) => (
+const NavigationMenu = ({navigateTo, ...props}) => (
       <IconMenu
         {...props}
         iconButtonElement={
@@ -25,24 +18,27 @@ const NavigationMenu = (props) => (
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 
       >
-        <Link to="/" style={styles.link}>
-            <MenuItem primaryText="Analysis"/>
-        </Link>
-        <Link to="about" style={styles.link}>
-            <MenuItem primaryText="About"/>
-        </Link>
-        <Link to="cite" style={styles.link}>
-            <MenuItem primaryText="Cite"/>
-        </Link>
-        <Link to="fileformats" style={styles.link}>
-            <MenuItem primaryText="Supported file formats"/>
-        </Link>
+        <MenuItem primaryText="Analysis" onClick={ () => navigateTo('/') }/>
+        <MenuItem primaryText="About" onClick={ () => navigateTo('about') } />
+        <MenuItem primaryText="Cite" onClick={ () => navigateTo('cite') } />
+        <MenuItem primaryText="Supported file formats" onClick={ () => navigateTo('fileformats') } />
     </IconMenu>
 );
+
+NavigationMenu.propTypes = {
+    navigateTo: PropTypes.func.isRequired
+};
 
 class Header extends Component {
     constructor(props) {
         super(props);
+        this.navigate = this.navigate.bind(this);
+    }
+
+    navigate(path) {
+        const { router } = this.props;
+
+        router.push(path);
     }
 
     render() {
@@ -50,10 +46,14 @@ class Header extends Component {
             <AppBar
                 title="WebDiffLogo: Alignment, clustering, and comparative visualization of sequence motifs"
                 showMenuIconButton={true}
-                iconElementLeft={ <NavigationMenu /> }
+                iconElementLeft={ <NavigationMenu navigateTo={ this.navigate } /> }
             />
         );
     }
 }
 
-export default Header;
+Header.propTypes = {
+    router: PropTypes.object.isRequired
+};
+
+export default withRouter(Header);
