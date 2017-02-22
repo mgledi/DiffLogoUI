@@ -309,7 +309,7 @@ class Files extends Component {
                     <Col xs={2}>
                         <RaisedButton
                             label={ selected.length === 0 && files.length > 0 ? 'Delete all motifs' : 'Delete motifs' }
-                            overlayStyle={{ 'overflowX': 'hidden' }}
+                            overlayStyle={{ 'overflowX': 'hidden', 'overflowY': 'hidden' }}
                             labelPosition={'before'}
                             secondary={ true }
                             backgroundColor='red'
@@ -323,7 +323,7 @@ class Files extends Component {
                     <Col xs={2}>
                         <RaisedButton
                             label={selected.length === 0 && files.length > 0 ? 'Compare all motifs' : 'Compare motifs'}
-                            overlayStyle={{ 'overflowX': 'hidden' }}
+                            overlayStyle={{ 'overflowX': 'hidden', 'overflowY': 'hidden' }}
                             labelPosition={'before'}
                             primary={ true }
                             disabled={ this.disableStartButton(selected) }

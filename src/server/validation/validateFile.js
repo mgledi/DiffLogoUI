@@ -122,7 +122,7 @@ function validatePWM(filePath) {
 
         lineReader.eachLine(filePath, (line, last) => {
             var lineSplits = line.trim().match(/\S+/g);
-            var splitCount = lineSplits.length;
+            var splitCount = lineSplits === null ? 0 : lineSplits.length;
 
             lineCount++;
 
@@ -172,17 +172,17 @@ function validatePFM(filePath) {
         var error = '';
         var alphabet = [];
         var lineCount = 0;
-        var lineLength = -1;
+        var globalSplitCount = -1;
         var columnSum = 0;
 
         lineReader.eachLine(filePath, (line, last) => {
-            var lineSplit = line.trim().match(/\S+/g);
-            var splitLength = lineSplit.length;
+            var lineSplits = line.trim().match(/\S+/g);
+            var splitCount = lineSplits === null ? 0 : lineSplits.length;
             var m = 0;
 
             lineCount++;
 
-            if (lineLength > -1 && lineLength !== splitLength) {
+            if (globalSplitCount > -1 && globalSplitCount !== splitCount) {
                 error = getLineLengthError(lineCount, filePath);
                 logger.log('debug', 'validatePFM - line length error - %s', error);
                 resolve(error);
@@ -190,8 +190,8 @@ function validatePFM(filePath) {
             }
 
             // try parsing all numbers
-            for (; m < splitLength; m++) {
-                if (isNaN(lineSplit[m])) {
+            for (; m < splitCount; m++) {
+                if (isNaN(lineSplits[m])) {
                     error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
                     logger.log('debug', 'validatePFM - NAN error - %s', error);
                     resolve(error);
@@ -199,10 +199,10 @@ function validatePFM(filePath) {
                 }
             }
 
-            lineLength = splitLength;
-            alphabet.push(lineSplit);
+            globalSplitCount = splitCount;
+            alphabet.push(lineSplits);
             if (last) {
-                for (m = 0; m <= lineLength; m++) {
+                for (m = 0; m <= globalSplitCount; m++) {
                     columnSum = getSumForPwmColumn(alphabet, m);
                     if (columnSum < 1) {
                         error = `At least one element in column ${m + 1} must be larger than 0.`;
@@ -225,11 +225,11 @@ function validateHomer(filePath) {
     return new Promise((resolve) => {
         var error = '';
         var lineCount = 0;
-        var lineLength = -1;
+        var globalSplitCount = -1;
 
         lineReader.eachLine(filePath, (line, last) => {
-            var lineSplit = line.trim().split(/\S+/g);
-            var splitLength = lineSplit.length;
+            var lineSplits = line.trim().match(/\S+/g);
+            var splitCount = lineSplits === null ? 0 : lineSplits.length;
             var m = 0;
 
             lineCount++;
@@ -242,7 +242,7 @@ function validateHomer(filePath) {
                     return false;
                 }
             }
-            if (lineLength > -1 && lineLength !== splitLength) {
+            if (globalSplitCount > -1 && globalSplitCount !== splitCount) {
                 error = getLineLengthError(lineCount, filePath);
                 logger.log('debug', 'validateHomer - line length error - %s', error);
                 resolve(error);
@@ -250,11 +250,13 @@ function validateHomer(filePath) {
             }
 
             // try parsing all numbers
-            for (; m < splitLength; m++) {
-                if (isNaN(lineSplit[m])) {
-                    error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
-                    resolve(error);
-                    return false;
+            if(splitCount > 0 && !line.startsWith('>')) {
+                for (; m < splitCount; m++) {
+                    if (isNaN(lineSplits[m])) {
+                        error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
+                        resolve(error);
+                        return false;
+                    }
                 }
             }
             if (last) {

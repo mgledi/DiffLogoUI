@@ -5,6 +5,7 @@ const FileFormats = () => (
     <Card>
         <CardText>
             <h1>Supported file formats</h1>
+
             <h2>Alignment</h2>
                 Alignment files are allowed to contain several tab separated columns. The first column must
                 contain the sequences representing the motif. These sequences must have equal lengths. The
@@ -12,6 +13,7 @@ const FileFormats = () => (
                 an other sequence has a different length. Empty lines are allowed. File extensions indicating
                 alignment files are <b>.txt</b>, <b>.text</b>, <b>.alignment</b>, and <b>.al</b>. Example files can
                 be found <a href={'https://github.com/mgledi/DiffLogo/tree/master/inst/extdata/alignments.'} target={'_blank'}>here</a>.
+
             <h2>Fasta</h2>
                 See https://en.wikipedia.org/wiki/FASTA for a description of the popular FASTA format. WebDiffLogo
                 handles FASTA files very similar to Alignments. The given sequences in the file must all be of the
@@ -34,8 +36,8 @@ const FileFormats = () => (
                 experimentally defined transcription factor binding sites for multi-cellular eukaryotes. The user can
                 download a file containing all binding sites of a TF or PFM like Jaspar file. The Jaspar motif format
                 is defined here (http://jaspar.genereg.net/html/TEMPLATES/help.html#start-page). The file extension
-                indicating Jaspar files are <b>.jaspar</b> and <b>.jas</b>. An example can be found
-                <a href={'http://jaspar.genereg.net/html/DOWNLOAD/JASPAR_CORE/pfm/individual/MA0466.1.pfm'} target={'_blank'}>here</a>.
+                indicating Jaspar files are <b>.jaspar</b> and <b>.jas</b>.
+                An example can be found <a href={'http://jaspar.genereg.net/html/DOWNLOAD/JASPAR_CORE/pfm/individual/MA0466.1.pfm'} target={'_blank'}>here</a>.
 
             <h2>PFM</h2>
                 A PFM (Position Frequency Matrix) file consists A lines and M tab separated columns, where A denotes the

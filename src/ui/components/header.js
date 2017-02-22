@@ -7,7 +7,7 @@ import MenuItem from 'material-ui/MenuItem';
 import AppBar from 'material-ui/AppBar';
 
 const NavigationMenu = ({navigateTo, ...props}) => (
-      <IconMenu
+    <IconMenu
         {...props}
         iconButtonElement={
             <IconButton>
@@ -17,7 +17,7 @@ const NavigationMenu = ({navigateTo, ...props}) => (
         targetOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
 
-      >
+    >
         <MenuItem primaryText="Analysis" onClick={ () => navigateTo('/') }/>
         <MenuItem primaryText="About" onClick={ () => navigateTo('about') } />
         <MenuItem primaryText="Cite" onClick={ () => navigateTo('cite') } />
