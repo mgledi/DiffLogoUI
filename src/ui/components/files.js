@@ -274,7 +274,6 @@ class Files extends Component {
 
     disableStartButton(selected) {
         const { files } = this.props;
-
         if (selected.length === 0) {
             return files.filter((file) => file.error === '').length < 2;
         }

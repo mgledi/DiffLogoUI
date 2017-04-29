@@ -1,7 +1,7 @@
 import path from 'path';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import validate from '../../../src/server/validation/validateFile';
+import analyze from '../../../src/server/validation/analyzeFile';
 
 chai.use(chaiAsPromised);
 
@@ -13,14 +13,14 @@ const pwmErrorFirstLinePath = path.join(rootFolder, 'test', 'assets', 'pwm_error
 const pwmErrorLastLinePath = path.join(rootFolder, 'test', 'assets', 'pwm_error_last_line.pwm');
 const pwmNanErrorPath = path.join(rootFolder, 'test', 'assets', 'pwm_nan_error.pwm');
 
-describe('Validate: PWM', () => {
+describe('Analyze: PWM', () => {
     it('should have empty error if file is valid', () => {
         const file = {
             type: 'pwm',
             path: pwmCorrectPath
         };
 
-        return expect(validate(file)).to.eventually.be.empty;
+        return expect(analyze(file)).to.eventually.be.empty;
     });
 
     it('should throw a sum error if column does not sum up to 1', () => {
@@ -29,7 +29,7 @@ describe('Validate: PWM', () => {
             path: pwmSumErrorPath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Elements in column 3 sum not to 1.0 (1.5) Is the file type pwm correct?');
     });
 
@@ -39,7 +39,7 @@ describe('Validate: PWM', () => {
             path: pwmErrorFirstLinePath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Error in line 2. All lines in pwm_error_first_line.pwm must have the same length! Is the file type pwm correct?');
     });
 
@@ -49,7 +49,7 @@ describe('Validate: PWM', () => {
             path: pwmErrorLastLinePath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Error in line 4. All lines in pwm_error_last_line.pwm must have the same length! Is the file type pwm correct?');
     });
 
@@ -59,7 +59,7 @@ describe('Validate: PWM', () => {
             path: pwmNanErrorPath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Element 4 in line 3 is not a valid number. Is the file type pwm correct?');
     });
 });

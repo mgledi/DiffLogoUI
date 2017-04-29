@@ -1,7 +1,7 @@
 import path from 'path';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import validate from '../../../src/server/validation/validateFile';
+import analyze from '../../../src/server/validation/analyzeFile';
 
 chai.use(chaiAsPromised);
 
@@ -11,14 +11,14 @@ const fastaCorrectPath = path.join(rootFolder, 'test', 'assets', 'fasta_correct.
 const fastaErrorFirstLinePath = path.join(rootFolder, 'test', 'assets', 'fasta_error_first_line.fasta');
 const fastaErrorLastLinePath = path.join(rootFolder, 'test', 'assets', 'fasta_error_last_line.fasta');
 
-describe('Validate: Fasta', () => {
+describe('Analyze: Fasta', () => {
     it('should have empty error if file is valid', () => {
         const file = {
             type: 'fasta',
             path: fastaCorrectPath
         };
 
-        return expect(validate(file)).to.eventually.be.empty;
+        return expect(analyze(file)).to.eventually.be.empty;
     });
 
     it('should have specific error if alignments have different length', () => {
@@ -27,7 +27,7 @@ describe('Validate: Fasta', () => {
             path: fastaErrorFirstLinePath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Error in line 6. All lines in fasta_error_first_line.fasta must have the same length! Is the file type fasta correct?');
     });
 
@@ -37,7 +37,7 @@ describe('Validate: Fasta', () => {
             path: fastaErrorLastLinePath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Error in line 11. All lines in fasta_error_last_line.fasta must have the same length! Is the file type fasta correct?');
     });
 

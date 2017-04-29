@@ -1,7 +1,7 @@
 import path from 'path';
 import chai, { expect } from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-import validate from '../../../src/server/validation/validateFile';
+import analyze from '../../../src/server/validation/analyzeFile';
 
 chai.use(chaiAsPromised);
 
@@ -11,14 +11,14 @@ const jasparCorrectPath = path.join(rootFolder, 'test', 'assets', 'jaspar_correc
 const jasparNumberParserErrorPath = path.join(rootFolder, 'test', 'assets', 'jaspar_number_parse_error.jaspar');
 const jasparColumnsDifferErrorPath = path.join(rootFolder, 'test', 'assets', 'jaspar_2nd_row_count_error.jaspar');
 
-describe('Validate: Jaspar', () => {
+describe('Analyze: Jaspar', () => {
     it('should have empty error if file is valid', () => {
         const file = {
             type: 'jaspar',
             path: jasparCorrectPath
         };
 
-        return expect(validate(file)).to.eventually.be.empty;
+        return expect(analyze(file)).to.eventually.be.empty;
     });
 
     it('should have specific error if a number can not be parsed', () => {
@@ -27,7 +27,7 @@ describe('Validate: Jaspar', () => {
             path: jasparNumberParserErrorPath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Element 2 (o) in line 4 is not a valid number. Is the file type jaspar correct?');
     });
 
@@ -37,7 +37,7 @@ describe('Validate: Jaspar', () => {
             path: jasparColumnsDifferErrorPath
         };
 
-        return expect(validate(file))
+        return expect(analyze(file))
             .to.eventually.equal('Error in line 3. Expected 11 columns, but saw 10. Is the file type jaspar correct?');
     });
 });

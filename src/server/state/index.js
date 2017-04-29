@@ -6,7 +6,7 @@ var _ = require('lodash');
 var logger = require('winston');
 var helper = require('../helper');
 var initialState = require('./initialState.json');
-var validate = require('../validation/validateFile');
+var analyze = require('../validation/analyzeFile');
 var seqLogoGenerator = require('../generators/seqLogoGenerator');
 var diffLogoTableGenerator = require('../generators/diffLogoTableGenerator');
 
@@ -106,10 +106,11 @@ function getUploadFolderContent(sessionId) {
                         name: initialName,
                         type: fileType,
                         error: '',
-                        validated: false,
+                        analyzed: false,
                         seqLogoFileSparse: '',
                         seqLogoFile: '',
-                        orientation: 'forward'
+                        orientation: 'forward',
+                        sampleSize: 0
                     };
                 });
 
@@ -133,23 +134,23 @@ function filterNewFiles(sessionId, files) {
         });
 }
 
-function validateFiles(files) {
+function analyzeFiles(files) {
     var promiseMap = files.map((file) => {
 
-        if (file.validated) {
+        if (file.analyzed) {
             return Promise.resolve(file);
         }
 
-        return validate(file)
+        return analyze(file)
             .then((error) => {
                 file.error = error;
-                file.validated = true;
+                file.analyzed = true;
 
                 return Promise.resolve(file);
             });
     });
 
-    logger.log('debug', 'State.validateFiles - files count %d', files.length);
+    logger.log('debug', 'State.analyzeFiles - files count %d', files.length);
 
     return Promise.all(promiseMap);
 }
@@ -194,7 +195,7 @@ function updateStateWithoutFiles(sessionId, files) {
 function addFilesToState(sessionId) {
     return getUploadFolderContent(sessionId)
         .then((files) => filterNewFiles(sessionId, files))
-        .then((files) => validateFiles(files))
+        .then((files) => analyzeFiles(files))
         .then((files) => updateStateWithFiles(files, sessionId))
         .then((state) => writeState(state, sessionId));
 }
@@ -251,7 +252,7 @@ function removeFilesFromState(sessionId, files) {
 }
 
 function updateFilesState(sessionId, files) {
-    return validateFiles(files)
+    return analyzeFiles(files)
         .then((fileList) => {
             return getState(sessionId)
                 .then((state) => {

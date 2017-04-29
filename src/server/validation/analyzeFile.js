@@ -17,54 +17,59 @@ function getSumForPwmColumn(alphabet, columnCount) {
     return alphabet.reduce((sum, line) => (sum + Number(line[columnCount])), 0);
 }
 
-function validateAlignment(filePath) {
-    logger.log('debug', 'Validating alignment: %s', filePath);
+function analyzeAlignment(file) {
+    logger.log('debug', 'Validating alignment: %s', file.path);
+    file.error = '';
 
     return new Promise((resolve) => {
         var length = -1;
-        var error = '';
         var row = 0;
+        var sampleSize = 0;
 
-        lineReader.eachLine(filePath, (line, last) => {
+        lineReader.eachLine(file.path, (line, last) => {
             // in an alignment file there can be scores
             var tfbs = line.split('\t')[0].trim();
 
-            row++;
+            row++; sampleSize++;
             if(length === -1) {
                 length = tfbs.length;
             }
+
             if(tfbs.length === 0) {
+                sampleSize--;
                 // empty line, do nothing
             } else if(length !== tfbs.length) {
-                error = getLineLengthError(row, filePath);
-                logger.log('debug', 'validateAlignment - line length error -%s', error);
-                resolve(error);
+                file.error = getLineLengthError(row, file.path);
+                logger.log('debug', 'analyzeAlignment - line length error -%s', file.error);
+                resolve(file);
                 return false;
             } else if(!tfbs.match(/^[A-Za-z\-]+$/)) {
-                error = getUnkownSymbolError(row, filePath);
-                logger.log('debug', 'validateAlignment - character error -%s', error);
-                resolve(error);
+                file.error = getUnkownSymbolError(row, file.path);
+                logger.log('debug', 'analyzeAlignment - character error -%s', file.error);
+                resolve(file);
                 return false;
             }
 
             if (last) {
-                resolve(error);
+                file.sampleSize = sampleSize;
+                resolve(file);
             }
             return true;
         });
     });
 }
 
-function validateFasta(filePath) {
-    logger.log('debug', 'Validating fasta: %s', filePath);
+function analyzeFasta(file) {
+    logger.log('debug', 'Validating fasta: %s', file.path);
+    file.error = '';
 
     return new Promise((resolve) => {
         var length = -1;
-        var error = '';
         var row = 0;
         var tfbs = '';
+        var sampleSize = 0;
 
-        lineReader.eachLine(filePath, (line, last) => {
+        lineReader.eachLine(file.path, (line, last) => {
             line = line.trim();
 
             row++;
@@ -72,19 +77,20 @@ function validateFasta(filePath) {
             if (line.length > 0) {
                 if (line.startsWith('>') || line.startsWith(';')) {
                     if(tfbs.length > 0) {
+                        sampleSize ++;
                         logger.log('debug', '%d: %s', row, tfbs);
                         if(length === -1) {
                             length = tfbs.length;
                         }
                         if(length !== tfbs.length) {
-                            error = getLineLengthError(row - 1, filePath);
-                            logger.log('debug', 'validateFasta - line length error - %s', error);
-                            resolve(error);
+                            file.error = getLineLengthError(row - 1, file.path);
+                            logger.log('debug', 'analyzeFasta - line length error - %s', file.error);
+                            resolve(file);
                             return false;
                         } else if(!(/^[A-Za-z\-]+$/).test(tfbs)) {
-                            error = getUnkownSymbolError(row, filePath);
-                            logger.log('debug', 'validateFasta - character error -%s', error);
-                            resolve(error);
+                            file.error = getUnkownSymbolError(row, file.path);
+                            logger.log('debug', 'analyzeFasta - character error -%s', file.error);
+                            resolve(file);
                             return false;
                         }
                     }
@@ -98,21 +104,22 @@ function validateFasta(filePath) {
 
             if (last) {
                 if(length !== tfbs.length) {
-                    error = getLineLengthError(row - 1, filePath);
-                    logger.log('debug', 'validateFasta - line length error - %s', error);
+                    file.error = getLineLengthError(row - 1, file.path);
+                    logger.log('debug', 'analyzeFasta - line length error - %s', file.error);
                 }
-                resolve(error);
+                file.sampleSize = sampleSize;
+                resolve(file);
             }
             return true;
         });
     });
 }
 
-function validatePWM(filePath) {
-    logger.log('debug', 'Validating PWM: %s', filePath);
+function analyzePWM(file) {
+    logger.log('debug', 'Validating PWM: %s', file.path);
+    file.error = '';
 
     return new Promise((resolve) => {
-        var error = '';
         var pwm = [];
         var lineCount = 0;
         var columnCount = -1;
@@ -120,24 +127,24 @@ function validatePWM(filePath) {
         var totalColumns = 0;
         var columnSum = 0;
 
-        lineReader.eachLine(filePath, (line, last) => {
+        lineReader.eachLine(file.path, (line, last) => {
             var lineSplits = line.trim().match(/\S+/g);
             var splitCount = lineSplits === null ? 0 : lineSplits.length;
 
             lineCount++;
 
             if (columnCount > -1 && columnCount !== splitCount) {
-                error = getLineLengthError(lineCount, filePath);
-                logger.log('debug', 'validatePWM - line length error - %s', error);
-                resolve(error);
+                file.error = getLineLengthError(lineCount, file.path);
+                logger.log('debug', 'analyzePWM - line length error - %s', file.error);
+                resolve(file);
                 return false;
             }
 
             for (m = 0; m < splitCount; m++) {
                 if (isNaN(lineSplits[m])) {
-                    error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
-                    logger.log('debug', 'validatePWM - NAN error - %s', error);
-                    resolve(error);
+                    file.error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
+                    logger.log('debug', 'analyzePWM - NAN error - %s', file.error);
+                    resolve(file);
                     return false;
                 }
             }
@@ -150,32 +157,32 @@ function validatePWM(filePath) {
                 for (m = 0; m <= totalColumns; m++) {
                     columnSum = getSumForPwmColumn(pwm, m);
                     if (Math.abs(1 - columnSum) > 0.001) {
-                        error = `Elements in column ${m + 1} sum not to 1.0 (${columnSum})`;
-                        logger.log('debug', 'validatePWM - sum error - %s', error);
-                        resolve(error);
+                        file.error = `Elements in column ${m + 1} sum not to 1.0 (${columnSum})`;
+                        logger.log('debug', 'analyzePWM - sum error - %s', file.error);
+                        resolve(file);
                         return false;
                     }
                 }
             }
             if (last) {
-                resolve(error);
+                resolve(file);
             }
             return true;
         });
     });
 }
 
-function validatePFM(filePath) {
-    logger.log('debug', 'Validating PFM: %s', filePath);
+function analyzePFM(file) {
+    logger.log('debug', 'Validating PFM: %s', file.path);
+    file.error = '';
 
     return new Promise((resolve) => {
-        var error = '';
         var alphabet = [];
         var lineCount = 0;
         var globalSplitCount = -1;
         var columnSum = 0;
 
-        lineReader.eachLine(filePath, (line, last) => {
+        lineReader.eachLine(file.path, (line, last) => {
             var lineSplits = line.trim().match(/\S+/g);
             var splitCount = lineSplits === null ? 0 : lineSplits.length;
             var m = 0;
@@ -183,18 +190,18 @@ function validatePFM(filePath) {
             lineCount++;
 
             if (globalSplitCount > -1 && globalSplitCount !== splitCount) {
-                error = getLineLengthError(lineCount, filePath);
-                logger.log('debug', 'validatePFM - line length error - %s', error);
-                resolve(error);
+                file.error = getLineLengthError(lineCount, file.path);
+                logger.log('debug', 'analyzePFM - line length error - %s', file.error);
+                resolve(file);
                 return false;
             }
 
             // try parsing all numbers
             for (; m < splitCount; m++) {
                 if (isNaN(lineSplits[m])) {
-                    error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
-                    logger.log('debug', 'validatePFM - NAN error - %s', error);
-                    resolve(error);
+                    file.error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
+                    logger.log('debug', 'analyzePFM - NAN error - %s', file.error);
+                    resolve(file);
                     return false;
                 }
             }
@@ -205,29 +212,30 @@ function validatePFM(filePath) {
                 for (m = 0; m <= globalSplitCount; m++) {
                     columnSum = getSumForPwmColumn(alphabet, m);
                     if (columnSum < 1) {
-                        error = `At least one element in column ${m + 1} must be larger than 0.`;
-                        logger.log('debug', 'validatePFM - sum error - %s', error);
-                        resolve(error);
+                        file.error = `At least one element in column ${m + 1} must be larger than 0.`;
+                        logger.log('debug', 'analyzePFM - sum error - %s', file.error);
+                        resolve(file);
                         return false;
                     }
                 }
             }
             if (last) {
-                resolve(error);
+                resolve(file);
             }
             return true;
         });
     });
 }
 
-function validateHomer(filePath) {
-    logger.log('debug', 'Validating Homer: %s', filePath);
+function analyzeHomer(file) {
+    logger.log('debug', 'Validating Homer: %s', file.path);
+    file.error = '';
+
     return new Promise((resolve) => {
-        var error = '';
         var lineCount = 0;
         var globalSplitCount = -1;
 
-        lineReader.eachLine(filePath, (line, last) => {
+        lineReader.eachLine(file.path, (line, last) => {
             var lineSplits = line.trim().match(/\S+/g);
             var splitCount = lineSplits === null ? 0 : lineSplits.length;
             var m = 0;
@@ -236,16 +244,16 @@ function validateHomer(filePath) {
 
             if (lineCount === 1) {
                 if(!line.startsWith('>')) {
-                    error = 'First line must start with ">"';
-                    logger.log('debug', 'validateJaspar - first line error - %s', error);
-                    resolve(error);
+                    file.error = 'First line must start with ">"';
+                    logger.log('debug', 'analyzeJaspar - first line error - %s', file.error);
+                    resolve(file);
                     return false;
                 }
             }
             if (globalSplitCount > -1 && globalSplitCount !== splitCount) {
-                error = getLineLengthError(lineCount, filePath);
-                logger.log('debug', 'validateHomer - line length error - %s', error);
-                resolve(error);
+                file.error = getLineLengthError(lineCount, file.path);
+                logger.log('debug', 'analyzeHomer - line length error - %s', file.error);
+                resolve(file);
                 return false;
             }
 
@@ -253,59 +261,60 @@ function validateHomer(filePath) {
             if(splitCount > 0 && !line.startsWith('>')) {
                 for (; m < splitCount; m++) {
                     if (isNaN(lineSplits[m])) {
-                        error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
-                        resolve(error);
+                        file.error = `Element ${m + 1} in line ${lineCount} is not a valid number.`;
+                        resolve(file);
                         return false;
                     }
                 }
             }
             if (last) {
-                resolve(error);
+                resolve(file);
             }
             return true;
         });
     });
 }
 
-function validateJaspar(filePath) {
-    logger.log('debug', 'Validating Jaspar: %s', filePath);
+function analyzeJaspar(file) {
+    logger.log('debug', 'Validating Jaspar: %s', file.path);
+    file.error = '';
+
     return new Promise((resolve) => {
-        var error = '';
         var lineCount = 0;
         var columnCount = -1;
         var m = 0;
         var pfm = '';
         var columns;
 
-        lineReader.eachLine(filePath, (line, last) => {
+        lineReader.eachLine(file.path, (line, last) => {
             lineCount++;
 
             if (lineCount === 1) {
                 if(!line.startsWith('>')) {
-                    error = 'First line must start with ">"';
-                    logger.log('debug', 'validateJaspar - first line error - %s', error);
-                    resolve(error);
+                    file.error = 'First line must start with ">"';
+                    logger.log('debug', 'analyzeJaspar - first line error - %s', file.error);
+                    resolve(file);
                     return false;
                 }
             } else {
                 pfm = (/[ACGT]\s+\[(.*)\]/g).exec(line.trim())[1];
                 if(pfm === null || pfm.length === 0) {
-                    error = 'Error in line ' + lineCount + '. "' + pfm + '" seem not to encoded nucleotide frequencies.';
-                    logger.log('debug', 'validateJaspar - no numbers error - %s', error);
-                    resolve(error);
+                    file.error = 'Error in line ' + lineCount + '. "' + pfm + '" seem not to encoded nucleotide frequencies.';
+                    logger.log('debug', 'analyzeJaspar - no numbers error - %s', file.error);
+                    resolve(file);
                     return false;
                 }
 
                 columns = pfm.trim().split(/\s+/);
                 if(columnCount !== -1 && columns.length !== columnCount) {
-                    error = 'Error in line ' + lineCount + '. Expected ' + columnCount + ' columns, but saw ' + columns.length + '.';
+                    file.error = 'Error in line ' + lineCount + '. Expected ' + columnCount + ' columns, but saw ' + columns.length + '.';
                 } else {
                     columnCount = columns.length;
                     // check numbers
                     for (m = 0; m < columnCount; m++) {
                         if (isNaN(columns[m])) {
-                            error = `Element ${m + 1} (${columns[m]}) in line ${lineCount} is not a valid number.`;
-                            resolve(error);
+                            file.error = `Element ${m + 1} (${columns[m]}) in line ${lineCount} is not a valid number.`;
+                            resolve(file);
                             return false;
                         }
                     }
@@ -313,44 +322,44 @@ function validateJaspar(filePath) {
             }
 
             if (last) {
-                resolve(error);
+                resolve(file);
             }
             return true;
         });
     });
 }
 
-module.exports = function validate(file) {
+module.exports = function analyze(file) {
     const errUnkonwn = 'Unknown filetype. Please see help for supported file types.';
     const suffix = ' Is the file type ' + file.type + ' correct?';
 
     switch(file.type) {
         case 'alignment':
-            return validateAlignment(file.path).then((error) => {
-                return error !== '' ? (error + suffix) : '';
+            return analyzeAlignment(file).then((file) => {
+                return file.error !== '' ? (file.error + suffix) : '';
             });
         case 'fasta':
-            return validateFasta(file.path).then((error) => {
-                return error !== '' ? (error + suffix) : '';
+            return analyzeFasta(file).then((file) => {
+                return file.error !== '' ? (file.error + suffix) : '';
             });
         case 'pwm':
-            return validatePWM(file.path).then((error) => {
-                return error !== '' ? (error + suffix) : '';
+            return analyzePWM(file).then((file) => {
+                return file.error !== '' ? (file.error + suffix) : '';
             });
         case 'pfm':
-            return validatePFM(file.path).then((error) => {
-                return error !== '' ? (error + suffix) : '';
+            return analyzePFM(file).then((file) => {
+                return file.error !== '' ? (file.error + suffix) : '';
             });
         case 'homer':
-            return validateHomer(file.path).then((error) => {
-                return error !== '' ? (error + suffix) : '';
+            return analyzeHomer(file).then((file) => {
+                return file.error !== '' ? (file.error + suffix) : '';
             });
         case 'jaspar':
-            return validateJaspar(file.path).then((error) => {
-                return error !== '' ? (error + suffix) : '';
+            return analyzeJaspar(file).then((file) => {
+                return file.error !== '' ? (file.error + suffix) : '';
             });
         default:
-            logger.log('debug', 'validate - unknow filetype - %s', errUnkonwn);
+            logger.log('debug', 'analyze - unknow filetype - %s', errUnkonwn);
             return Promise.resolve(errUnkonwn);
     }
 };
