@@ -7,10 +7,12 @@ import {Card, CardText, CardActions} from 'material-ui/Card';
 import {Popover, PopoverAnimationVertical} from 'material-ui/Popover';
 import TextField from 'material-ui/TextField';
 import DropZone from './dropzone';
-import SeqLogoThumbnail from './seq_logo_thumbnail';
-import FileTypeSelect from './file_type_select';
 import {Row, Col} from 'react-flexbox-grid';
 import ReactGA from 'react-ga';
+// custom elements
+import SampleSizeInput from './sample_size_input';
+import SeqLogoThumbnail from './seq_logo_thumbnail';
+import FileTypeSelect from './file_type_select';
 
 const styles = {
     startButton: {
@@ -60,7 +62,15 @@ function renderMessages(messages) {
     });
 }
 
-function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpen, handleSwitchOrientation, setSelectedFiles, handleChangeFileType) {
+function renderTable(
+                        files, 
+                        selected, 
+                        handlePopoverOpen, 
+                        handleSeqLogoPopoverOpen, 
+                        handleSwitchOrientation, 
+                        setSelectedFiles,
+                        handleChangeFileType,
+                        handleSetSampleSize) {
     return (
         <Table height="241px" fixedHeader={ true } multiSelectable={ true } onRowSelection={ setSelectedFiles } >
             <TableHeader adjustForCheckbox={ true } displaySelectAll= { false }>
@@ -68,7 +78,8 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                     <TableHeaderColumn width="20%">Name in DiffLogo</TableHeaderColumn>
                     <TableHeaderColumn width="20%">Filename</TableHeaderColumn>
                     <TableHeaderColumn>Sequence logo</TableHeaderColumn>
-                    <TableHeaderColumn width="10%">File type</TableHeaderColumn>
+                    <TableHeaderColumn width="60px">Sample size</TableHeaderColumn>
+                    <TableHeaderColumn width="120px">File type</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
             <TableBody deselectOnClickaway={ false } >
@@ -90,6 +101,9 @@ function renderTable(files, selected, handlePopoverOpen, handleSeqLogoPopoverOpe
                             <TableRowColumn width="20%">{ file.originalname }</TableRowColumn>
                             <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>
                                 <SeqLogoThumbnail file={ file } index={ index } switchOrientation={ handleSwitchOrientation } openPopup={ handleSeqLogoPopoverOpen } />
+                            </TableRowColumn>
+                            <TableRowColumn width="60px">
+                                <SampleSizeInput index={ index }  file={ file } setSampleSize={ handleSetSampleSize }/>
                             </TableRowColumn>
                             <TableRowColumn width="120px">
                                 <FileTypeSelect index={ index } type={ file.type } changeType={ handleChangeFileType } />
@@ -167,6 +181,7 @@ class Files extends Component {
         this.handleSeqLogoPopoverOpen = this.handleSeqLogoPopoverOpen.bind(this);
         this.handleSeqLogoPopoverClose = this.handleSeqLogoPopoverClose.bind(this);
         this.handleChangeFileType = this.handleChangeFileType.bind(this);
+        this.handleSetSampleSize = this.handleSetSampleSize.bind(this);
         this.handleSwitchOrientation = this.handleSwitchOrientation.bind(this);
         this.setSelectedFiles = this.setSelectedFiles.bind(this);
         this.startAnalysis = this.startAnalysis.bind(this);
@@ -228,6 +243,13 @@ class Files extends Component {
         const { changeFileType } = this.props;
         // -----------------------------------
         changeFileType(newType, index);
+    }
+
+    handleSetSampleSize(newSampleSize, index) {
+        ReactGA.event({category: 'User', action: 'Change sample size' });
+        const { setSampleSize } = this.props;
+        // -----------------------------------
+        setSampleSize(newSampleSize, index);
     }
 
     setSelectedFiles(selected) {
@@ -299,7 +321,7 @@ class Files extends Component {
                             <div><FlatButton label="Download example files." labelPosition="before" href="https://github.com/mgledi/DiffLogoUI/raw/master/example_ctcf/ctcf.zip"/></div>
                         </div>
                         :
-                        renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.handleSwitchOrientation, this.setSelectedFiles, this.handleChangeFileType)}
+                        renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.handleSwitchOrientation, this.setSelectedFiles, this.handleChangeFileType, this.handleSetSampleSize)}
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
@@ -344,6 +366,7 @@ Files.propTypes = {
     deleteFiles: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,
     changeFileType: PropTypes.func.isRequired,
+    setSampleSize: PropTypes.func.isRequired,
     switchOrientation: PropTypes.func.isRequired,
     uploadExample: PropTypes.func.isRequired,
     startAnalysis: PropTypes.func.isRequired

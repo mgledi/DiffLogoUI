@@ -140,14 +140,8 @@ function analyzeFiles(files) {
         if (file.analyzed) {
             return Promise.resolve(file);
         }
-
-        return analyze(file)
-            .then((error) => {
-                file.error = error;
-                file.analyzed = true;
-
-                return Promise.resolve(file);
-            });
+        
+        return analyze(file);
     });
 
     logger.log('debug', 'State.analyzeFiles - files count %d', files.length);

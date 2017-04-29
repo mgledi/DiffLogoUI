@@ -13,6 +13,7 @@ source("<%= rsource %>/diffSeqLogo.R");
 motif_folder = "<%= motifFolder %>"
 output_folder = "<%= outputFolder %>"
 PWMs = list()
+SampleSizes = list()
 
 alphabet = NULL;
 <% files.forEach((file) => { %>
@@ -65,6 +66,7 @@ if( is.null(alphabet)) {
 # switch orientation if possible
 if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PWMs[["<%= file.name %>"]]);
     <% } %>
+    SampleSizes[["<%= file.name %>"]] = <%= file.sampleSize %>
 <% }); %>
 
 

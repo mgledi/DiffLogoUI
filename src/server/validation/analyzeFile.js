@@ -335,31 +335,45 @@ module.exports = function analyze(file) {
 
     switch(file.type) {
         case 'alignment':
-            return analyzeAlignment(file).then((file) => {
-                return file.error !== '' ? (file.error + suffix) : '';
+            return analyzeAlignment(file).then(() => {
+                file.analyzed = true;
+                file.error = file.error !== '' ? (file.error + suffix) : '';
+                return Promise.resolve(file);
             });
         case 'fasta':
-            return analyzeFasta(file).then((file) => {
-                return file.error !== '' ? (file.error + suffix) : '';
+            return analyzeFasta(file).then(() => {
+                file.analyzed = true;
+                file.error = file.error !== '' ? (file.error + suffix) : '';
+                return Promise.resolve(file);
             });
         case 'pwm':
-            return analyzePWM(file).then((file) => {
-                return file.error !== '' ? (file.error + suffix) : '';
+            return analyzePWM(file).then(() => {
+                file.analyzed = true;
+                file.error = file.error !== '' ? (file.error + suffix) : '';
+                return Promise.resolve(file);
             });
         case 'pfm':
-            return analyzePFM(file).then((file) => {
-                return file.error !== '' ? (file.error + suffix) : '';
+            return analyzePFM(file).then(() => {
+                file.analyzed = true;
+                file.error = file.error !== '' ? (file.error + suffix) : '';
+                return Promise.resolve(file);
             });
         case 'homer':
-            return analyzeHomer(file).then((file) => {
-                return file.error !== '' ? (file.error + suffix) : '';
+            return analyzeHomer(file).then(() => {
+                file.analyzed = true;
+                file.error = file.error !== '' ? (file.error + suffix) : '';
+                return Promise.resolve(file);
             });
         case 'jaspar':
-            return analyzeJaspar(file).then((file) => {
-                return file.error !== '' ? (file.error + suffix) : '';
+            return analyzeJaspar(file).then(() => {
+                file.analyzed = true;
+                file.error = file.error !== '' ? (file.error + suffix) : '';
+                return Promise.resolve(file);
             });
         default:
             logger.log('debug', 'analyze - unknow filetype - %s', errUnkonwn);
-            return Promise.resolve(errUnkonwn);
+            file.analyzed = true;
+            file.error = errUnkonwn;
+            return Promise.resolve(file);
     }
 };

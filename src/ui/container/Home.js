@@ -9,6 +9,7 @@ import {
     getFiles,
     renameFile,
     changeFileType,
+    setSampleSize,
     switchOrientation,
     uploadFiles,
     deleteFiles,
@@ -27,6 +28,7 @@ class Home extends Component {
                 'renameFile',
                 'changeFileType',
                 'switchOrientation',
+                'setSampleSize',
                 'uploadFiles',
                 'deleteFiles',
                 'deleteResult',
@@ -46,6 +48,11 @@ class Home extends Component {
     renameFile(name, index) {
         const { dispatch, files } = this.props;
         dispatch(renameFile(files.list, index, name));
+    }
+
+    setSampleSize(sampleSize, index) {
+        const { dispatch, files } = this.props;
+        dispatch(setSampleSize(files.list, sampleSize, index));
     }
 
     changeFileType(newType, index) {
@@ -117,6 +124,7 @@ class Home extends Component {
                             changeFileType = { this.changeFileType }
                             switchOrientation = { this.switchOrientation }
                             renameFile = { this.renameFile }
+                            setSampleSize = { this.setSampleSize }
                             uploadFiles = { this.uploadFiles }
                             deleteFiles = { this.deleteFiles }
                             startAnalysis = { this.startAnalysis }

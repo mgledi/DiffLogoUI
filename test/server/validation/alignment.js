@@ -18,7 +18,7 @@ describe('Analyze: Alignment', () => {
             path: alignmentCorrectPath
         };
 
-        return expect(analyze(file)).to.eventually.be.empty;
+        return expect(analyze(file).then(() => {return file.error})).to.eventually.be.empty;
     });
 
     it('should have specific error if alignments have different length', () => {
@@ -27,7 +27,7 @@ describe('Analyze: Alignment', () => {
             path: alignmentErrorFirstLinePath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.error}))
             .to.eventually.equal('Error in line 2. All lines in allignment_error_first_line.al must have the same length! Is the file type alignment correct?');
     });
 
@@ -37,7 +37,7 @@ describe('Analyze: Alignment', () => {
             path: alignmentErrorLastLinePath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.error}))
             .to.eventually.equal('Error in line 3. All lines in allignment_error_last_line.al must have the same length! Is the file type alignment correct?');
     });
 

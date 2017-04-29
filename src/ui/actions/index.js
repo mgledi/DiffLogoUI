@@ -61,7 +61,7 @@ export const switchOrientation = (files, index) => {
 export const changeFileType = (files, type, index) => {
     files[index].type = type;
     files[index].error = '';
-    files[index].validated = false;
+    files[index].analyzed = false;
     files[index].seqLogoFile = '';
 
     return (dispatch) => {
@@ -97,6 +97,25 @@ export const renameFile = (files, name, index) => {
             .then((state) => dispatch(updateFiles(state)));
     };
 };
+
+
+export const setSampleSize = (files, sampleSize, index) => {
+    files[index].sampleSize = sampleSize;
+
+    return (dispatch) => {
+        fetch('/files', {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify(files),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+            .then((response) => response.json())
+            .then((state) => dispatch(updateFiles(state)));
+    };
+};
+
 
 export const updateResults = (results) => {
 
