@@ -16,6 +16,6 @@ describe('Analyze: Homer', () => {
             path: homerCorrectPath
         };
 
-        return expect(analyze(file)).to.eventually.be.empty;
+        return expect(analyze(file).then(() => {return file.parsingError})).to.eventually.be.empty;
     });
 });

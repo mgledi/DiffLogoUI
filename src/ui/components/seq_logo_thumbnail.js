@@ -11,7 +11,7 @@ class SeqLogoThumbnail extends Component {
 
         if (file.error !== '') {
             return (
-                <span style={{ 'color': '#D33' }} >Can not parse file: {file.error}</span>
+                <span style={{ 'color': '#D33' }} >{file.error}</span>
             );
         }
 

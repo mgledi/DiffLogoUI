@@ -98,7 +98,6 @@ export const renameFile = (files, name, index) => {
     };
 };
 
-
 export const setSampleSize = (files, sampleSize, index) => {
     files[index].sampleSize = sampleSize;
 
@@ -115,7 +114,6 @@ export const setSampleSize = (files, sampleSize, index) => {
             .then((state) => dispatch(updateFiles(state)));
     };
 };
-
 
 export const updateResults = (results) => {
 

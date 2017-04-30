@@ -20,7 +20,7 @@ describe('Analyze: PWM', () => {
             path: pwmCorrectPath
         };
 
-        return expect(analyze(file)).to.eventually.be.empty;
+        return expect(analyze(file).then(() => {return file.parsingError})).to.eventually.be.empty;
     });
 
     it('should throw a sum error if column does not sum up to 1', () => {
@@ -29,7 +29,7 @@ describe('Analyze: PWM', () => {
             path: pwmSumErrorPath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Elements in column 3 sum not to 1.0 (1.5) Is the file type pwm correct?');
     });
 
@@ -39,7 +39,7 @@ describe('Analyze: PWM', () => {
             path: pwmErrorFirstLinePath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Error in line 2. All lines in pwm_error_first_line.pwm must have the same length! Is the file type pwm correct?');
     });
 
@@ -49,7 +49,7 @@ describe('Analyze: PWM', () => {
             path: pwmErrorLastLinePath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Error in line 4. All lines in pwm_error_last_line.pwm must have the same length! Is the file type pwm correct?');
     });
 
@@ -59,7 +59,7 @@ describe('Analyze: PWM', () => {
             path: pwmNanErrorPath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Element 4 in line 3 is not a valid number. Is the file type pwm correct?');
     });
 });

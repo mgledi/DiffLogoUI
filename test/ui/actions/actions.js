@@ -15,13 +15,13 @@ function getFiles() {
     return [
         {
             type: 'PWM',
-            validated: true,
+            analyzed: true,
             seqLogoFile: 'seqLogo',
             error: ''
         },
         {
             type: 'PFM',
-            validated: true,
+            analyzed: true,
             seqLogoFile: 'seqLogo',
             error: 'Error'
         }
@@ -147,7 +147,7 @@ describe('Actions:', () => {
             const store = mockStore({ files: {} });
             const expected = {
                 type: 'PWM',
-                validated: false,
+                analyzed: false,
                 seqLogoFile: '',
                 error: ''
             };
@@ -211,7 +211,7 @@ describe('Actions:', () => {
             const expected = {
                 name: 'TEST',
                 type: 'PFM',
-                validated: true,
+                analyzed: true,
                 seqLogoFile: 'seqLogo',
                 error: 'Error'
             };

@@ -18,7 +18,7 @@ describe('Analyze: Fasta', () => {
             path: fastaCorrectPath
         };
 
-        return expect(analyze(file)).to.eventually.be.empty;
+        return expect(analyze(file).then(() => {return file.parsingError})).to.eventually.be.empty;
     });
 
     it('should have specific error if alignments have different length', () => {
@@ -27,7 +27,7 @@ describe('Analyze: Fasta', () => {
             path: fastaErrorFirstLinePath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Error in line 6. All lines in fasta_error_first_line.fasta must have the same length! Is the file type fasta correct?');
     });
 
@@ -37,7 +37,7 @@ describe('Analyze: Fasta', () => {
             path: fastaErrorLastLinePath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Error in line 11. All lines in fasta_error_last_line.fasta must have the same length! Is the file type fasta correct?');
     });
 

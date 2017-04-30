@@ -18,7 +18,7 @@ describe('Analyze: Jaspar', () => {
             path: jasparCorrectPath
         };
 
-        return expect(analyze(file)).to.eventually.be.empty;
+        return expect(analyze(file).then(() => {return file.parsingError})).to.eventually.be.empty;
     });
 
     it('should have specific error if a number can not be parsed', () => {
@@ -27,7 +27,7 @@ describe('Analyze: Jaspar', () => {
             path: jasparNumberParserErrorPath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Element 2 (o) in line 4 is not a valid number. Is the file type jaspar correct?');
     });
 
@@ -37,7 +37,7 @@ describe('Analyze: Jaspar', () => {
             path: jasparColumnsDifferErrorPath
         };
 
-        return expect(analyze(file))
+        return expect(analyze(file).then(() => {return file.parsingError}))
             .to.eventually.equal('Error in line 3. Expected 11 columns, but saw 10. Is the file type jaspar correct?');
     });
 });

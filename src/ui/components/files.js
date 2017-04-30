@@ -63,11 +63,11 @@ function renderMessages(messages) {
 }
 
 function renderTable(
-                        files, 
-                        selected, 
-                        handlePopoverOpen, 
-                        handleSeqLogoPopoverOpen, 
-                        handleSwitchOrientation, 
+                        files,
+                        selected,
+                        handlePopoverOpen,
+                        handleSeqLogoPopoverOpen,
+                        handleSwitchOrientation,
                         setSelectedFiles,
                         handleChangeFileType,
                         handleSetSampleSize) {
@@ -103,7 +103,7 @@ function renderTable(
                                 <SeqLogoThumbnail file={ file } index={ index } switchOrientation={ handleSwitchOrientation } openPopup={ handleSeqLogoPopoverOpen } />
                             </TableRowColumn>
                             <TableRowColumn width="60px">
-                                <SampleSizeInput index={ index }  file={ file } setSampleSize={ handleSetSampleSize }/>
+                                <SampleSizeInput index={ index } file={ file } setSampleSize={ handleSetSampleSize }/>
                             </TableRowColumn>
                             <TableRowColumn width="120px">
                                 <FileTypeSelect index={ index } type={ file.type } changeType={ handleChangeFileType } />

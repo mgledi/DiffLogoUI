@@ -136,16 +136,31 @@ function filterNewFiles(sessionId, files) {
 
 function analyzeFiles(files) {
     var promiseMap = files.map((file) => {
-
         if (file.analyzed) {
             return Promise.resolve(file);
         }
-        
         return analyze(file);
     });
 
     logger.log('debug', 'State.analyzeFiles - files count %d', files.length);
+    return Promise.all(promiseMap);
+}
 
+function setErrors(files) {
+    var promiseMap = files.map((file) => {
+        file.error = '';
+        if (file.parsingError !== '') {
+            file.error = 'Can not parse file: ' + file.parsingError;
+        } else if(file.sampleSize < 0) {
+            file.error = 'Sample Size must be larger than 0.';
+        } else if(isNaN(file.sampleSize)) {
+            file.error = 'Sample Size must be an integer.';
+        }
+
+        return Promise.resolve(file);
+    });
+
+    logger.log('debug', 'State.setErrors - files count %d', files.length);
     return Promise.all(promiseMap);
 }
 
@@ -190,6 +205,7 @@ function addFilesToState(sessionId) {
     return getUploadFolderContent(sessionId)
         .then((files) => filterNewFiles(sessionId, files))
         .then((files) => analyzeFiles(files))
+        .then((files) => setErrors(files))
         .then((files) => updateStateWithFiles(files, sessionId))
         .then((state) => writeState(state, sessionId));
 }
@@ -247,6 +263,7 @@ function removeFilesFromState(sessionId, files) {
 
 function updateFilesState(sessionId, files) {
     return analyzeFiles(files)
+        .then(() => setErrors(files))
         .then((fileList) => {
             return getState(sessionId)
                 .then((state) => {
