@@ -110,7 +110,7 @@ function getUploadFolderContent(sessionId) {
                         seqLogoFileSparse: '',
                         seqLogoFile: '',
                         orientation: 'forward',
-                        sampleSize: 0
+                        sampleSize: 100
                     };
                 });
 
@@ -151,8 +151,8 @@ function setErrors(files) {
         file.error = '';
         if (file.parsingError !== '') {
             file.error = 'Can not parse file: ' + file.parsingError;
-        } else if(file.sampleSize < 0) {
-            file.error = 'Sample Size must be larger than 0.';
+        } else if(file.sampleSize < 100) {
+            file.error = 'Sample Size must be larger than 100 to calculate proper p-values.';
         } else if(isNaN(file.sampleSize)) {
             file.error = 'Sample Size must be an integer.';
         }

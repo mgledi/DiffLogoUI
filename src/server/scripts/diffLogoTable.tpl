@@ -13,7 +13,7 @@ source("<%= rsource %>/diffSeqLogo.R");
 motif_folder = "<%= motifFolder %>"
 output_folder = "<%= outputFolder %>"
 PWMs = list()
-SampleSizes = list()
+sampleSizes = list()
 
 alphabet = NULL;
 <% files.forEach((file) => { %>
@@ -66,7 +66,7 @@ if( is.null(alphabet)) {
 # switch orientation if possible
 if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PWMs[["<%= file.name %>"]]);
     <% } %>
-    SampleSizes[["<%= file.name %>"]] = <%= file.sampleSize %>
+    sampleSizes[["<%= file.name %>"]] = <%= file.sampleSize %>
 <% }); %>
 
 
@@ -74,6 +74,8 @@ if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PW
     
 <% } else if (files.length == 2) { %>
 diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet, align_pwms=T)
+diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj,sampleSizes[[1]],sampleSizes[[2]]);
+
 png(paste0(output_folder, "/", "differenceLogo.png"),width=8,height=4, units="in", res=300); 
     diffLogo(diffLogoObj)
 dev.off()
@@ -86,6 +88,7 @@ dev.off()
 configuration = list();
 configuration[['ratio']] = 16/10;
 diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration);
+diffLogoTable$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTable$diffLogoObjMatrix, sampleSizes);
 
 png(paste0(output_folder, "/", "diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300);
     drawDiffLogoTable(diffLogoTable);
