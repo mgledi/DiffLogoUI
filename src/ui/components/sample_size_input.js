@@ -14,7 +14,7 @@ class SampleSizeInput extends Component {
                 onClick={(event) => event.stopPropagation()}
                 id="sampleSize"
                 ref="sampleSize"
-                defaultValue={ file.sampleSize }
+                value={ file.sampleSize }
                 onChange={(event, newValue) => setSampleSize(newValue, index)}
                 />
         );

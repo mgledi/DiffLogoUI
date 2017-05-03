@@ -28,15 +28,12 @@ function deleteFiles(sessionId, files) {
     }
 
     promiseMap = files.map((file) => new Promise((resolve) => fs.unlink(file.path, resolve)));
-
     return Promise.all(promiseMap);
 }
 
 function getInitialState() {
     var state = Object.assign({}, initialState);
-
     logger.log('debug', 'State.getInitialState', state);
-
     return Promise.resolve(state);
 }
 
