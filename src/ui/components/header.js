@@ -19,6 +19,7 @@ const NavigationMenu = ({navigateTo, ...props}) => (
 
     >
         <MenuItem primaryText="Analysis" onClick={ () => navigateTo('/') }/>
+        <MenuItem rightIcon={<FontIcon className="material-icons">settings</FontIcon>} primaryText="Configure" onClick={ () => navigateTo('config') }/>
         <MenuItem primaryText="About" onClick={ () => navigateTo('about') } />
         <MenuItem primaryText="Cite" onClick={ () => navigateTo('cite') } />
         <MenuItem primaryText="Supported file formats" onClick={ () => navigateTo('fileformats') } />
@@ -29,6 +30,7 @@ NavigationMenu.propTypes = {
     navigateTo: PropTypes.func.isRequired
 };
 
+// #############
 class Header extends Component {
     constructor(props) {
         super(props);

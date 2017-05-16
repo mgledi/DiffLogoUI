@@ -10,7 +10,7 @@ var diffLogoTableTemplate = fs.readFileSync(path.resolve(__dirname, '../scripts/
 
 logger.level = process.env.LOG_LEVEL || 'info';
 
-function writeConfig(state, fileList, sessionId, rsource) {
+function writeConfig(state, fileList, configuration, sessionId, rsource) {
     var timestamp = new Date().getTime();
     var uploadFolder = helper.getUploadFolder(sessionId);
     var configFolder = helper.getConfigFolder(sessionId);
@@ -22,6 +22,7 @@ function writeConfig(state, fileList, sessionId, rsource) {
         {
             motifFolder: motifFolder,
             files: fileList,
+            configuration: configuration,
             outputFolder: outputFolder,
             rsource: rFolder
         }
@@ -121,9 +122,9 @@ function updateState(obj) {
     });
 }
 
-module.exports = function generateDiffLogoTable(state, fileList, sessionId, rsource) {
-    logger.log('debug', 'generateDiffLogoTable', sessionId, rsource);
-    return writeConfig(state, fileList, sessionId, rsource)
+module.exports = function generateDiffLogoTable(state, fileList, configuration, sessionId, rsource) {
+    logger.log('debug', 'generateDiffLogoTable', sessionId, configuration, rsource);
+    return writeConfig(state, fileList, configuration, sessionId, rsource)
         .then((obj) => startProcess(obj))
         .then((obj) => moveConfigToOutputFolder(obj))
         .then((obj) => updateState(obj));

@@ -1,0 +1,10 @@
+{
+    "alphabet": "DNA",
+    "stackHeightMethod" : "Shannon-Divergence",
+    "symbolHeightMethod" : "Normalized difference of probabilities",
+    "showSequenceLogos" : true,
+    "showClusterTree" : true,
+    "enableMotifAlignment" : true,
+    "enableMotifClustering" : true,
+    "enablePvalue" : true
+}

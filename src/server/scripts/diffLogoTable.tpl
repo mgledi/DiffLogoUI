@@ -74,7 +74,10 @@ if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PW
     
 <% } else if (files.length == 2) { %>
 diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet, align_pwms=T)
-diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj,sampleSizes[[1]],sampleSizes[[2]]);
+
+<% if(configuration.enablePvalue) { %>
+    diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj,sampleSizes[[1]],sampleSizes[[2]]);
+<% } %>
 
 png(paste0(output_folder, "/", "differenceLogo.png"),width=8,height=4, units="in", res=300); 
     diffLogo(diffLogoObj)
@@ -85,17 +88,51 @@ pdf(paste0(output_folder, "/", "differenceLogo.pdf"),width=8,height=4);
 dev.off()
 <% } else { %>
 
+# create configuration
 configuration = list();
 configuration[['ratio']] = 16/10;
-diffLogoTable = prepareDiffLogoTable(PWMs,alphabet,configuration);
-diffLogoTable$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTable$diffLogoObjMatrix, sampleSizes);
+
+<% if(configuration.enableSequenceLogos) { %>
+  configuration[['showSequenceLogosTop']] = TRUE;
+<% } else { %>
+  configuration[['showSequenceLogosTop']] = FALSE;
+<% } %>
+
+<% if(!configuration.enableClusterTree) { %>
+  configuration[['treeHeight']] = 0;
+<% } %>
+
+
+<% if(configuration.stackHeightMethod === "Shannon-Divergence") { %>
+  configuration[['stackHeight']] = shannonDivergence;
+<% } else if(configuration.stackHeightMethod === "Sum of absolute probabilitiy differences") { %>
+  configuration[['stackHeight']] = sumOfAbsProbabilityDifferences;
+<% } else if(configuration.stackHeightMethod === "Sum of absolute IC differences") { %>
+  configuration[['stackHeight']] = sumOfAbsICDifferences;
+<% } else if(configuration.stackHeightMethod === "Loss of absolute IC differences") { %>
+  configuration[['stackHeight']] = lossOfAbsICDifferences;
+<% } %>
+
+<% if(configuration.symbolHeightMethod === "Normalized difference of probabilities") { %>
+  configuration[['baseDistribution']] = normalizedDifferenceOfProbabilities;
+<% } else if(configuration.symbolHeightMethod === "Difference of ICs") { %>
+  configuration[['baseDistribution']] = differenceOfICs;
+<% } %>
+  
+  
+
+diffLogoTableObj = prepareDiffLogoTable(PWMs,alphabet,configuration);
+
+<% if(configuration.enablePvalue) { %>
+    diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes, stackHeight = configuration[['stackHeight']])
+<% } %>
 
 png(paste0(output_folder, "/", "diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300);
-    drawDiffLogoTable(diffLogoTable);
+    drawDiffLogoTable(diffLogoTableObj);
 dev.off()
 
 pdf(paste0(output_folder, "/", "diffLogoTable.pdf"),width=10 * 16/10, height = 10);
-    drawDiffLogoTable(diffLogoTable);
+    drawDiffLogoTable(diffLogoTableObj);
 dev.off()
 
 <% } %>

@@ -244,11 +244,11 @@ function generateSeqLogos(sessionId, rsource) {
         .then((state) => writeState(state, sessionId));
 }
 
-function generateDiffLogoTable(sessionId, fileList, rsource) {
+function generateDiffLogoTable(sessionId, fileList, configuration, rsource) {
     logger.log('debug', 'State.generateDiffLogoTable');
 
     return getState(sessionId)
-        .then((state) => diffLogoTableGenerator(state, fileList, sessionId, rsource))
+        .then((state) => diffLogoTableGenerator(state, fileList, configuration, sessionId, rsource))
         .then((state) => writeState(state, sessionId));
 }
 

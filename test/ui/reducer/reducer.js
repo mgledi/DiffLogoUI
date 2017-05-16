@@ -83,7 +83,6 @@ describe('Reducer:', () => {
         it('should return default state if no action type or state is defined', () => {
             const expected = {
                 list: [],
-                alphabet: 'DNA',
                 selection: [],
                 results: [],
                 timestamp: 0
@@ -97,13 +96,11 @@ describe('Reducer:', () => {
             const timestamp = new Date().getTime();
             const filesState = {
                 files: [1, 2, 3],
-                alphabet: 'ABC',
                 results: [4, 5, 6]
             };
             const actual = files(undefinedState, { type: ActionTypes.UPDATE_FILES, filesState: filesState });
 
             expect(actual).to.have.property('list').to.equal(filesState.files);
-            expect(actual).to.have.property('alphabet').to.equal(filesState.alphabet);
             expect(actual).to.have.property('results').to.equal(filesState.results);
             expect(actual).to.have.property('timestamp').to.be.at.least(timestamp);
         });

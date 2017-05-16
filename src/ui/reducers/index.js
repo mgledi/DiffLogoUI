@@ -2,7 +2,7 @@ import { combineReducers } from 'redux';
 import { routerReducer } from 'react-router-redux';
 import * as ActionTypes from '../actions/types';
 
-export const files = (state = { list: [], alphabet: 'DNA', selection: [], results: [], timestamp: 0 }, action) => {
+export const files = (state = { list: [], selection: [], results: [], timestamp: 0 }, action) => {
     switch (action.type) {
         case ActionTypes.UPDATE_FILES: {
             return Object.assign(
@@ -18,6 +18,39 @@ export const files = (state = { list: [], alphabet: 'DNA', selection: [], result
         }
         default: {
             return state;
+        }
+    }
+};
+
+export const configuration = (
+    config = {
+        alphabet: 'DNA',
+        stackHeightMethod: 'Shannon-Divergence',
+        symbolHeightMethod: 'Normalized difference of probabilities',
+        enableClusterTree: true,
+        enableSequenceLogos: true,
+        enablePvalue: true,
+        timestamp: 0
+    },
+    action
+) => {
+    switch (action.type) {
+        case ActionTypes.UPDATE_CONFIGURATION: {
+            return Object.assign(
+                {},
+                config,
+                {
+                    alphabet: action.configuration.alphabet,
+                    stackHeightMethod: action.configuration.stackHeightMethod,
+                    symbolHeightMethod: action.configuration.symbolHeightMethod,
+                    enableClusterTree: action.configuration.enableClusterTree,
+                    enableSequenceLogos: action.configuration.enableSequenceLogos,
+                    timestamp: new Date().getTime()
+                }
+            );
+        }
+        default: {
+            return config;
         }
     }
 };
@@ -61,5 +94,6 @@ export const progress = (state = { active: false, message: '' }, action) => {
 export default combineReducers({
     files,
     progress,
+    configuration,
     routing: routerReducer
 });

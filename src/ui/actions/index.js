@@ -223,3 +223,36 @@ export const startAnalysis = (config) => {
             });
     };
 };
+
+// Config
+export const updateConfig = (configuration) => {
+    return {
+        type: ActionTypes.UPDATE_CONFIGURATION,
+        configuration
+    };
+};
+
+export const getConfiguration = () => {
+    return (dispatch) => {
+        fetch('/configuration/', {
+            credentials: 'same-origin'
+        })
+            .then((response) => response.json())
+            .then((configuration) => dispatch(updateConfig(configuration)));
+    };
+};
+
+export const writeConfiguration = (configuration) => {
+    return (dispatch) => {
+        fetch('/configuration/', {
+            credentials: 'same-origin',
+            method: 'PUT',
+            body: JSON.stringify(configuration),
+            headers: new Headers({
+                'Content-Type': 'application/json'
+            })
+        })
+            .then((response) => response.json())
+            .then((writtenConfiguration) => dispatch(updateConfig(writtenConfiguration)));
+    };
+};

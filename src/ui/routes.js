@@ -4,6 +4,7 @@ import Home from './container/Home';
 import App from './container/App';
 import About from './container/About';
 import Cite from './container/Cite';
+import Configuration from './container/Configuration';
 import FileFormats from './container/FileFormats';
 
 export default <Route path="/" component={App}>
@@ -11,4 +12,5 @@ export default <Route path="/" component={App}>
     <Route path="about" component={About} />
     <Route path="cite" component={Cite} />
     <Route path="fileformats" component={FileFormats} />
+    <Route path="config" component={Configuration} />
     </Route>;

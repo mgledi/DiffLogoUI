@@ -7,6 +7,7 @@ import Results from '../components/results';
 
 import {
     getFiles,
+    getConfiguration,
     renameFile,
     changeFileType,
     setSampleSize,
@@ -43,6 +44,7 @@ class Home extends Component {
     componentWillMount() {
         const { dispatch } = this.props;
         dispatch(getFiles());
+        dispatch(getConfiguration());
     }
 
     renameFile(name, index) {
@@ -92,14 +94,13 @@ class Home extends Component {
     }
 
     startAnalysis(selected) {
-        const { dispatch, files } = this.props;
+        const { dispatch, files, configuration } = this.props;
         let filtered = files.list.filter((file, index) => selected.includes(index));
 
         if (filtered.length === 0) {
             filtered = files.list.filter((file) => file.error === '');
         }
-
-        dispatch(startAnalysis({ files: filtered }));
+        dispatch(startAnalysis({ files: filtered, configuration: configuration }));
     }
 
     uploadExample() {
@@ -145,13 +146,15 @@ class Home extends Component {
 
 Home.propTypes = {
     dispatch: PropTypes.func.isRequired,
+    configuration: PropTypes.object.isRequired,
     files: PropTypes.object.isRequired
 };
 
 function mapStateToProps(state) {
-    const { files } = state;
+    const { files, configuration } = state;
     return {
         files,
+        configuration,
         timestamp: files.timestamp
     };
 }

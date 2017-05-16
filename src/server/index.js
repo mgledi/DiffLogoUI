@@ -12,6 +12,7 @@ var fileRoutes = require('./routes/file');
 var diffLogoRoute = require('./routes/diffLogo');
 var seqLogoRoute = require('./routes/seqLogo');
 var resultRoutes = require('./routes/results');
+var configRoutes = require('./routes/configuration');
 
 var app = express();
 
@@ -62,6 +63,7 @@ module.exports = function server(options) {
 
     app.use('/files', fileRoutes);
     app.use('/diffLogo', diffLogoRoute(rsource));
+    app.use('/configuration', configRoutes);
     app.use('/seqLogo', seqLogoRoute(rsource));
     app.use('/results', resultRoutes);
     app.all('/*', ui(middleware, PRODUCTION));
