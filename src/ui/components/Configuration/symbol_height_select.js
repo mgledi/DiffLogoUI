@@ -15,7 +15,7 @@ const styles = {
     },
     labelText: {
         color: '#999',
-        textAlign: 'right'
+        textAlign: 'left'
     },
     selectWidth: {
         width: '250px'

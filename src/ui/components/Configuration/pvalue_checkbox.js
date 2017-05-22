@@ -3,7 +3,7 @@ import Checkbox from 'material-ui/Checkbox';
 
 const styles = {
     checkBox: {
-        width: '250px'
+        width: '270px'
     }
 };
 
@@ -26,7 +26,7 @@ class PvalueCheckbox extends Component {
                 <Checkbox
                     onClick={(event) => event.stopPropagation()}
                     onCheck={(event, value) => this.updateEnablePvalue(value)}
-                    label="Calculate positione-wise p-values"
+                    label="Calculate position-wise p-values"
                     checked={configuration.enablePvalue}
                     >
                 </Checkbox>

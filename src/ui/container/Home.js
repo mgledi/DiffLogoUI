@@ -114,7 +114,7 @@ class Home extends Component {
     }
 
     render() {
-        const { files } = this.props;
+        const { files, configuration } = this.props;
 
         return (
             <div>
@@ -122,6 +122,7 @@ class Home extends Component {
                     <Col xs={ 12 } >
                         <Files
                             files={ files.list }
+                            configuration = {configuration}
                             changeFileType = { this.changeFileType }
                             switchOrientation = { this.switchOrientation }
                             renameFile = { this.renameFile }

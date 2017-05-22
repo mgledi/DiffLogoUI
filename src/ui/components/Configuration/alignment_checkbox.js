@@ -3,19 +3,19 @@ import Checkbox from 'material-ui/Checkbox';
 
 const styles = {
     checkBox: {
-        width: '250px'
+        width: '270px'
     }
 };
 
-class ClusterTreeCheckbox extends Component {
+class AlignmentCheckbox extends Component {
     constructor(props) {
         super(props);
-        this.updateEnableClusterTree = this.updateEnableClusterTree.bind(this);
+        this.updateEnableAlignment = this.updateEnableAlignment.bind(this);
     }
 
-    updateEnableClusterTree(value) {
+    updateEnableAlignment(value) {
         const{configuration, writeConfiguration} = this.props;
-        configuration.enableClusterTree = value;
+        configuration.enableMotifAlignment = value;
         writeConfiguration(configuration);
     }
 
@@ -25,10 +25,9 @@ class ClusterTreeCheckbox extends Component {
             <div style={styles.checkBox}>
                 <Checkbox
                     onClick={(event) => event.stopPropagation()}
-                    onCheck={(event, value) => this.updateEnableClusterTree(value)}
-                    label="Display cluster tree"
-                    disabled={!configuration.enableClustering}
-                    checked={configuration.enableClusterTree && configuration.enableClustering}
+                    onCheck={(event, value) => this.updateEnableAlignment(value)}
+                    label="Enable motif alignment"
+                    checked={configuration.enableMotifAlignment}
                     >
                 </Checkbox>
             </div>
@@ -36,9 +35,9 @@ class ClusterTreeCheckbox extends Component {
     }
 }
 
-ClusterTreeCheckbox.propTypes = {
+AlignmentCheckbox.propTypes = {
     configuration: PropTypes.object.isRequired,
     writeConfiguration: PropTypes.func.isRequired
 };
 
-export default ClusterTreeCheckbox;
+export default AlignmentCheckbox;

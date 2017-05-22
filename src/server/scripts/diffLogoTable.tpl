@@ -71,13 +71,17 @@ if(currentAlphabet$supportReverseComplement) PWMs[["<%= file.name %>"]] = rev(PW
 
 
 <% if (files.length < 2) { %>
-    
+# do nothing
 <% } else if (files.length == 2) { %>
-diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]],alphabet=alphabet, align_pwms=T)
-
-<% if(configuration.enablePvalue) { %>
-    diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj,sampleSizes[[1]],sampleSizes[[2]]);
-<% } %>
+    <% if(configuration.enableMotifAlignment) { %>
+align_pwms=TRUE;
+    <% } else { %>
+align_pwms=FALSE;
+    <% } %> 
+diffLogoObj = createDiffLogoObject(pwm1 = PWMs[[1]], pwm2 = PWMs[[2]], alphabet=alphabet, align_pwms=align_pwms)
+    <% if(configuration.enablePvalue) { %>
+diffLogoObj = enrichDiffLogoObjectWithPvalues(diffLogoObj, sampleSizes[[1]], sampleSizes[[2]]);
+    <% } %>
 
 png(paste0(output_folder, "/", "differenceLogo.png"),width=8,height=4, units="in", res=300); 
     diffLogo(diffLogoObj)
@@ -93,38 +97,43 @@ configuration = list();
 configuration[['ratio']] = 16/10;
 
 <% if(configuration.enableSequenceLogos) { %>
-  configuration[['showSequenceLogosTop']] = TRUE;
+configuration[['showSequenceLogosTop']] = TRUE;
 <% } else { %>
-  configuration[['showSequenceLogosTop']] = FALSE;
+configuration[['showSequenceLogosTop']] = FALSE;
 <% } %>
 
 <% if(!configuration.enableClusterTree) { %>
-  configuration[['treeHeight']] = 0;
+configuration[['treeHeight']] = 0;
 <% } %>
 
+<% if(!configuration.enableClustering) { %>
+configuration[['enableClustering']] = FALSE;
+<% } %>
+
+<% if(!configuration.enableMotifAlignment) { %>
+configuration[['align_pwms']] = FALSE
+<% } %> 
 
 <% if(configuration.stackHeightMethod === "Shannon-Divergence") { %>
-  configuration[['stackHeight']] = shannonDivergence;
+configuration[['stackHeight']] = shannonDivergence;
 <% } else if(configuration.stackHeightMethod === "Sum of absolute probabilitiy differences") { %>
-  configuration[['stackHeight']] = sumOfAbsProbabilityDifferences;
+configuration[['stackHeight']] = sumOfAbsProbabilityDifferences;
 <% } else if(configuration.stackHeightMethod === "Sum of absolute IC differences") { %>
-  configuration[['stackHeight']] = sumOfAbsICDifferences;
+configuration[['stackHeight']] = sumOfAbsICDifferences;
 <% } else if(configuration.stackHeightMethod === "Loss of absolute IC differences") { %>
-  configuration[['stackHeight']] = lossOfAbsICDifferences;
+configuration[['stackHeight']] = lossOfAbsICDifferences;
 <% } %>
 
 <% if(configuration.symbolHeightMethod === "Normalized difference of probabilities") { %>
-  configuration[['baseDistribution']] = normalizedDifferenceOfProbabilities;
+configuration[['baseDistribution']] = normalizedDifferenceOfProbabilities;
 <% } else if(configuration.symbolHeightMethod === "Difference of ICs") { %>
-  configuration[['baseDistribution']] = differenceOfICs;
+configuration[['baseDistribution']] = differenceOfICs;
 <% } %>
   
-  
-
 diffLogoTableObj = prepareDiffLogoTable(PWMs,alphabet,configuration);
 
 <% if(configuration.enablePvalue) { %>
-    diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes, stackHeight = configuration[['stackHeight']])
+diffLogoTableObj$diffLogoObjMatrix = enrichDiffLogoTableWithPvalues(diffLogoTableObj$diffLogoObjMatrix, sampleSizes, stackHeight = configuration[['stackHeight']])
 <% } %>
 
 png(paste0(output_folder, "/", "diffLogoTable.png"),width=10 * 16/10, height = 10, units="in", res=300);

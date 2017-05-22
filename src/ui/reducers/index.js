@@ -28,8 +28,10 @@ export const configuration = (
         stackHeightMethod: 'Shannon-Divergence',
         symbolHeightMethod: 'Normalized difference of probabilities',
         enableClusterTree: true,
+        enableClustering: true,
         enableSequenceLogos: true,
         enablePvalue: true,
+        enableMotifAlignment: true,
         timestamp: 0
     },
     action
@@ -39,14 +41,8 @@ export const configuration = (
             return Object.assign(
                 {},
                 config,
-                {
-                    alphabet: action.configuration.alphabet,
-                    stackHeightMethod: action.configuration.stackHeightMethod,
-                    symbolHeightMethod: action.configuration.symbolHeightMethod,
-                    enableClusterTree: action.configuration.enableClusterTree,
-                    enableSequenceLogos: action.configuration.enableSequenceLogos,
-                    timestamp: new Date().getTime()
-                }
+                action.configuration,
+                { timestamp: new Date().getTime() }
             );
         }
         default: {

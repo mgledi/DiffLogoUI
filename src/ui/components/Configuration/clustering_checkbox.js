@@ -7,15 +7,15 @@ const styles = {
     }
 };
 
-class ClusterTreeCheckbox extends Component {
+class ClusteringCheckbox extends Component {
     constructor(props) {
         super(props);
-        this.updateEnableClusterTree = this.updateEnableClusterTree.bind(this);
+        this.updateEnableClustering = this.updateEnableClustering.bind(this);
     }
 
-    updateEnableClusterTree(value) {
+    updateEnableClustering(value) {
         const{configuration, writeConfiguration} = this.props;
-        configuration.enableClusterTree = value;
+        configuration.enableClustering = value;
         writeConfiguration(configuration);
     }
 
@@ -25,10 +25,9 @@ class ClusterTreeCheckbox extends Component {
             <div style={styles.checkBox}>
                 <Checkbox
                     onClick={(event) => event.stopPropagation()}
-                    onCheck={(event, value) => this.updateEnableClusterTree(value)}
-                    label="Display cluster tree"
-                    disabled={!configuration.enableClustering}
-                    checked={configuration.enableClusterTree && configuration.enableClustering}
+                    onCheck={(event, value) => this.updateEnableClustering(value)}
+                    label="Enable motif clustering"
+                    checked={configuration.enableClustering}
                     >
                 </Checkbox>
             </div>
@@ -36,9 +35,9 @@ class ClusterTreeCheckbox extends Component {
     }
 }
 
-ClusterTreeCheckbox.propTypes = {
+ClusteringCheckbox.propTypes = {
     configuration: PropTypes.object.isRequired,
     writeConfiguration: PropTypes.func.isRequired
 };
 
-export default ClusterTreeCheckbox;
+export default ClusteringCheckbox;

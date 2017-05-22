@@ -3,6 +3,7 @@
 var path = require('path');
 var fs = require('fs-extra');
 var _ = require('lodash');
+var config = require('../configuration');
 var logger = require('winston');
 var helper = require('../helper');
 var initialState = require('./initialState.json');
@@ -143,22 +144,25 @@ function analyzeFiles(files) {
     return Promise.all(promiseMap);
 }
 
-function setErrors(files) {
-    var promiseMap = files.map((file) => {
-        file.error = '';
-        if (file.parsingError !== '') {
-            file.error = 'Can not parse file: ' + file.parsingError;
-        } else if(file.sampleSize < 100) {
-            file.error = 'Sample Size must be larger than 100 to calculate proper p-values.';
-        } else if(isNaN(file.sampleSize)) {
-            file.error = 'Sample Size must be an integer.';
-        }
+function setErrors(files, sessionId) {
+    return config.getConfiguration(sessionId)
+        .then((configuration) => {
+            var promiseMap = files.map((file) => {
+                file.error = '';
+                if (file.parsingError !== '') {
+                    file.error = 'Can not parse file: ' + file.parsingError;
+                } else if(isNaN(file.sampleSize)) {
+                    file.error = 'Sample Size must be an integer.';
+                } else if(configuration.enablePvalue && parseInt(file.sampleSize, 10) < 100) {
+                    file.error = 'Sample Size must be larger than 100 to calculate proper p-values.';
+                }
 
-        return Promise.resolve(file);
-    });
+                return Promise.resolve(file);
+            });
 
-    logger.log('debug', 'State.setErrors - files count %d', files.length);
-    return Promise.all(promiseMap);
+            logger.log('debug', 'State.setErrors - files count %d', files.length);
+            return Promise.all(promiseMap);
+        });
 }
 
 function updateStateWithFiles(files, sessionId) {
@@ -202,7 +206,7 @@ function addFilesToState(sessionId) {
     return getUploadFolderContent(sessionId)
         .then((files) => filterNewFiles(sessionId, files))
         .then((files) => analyzeFiles(files))
-        .then((files) => setErrors(files))
+        .then((files) => setErrors(files, sessionId))
         .then((files) => updateStateWithFiles(files, sessionId))
         .then((state) => writeState(state, sessionId));
 }
@@ -258,9 +262,14 @@ function removeFilesFromState(sessionId, files) {
         .then((state) => writeState(state, sessionId));
 }
 
+function syncConfiguration(sessionId) {
+    return getState(sessionId)
+        .then((state) => updateFilesState(sessionId, state.files));
+}
+
 function updateFilesState(sessionId, files) {
     return analyzeFiles(files)
-        .then(() => setErrors(files))
+        .then(() => setErrors(files, sessionId))
         .then((fileList) => {
             return getState(sessionId)
                 .then((state) => {
@@ -319,6 +328,7 @@ module.exports = {
     get: getState,
     addFiles: addFilesToState,
     copyExampleFiles: copyExampleFiles,
+    syncConfiguration: syncConfiguration,
     removeFiles: removeFilesFromState,
     updateFiles: updateFilesState,
     generateDiffLogoTable: generateDiffLogoTable,

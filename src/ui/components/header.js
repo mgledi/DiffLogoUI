@@ -39,7 +39,6 @@ class Header extends Component {
 
     navigate(path) {
         const { router } = this.props;
-
         router.push(path);
     }
 

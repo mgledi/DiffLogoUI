@@ -65,6 +65,7 @@ function renderMessages(messages) {
 function renderTable(
                         files,
                         selected,
+                        showSampleSize,
                         handlePopoverOpen,
                         handleSeqLogoPopoverOpen,
                         handleSwitchOrientation,
@@ -78,7 +79,7 @@ function renderTable(
                     <TableHeaderColumn width="20%">Name in DiffLogo</TableHeaderColumn>
                     <TableHeaderColumn width="20%">Filename</TableHeaderColumn>
                     <TableHeaderColumn>Sequence logo</TableHeaderColumn>
-                    <TableHeaderColumn width="60px">Sample size</TableHeaderColumn>
+                    {showSampleSize ? <TableHeaderColumn width="60px">Sample size</TableHeaderColumn> : ''}
                     <TableHeaderColumn width="120px">File type</TableHeaderColumn>
                 </TableRow>
             </TableHeader>
@@ -102,9 +103,9 @@ function renderTable(
                             <TableRowColumn style={{wordWrap: 'break-word', whiteSpace: 'normal'}}>
                                 <SeqLogoThumbnail file={ file } index={ index } switchOrientation={ handleSwitchOrientation } openPopup={ handleSeqLogoPopoverOpen } />
                             </TableRowColumn>
-                            <TableRowColumn width="60px">
-                                <SampleSizeInput index={ index } file={ file } setSampleSize={ handleSetSampleSize }/>
-                            </TableRowColumn>
+                            {showSampleSize ? <TableRowColumn width="60px">
+                                {file.parsingError === '' ? <SampleSizeInput index={ index } file={ file } setSampleSize={ handleSetSampleSize }/> : ''}
+                            </TableRowColumn> : ''}
                             <TableRowColumn width="120px">
                                 <FileTypeSelect index={ index } type={ file.type } changeType={ handleChangeFileType } />
                             </TableRowColumn>
@@ -305,7 +306,7 @@ class Files extends Component {
     }
 
     render() {
-        const { files, uploadFiles } = this.props;
+        const { files, uploadFiles, configuration } = this.props;
         const { seqLogoPopoverOpen, popoverOpen, anchorEl, fileIndex, selected } = this.state;
         const fileValue = files[fileIndex] ? files[fileIndex].name : 'Untitled';
         const seqLogoFile = files[fileIndex] ? files[fileIndex].seqLogoFile : '';
@@ -321,7 +322,7 @@ class Files extends Component {
                             <div><FlatButton label="Download example files." labelPosition="before" href="https://github.com/mgledi/DiffLogoUI/raw/master/example_ctcf/ctcf.zip"/></div>
                         </div>
                         :
-                        renderTable(files, selected, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.handleSwitchOrientation, this.setSelectedFiles, this.handleChangeFileType, this.handleSetSampleSize)}
+                        renderTable(files, selected, configuration.enablePvalue, this.handlePopoverOpen, this.handleSeqLogoPopoverOpen, this.handleSwitchOrientation, this.setSelectedFiles, this.handleChangeFileType, this.handleSetSampleSize)}
                     { getPopover(popoverOpen, anchorEl, fileValue, this.handlePopoverClose) }
                     { getSeqLogoPopover(seqLogoPopoverOpen, anchorEl, seqLogoFile, this.handleSeqLogoPopoverClose) }
                 </CardText>
@@ -362,6 +363,7 @@ class Files extends Component {
 
 Files.propTypes = {
     files: PropTypes.array.isRequired,
+    configuration: PropTypes.object.isRequired,
     uploadFiles: PropTypes.func.isRequired,
     deleteFiles: PropTypes.func.isRequired,
     renameFile: PropTypes.func.isRequired,

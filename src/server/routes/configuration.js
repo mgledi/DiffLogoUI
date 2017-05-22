@@ -2,12 +2,15 @@
 var express = require('express');
 var configRoutes = express.Router();
 var config = require('../configuration');
+var state = require('../state');
 
 configRoutes.put('/', (req, res) => {
     var configuration = req.body;
-
     config.writeConfiguration(req.session.id, configuration)
-        .then((writtenConfiguration) => res.json(writtenConfiguration));
+        .then((writtenConfiguration) => {
+            state.syncConfiguration(req.session.id)
+                .then(() => res.json(writtenConfiguration));
+        });
 });
 
 configRoutes.get('/', (req, res) => {

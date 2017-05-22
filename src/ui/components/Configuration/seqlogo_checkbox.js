@@ -26,7 +26,7 @@ class SequenceLogosCheckbox extends Component {
                 <Checkbox
                     onClick={(event) => event.stopPropagation()}
                     onCheck={(event, value) => this.updateEnableSequenceLogos(value)}
-                    label="Show sequence logos"
+                    label="Display sequence logos"
                     checked={configuration.enableSequenceLogos}
                     >
                 </Checkbox>

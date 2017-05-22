@@ -4,7 +4,7 @@ import MenuItem from 'material-ui/MenuItem';
 
 const STACKHEIGHT_METHODS = [
     {'value': 'Shannon-Divergence'},
-    {'value': 'Sum of absolute probabilitiy differences'},
+    {'value': 'Sum of absolute probability differences'},
     {'value': 'Sum of absolute IC differences'},
     {'value': 'Loss of absolute IC differences'}
 ];
@@ -17,7 +17,7 @@ const styles = {
     },
     labelText: {
         color: '#999',
-        textAlign: 'right'
+        textAlign: 'left'
     },
     selectWidth: {
         width: '250px'
