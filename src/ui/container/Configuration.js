@@ -18,6 +18,24 @@ import {
     writeConfiguration
 } from '../actions';
 
+const styles = {
+    checkBox: {
+        width: '270px'
+    },
+    typeSelect: {
+        fontSize: '14px',
+        thumbOnColor: 'yellow',
+        fill: '#000000'
+    },
+    labelText: {
+        color: '#999',
+        textAlign: 'left'
+    },
+    selectWidth: {
+        width: '250px'
+    }
+};
+
 class Configuration extends Component {
 
     constructor(props) {
@@ -39,31 +57,29 @@ class Configuration extends Component {
         const { configuration, router } = this.props;
         return (
             <Card>
-                <CardText style={{'height': '300px'}}>
+                <CardText>
                     <h1>Configuration</h1>
-                    <Row start="xs" >
+                    <Row start="xs">
                         <Col xs={4}>
-                            <StackHeightSelect configuration={configuration} writeConfiguration={this.writeConfiguration}/><br/>
-                            <SymbolHeightSelect configuration={configuration} writeConfiguration={this.writeConfiguration}/>
+                            <StackHeightSelect configuration={configuration} writeConfiguration={this.writeConfiguration} styles={styles}/><br/>
+                            <SymbolHeightSelect configuration={configuration} writeConfiguration={this.writeConfiguration} styles={styles}/>
                         </Col>
-                        <Col xs={4} end="xs">
-                            <SequenceLogosCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration}/>
-                            <PvalueCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration}/>
-                            <ClusteringCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration}/>
-                            <ClusterTreeCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration}/>
+                        <Col xs={4}>
+                            <SequenceLogosCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration} styles={styles}/>
+                            <PvalueCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration} styles={styles}/>
+                            <ClusteringCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration} styles={styles}/>
+                            <ClusterTreeCheckbox configuration={configuration} writeConfiguration={this.writeConfiguration} styles={styles}/>
                         </Col>
                     </Row>
-                    <Row>
-                        <Col xs={8} >
-                            <Row center="xs">
-                                <RaisedButton
+                    <Row start="xs">
+                        <Col xs={8}>
+                            <RaisedButton
                                 label='Back to analysis'
                                 overlayStyle={{ 'overflowX': 'hidden', 'overflowY': 'hidden' }}
                                 labelPosition={'before'}
                                 primary={ true }
                                 fullWidth={false}
                                 onClick={() => router.push('/')}/>
-                            </Row>
                         </Col>
                     </Row>
                 </CardText>

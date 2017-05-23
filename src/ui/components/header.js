@@ -16,9 +16,8 @@ const NavigationMenu = ({navigateTo, ...props}) => (
         }
         targetOrigin={{horizontal: 'right', vertical: 'top'}}
         anchorOrigin={{horizontal: 'right', vertical: 'top'}}
-
     >
-        <MenuItem primaryText="Analysis" onClick={ () => navigateTo('/') }/>
+        <MenuItem rightIcon={<FontIcon className="material-icons">play_circle_outline</FontIcon>} primaryText="Analysis" onClick={ () => navigateTo('/') }/>
         <MenuItem rightIcon={<FontIcon className="material-icons">settings</FontIcon>} primaryText="Configure" onClick={ () => navigateTo('config') }/>
         <MenuItem primaryText="About" onClick={ () => navigateTo('about') } />
         <MenuItem primaryText="Cite" onClick={ () => navigateTo('cite') } />
@@ -43,18 +42,28 @@ class Header extends Component {
     }
 
     render() {
+        const path = this.props.location.pathname;
+        let rightIconButton = (<span></span>); // empty button
+        if(path === '/') {
+            rightIconButton = (<IconButton iconClassName="material-icons" tooltip="Settings" onClick={() => this.navigate('config')}>settings</IconButton>);
+        } else if(path === 'config') {
+            rightIconButton = (<IconButton iconClassName="material-icons" tooltip="Analysis" onClick={() => this.navigate('/')}>play_circle_outline</IconButton>);
+        }
+
         return (
             <AppBar
                 title="WebDiffLogo: Alignment, clustering, and comparative visualization of sequence motifs"
                 showMenuIconButton={true}
                 iconElementLeft={ <NavigationMenu navigateTo={ this.navigate } /> }
+                iconElementRight={rightIconButton}
             />
         );
     }
 }
 
 Header.propTypes = {
-    router: PropTypes.object.isRequired
+    router: PropTypes.object.isRequired,
+    location: PropTypes.object.isRequired
 };
 
 export default withRouter(Header);

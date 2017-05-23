@@ -1,11 +1,7 @@
 import React, { Component, PropTypes } from 'react';
 import Checkbox from 'material-ui/Checkbox';
-
-const styles = {
-    checkBox: {
-        width: '250px'
-    }
-};
+import HelpDialog from '../../components/Configuration/helpdialog';
+import {Row, Col} from 'react-flexbox-grid';
 
 class ClusteringCheckbox extends Component {
     constructor(props) {
@@ -20,24 +16,33 @@ class ClusteringCheckbox extends Component {
     }
 
     render() {
-        const{configuration} = this.props;
-        return (
-            <div style={styles.checkBox}>
-                <Checkbox
+        const{configuration, styles} = this.props;
+        const helpdialog = (<HelpDialog
+            content={<span>If checked, the input motifs will be clustered by their overall similarity. This option applies only in case of more than two input motifs. The clustering of motifs has the advantage that similar motifs are placed close to each other and dissimilar motifs are placed apart to each other. The resulting table of difference logos is more clearly arranged and it is possible to detect subsets of similar motifs by eye.</span>}
+            title={'Help: Enable motif clustering'}/>);
+        const checkbox = (<Checkbox
                     onClick={(event) => event.stopPropagation()}
                     onCheck={(event, value) => this.updateEnableClustering(value)}
                     label="Enable motif clustering"
                     checked={configuration.enableClustering}
-                    >
-                </Checkbox>
-            </div>
+                    style={styles.checkBox}/>);
+        return (
+            <Row middle="xs">
+                <Col>
+                    {checkbox}
+                </Col>
+                <Col>
+                    {helpdialog}
+                </Col>
+            </Row>
         );
     }
 }
 
 ClusteringCheckbox.propTypes = {
     configuration: PropTypes.object.isRequired,
-    writeConfiguration: PropTypes.func.isRequired
+    writeConfiguration: PropTypes.func.isRequired,
+    styles: PropTypes.object.isRequired
 };
 
 export default ClusteringCheckbox;
